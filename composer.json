@@ -1,0 +1,13 @@
+{
+    "name": "jerson/crud-generator",
+    "description": "Generador de Crud para aplicaciones simples",
+    "authors": [
+        {
+            "name": "Gerson Alexander Pardo Gamez",
+            "email": "jeral17@gmail.com"
+        }
+    ],
+    "require": {
+
+    }
+}
