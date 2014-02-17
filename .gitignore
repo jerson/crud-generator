@@ -1,5 +1,6 @@
 .idea/
 vendor/
 build/
+app/config/parameters.yml
 composer.lock
 config.php

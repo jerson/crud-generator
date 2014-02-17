@@ -1,12 +1,9 @@
 imports:
 - { resource: build.yml }
 - { resource: services.yml }
+- { resource: parameters.yml }
 
 parameters:
-
-  pdo.dsn: 'mysql:host=localhost;dbname=cidunt'
-  pdo.username: root
-  pdo.password:
 
   application:
     name:         CrudGenerator

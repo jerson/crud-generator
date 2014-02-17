@@ -1,5 +1,5 @@
 services:
-  app:
+  pdo:
     class:     PDO
     arguments: ['%pdo.dsn%','%pdo.username%','%pdo.password%']
 

@@ -1,7 +1,7 @@
 <?php
-namespace Generator\Crud\Plugins;
+namespace CrudGenerator\Plugins;
 
-use Generator\Crud\Table\Table;
+use CrudGenerator\Table\Table;
 
 class MySQL implements Base {
 

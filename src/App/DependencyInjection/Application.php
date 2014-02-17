@@ -49,8 +49,12 @@ class Application extends \Symfony\Component\Console\Application
         // and add commands to it
         $this->addConsoleCommands($baseNamespaceName);
 
+
         // may be we have some commands also
         $this->addConsoleCommands(__NAMESPACE__);
+
+
+        //$this->container->compile();
     }
 
     /**
@@ -69,14 +73,19 @@ class Application extends \Symfony\Component\Console\Application
             if ($namespace == $baseNamespaceName) {
                 // add all existing commands
                 foreach ($lookupPaths as $path) {
-                    $commandPath = $path . '/' . $namespace . '/Console/Command/';
+                    $commandPath = $path . '/' . $namespace . '/Command/';
                     if (is_dir($commandPath)) {
-                        $files = Finder::create()->files()->name('*Command.php')->in($path . '/' . $namespace . '/Console/Command/');
+                        $files = Finder::create()->files()->name('*Command.php')->in($path . '/' . $namespace . '/Command/');
                         foreach ($files as $file) {
                             $className = $file->getBasename('.php'); // strip .php extension
-                            $r = new \ReflectionClass($baseNamespaceName . '\Console\Command' . '\\' . $className);
+                            $r = new \ReflectionClass($baseNamespaceName . '\Command' . '\\' . $className);
                             if (!$r->isAbstract()) {
-                                $this->add($r->newInstance());
+                                $instance = $r->newInstance();
+
+                                if(method_exists($instance,'setContainer')){
+                                    $instance->setContainer($this->container);
+                                }
+                                $this->add($instance);
                             }
                         }
                     }

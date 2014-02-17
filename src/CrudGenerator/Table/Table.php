@@ -1,5 +1,5 @@
 <?php
-namespace Generator\Crud\Table;
+namespace CrudGenerator\Table;
 
 
 class Table {

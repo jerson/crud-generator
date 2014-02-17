@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-namespace Generator\Crud;
+namespace CrudGenerator;
 
 use App\DependencyInjection\Application;
 

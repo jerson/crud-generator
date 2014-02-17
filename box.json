@@ -2,7 +2,6 @@
 {
     "chmod": "0755",
     "directories": ["src","vendor"],
-    "extract": true,
     "files": [
         "app/config/config.yml",
         "app/config/services.yml",
@@ -10,7 +9,6 @@
     ],
     "finder": [
         {
-
             "exclude": [
                 "composer.json",
                 "README.md",
