@@ -1,0 +1,31 @@
+
+{
+    "chmod": "0755",
+    "directories": ["src","vendor"],
+    "extract": true,
+    "files": [
+        "app/config/config.yml",
+        "app/config/services.yml",
+        "app/config/build.yml"
+    ],
+    "finder": [
+        {
+
+            "exclude": [
+                "composer.json",
+                "README.md",
+                "CHANGELOG.md",
+                ".gitignore",
+                "phpunit.xml.dist",
+                "Tester",
+                "Tests"
+            ],
+            "in": "vendor"
+        }
+    ],
+    "git-commit": "git-commit",
+    "git-version": "git-version",
+    "main": "app/console",
+    "output": "build/crud-generator.phar",
+    "stub": true
+}

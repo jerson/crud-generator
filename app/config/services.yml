@@ -1,0 +1,10 @@
+services:
+  app:
+    class:     PDO
+    arguments: ['%pdo.dsn%','%pdo.username%','%pdo.password%']
+
+  filesystem:
+    class: Symfony\Component\Filesystem\Filesystem
+
+  version:
+    class: App\Library\Version
