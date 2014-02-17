@@ -1,5 +1,4 @@
 imports:
-- { resource: build.yml }
 - { resource: services.yml }
 - { resource: parameters.yml }
 
@@ -8,4 +7,5 @@ parameters:
   application:
     name:         CrudGenerator
     slug:         crud-generator
+    version:      0.0.1
     description:  "Genera Aplicaciones simples"

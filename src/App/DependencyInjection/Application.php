@@ -34,7 +34,6 @@ class Application extends \Symfony\Component\Console\Application
         $paths = array();
         $paths['root'] = __DIR__ . '/../../../';
         $paths['config'] = $paths['root'] . 'app/config/';
-        $paths['build'] = $paths['root'] . 'build/';
         $this->container->setParameter('paths', $paths);
 
         // the main config
@@ -43,8 +42,7 @@ class Application extends \Symfony\Component\Console\Application
 
         // construct the application
         $app = $this->container->getParameter('application');
-        $version = $this->container->getParameter('version');
-        parent::__construct($app['name'], $version['current']);
+        parent::__construct($app['name'], $app['version']);
 
         // and add commands to it
         $this->addConsoleCommands($baseNamespaceName);
