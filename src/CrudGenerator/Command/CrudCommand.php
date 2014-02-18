@@ -2,12 +2,11 @@
 
 namespace CrudGenerator\Command;
 
-use CrudGenerator\Plugins\MySQL;
+use CrudGenerator\Connector\MySQL;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 class CrudCommand extends Command
@@ -18,11 +17,11 @@ class CrudCommand extends Command
      */
     private $pdo;
 
+    /**
+     * @var ContainerInterface
+     */
     private $container;
 
-    /**
-     * @var Container
-     */
     protected function configure()
     {
         $this
@@ -30,7 +29,7 @@ class CrudCommand extends Command
             ->setDescription('generador de crud');
     }
 
-    public function setContainer(Container $container){
+    public function setContainer(ContainerInterface $container){
         $this->container = $container;
     }
 
@@ -44,9 +43,17 @@ class CrudCommand extends Command
 
         $this->pdo = $this->container->get('pdo');
         $mysql = new MySQL($this->pdo);
-        $result = $mysql->getTables();
+        $tables = $mysql->getTables();
 
-        $output->writeln($result);
+
+        foreach ($tables as $table) {
+            $tableProperties = $mysql->getTable($table);
+
+           // print_r($tableProperties);
+        }
+
+
+        $output->writeln($tables);
 
 
     }

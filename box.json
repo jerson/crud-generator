@@ -12,13 +12,19 @@
             "exclude": [
                 "composer.json",
                 "README.md",
+                "README",
+                "README.markdown",
                 "CHANGELOG.md",
                 ".gitignore",
                 "phpunit.xml.dist",
+                "package.xml.tpl",
                 "Tester",
-                "Tests"
+                "Tests",
+                "Test",
+                "doc",
+                "test"
             ],
-            "in": "vendor"
+            "in": "vendor/*"
         }
     ],
     "git-commit": "git-commit",
