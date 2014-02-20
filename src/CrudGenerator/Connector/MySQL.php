@@ -2,8 +2,11 @@
 namespace CrudGenerator\Connector;
 
 
+use CrudGenerator\Table\Field;
+use CrudGenerator\Table\Index;
+use CrudGenerator\Table\Reference;
 use CrudGenerator\Table\Table;
-use CrudGenerator\Table\TableType;
+use CrudGenerator\Table\Type;
 
 class MySQL extends BaseConnector implements ConnectorInterface
 {
@@ -48,30 +51,47 @@ class MySQL extends BaseConnector implements ConnectorInterface
 
         $statement->execute();
         $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $tableProperties = array();
+
+
+        $table = new Table();
+        $table->setName($name);
+
+        $references = $this->getReferences($name);
+        $indexes = $this->getIndexes($name);
 
         foreach ($results as $result) {
 
-            $table = new Table();
-            $table->setField($this->parseField(isset($result['Field']) ? $result['Field'] : ''));
-            $table->setType($this->parseType(isset($result['Type']) ? $result['Type'] : ''));
-            $table->setAllowNull($this->parseAllowNull(isset($result['Null']) ? $result['Null'] : ''));
-            $table->setKey($this->parseKey(isset($result['Key']) ? $result['Key'] : ''));
-            $table->setDefault($this->parseDefault(isset($result['Default']) ? $result['Default'] : ''));
-            $table->setAutoIncrement($this->parseAutoIncrement(isset($result['Extra']) ? $result['Extra'] : ''));
-            $table->setReferences($this->getReferences($name));
-            $table->setIndexes($this->getIndexes($name));
+            $fieldReferences = isset($references[$result['Field']]) ? $references[$result['Field']] : array();
 
-            $tableProperties[] = isset($result[0]) ? $result[0] : '';
+            $fieldIndexes = array();
+
+            foreach($indexes as $index){
+                $columns = $index->getColumns();
+                if(in_array($result['Field'],$columns)){
+                    $fieldIndexes[] = $index;
+                }
+            }
+
+            $field = new Field();
+            $field->setName($this->parseFieldName($result['Field']));
+            $field->setType($this->parseFieldType($result['Type']));
+            $field->setAllowNull($this->parseFieldAllowNull($result['Null']));
+            $field->setKey($this->parseFieldKey($result['Key']));
+            $field->setDefault($this->parseFieldDefault($result['Default']));
+            $field->setAutoIncrement($this->parseFieldAutoIncrement($result['Extra']));
+            $field->setReferences($fieldReferences);
+            $field->setIndexes($fieldIndexes);
+
+            $table->addField($field);
         }
 
-        return $tableProperties;
+        return $table;
     }
 
     /**
      * @return string
      */
-    protected  function getDatabaseName()
+    protected function getDatabaseName()
     {
         $statement = $this->pdo->query('SELECT DATABASE()');
         $statement->execute();
@@ -100,15 +120,25 @@ class MySQL extends BaseConnector implements ConnectorInterface
 
             $keyName = $result['Key_name'];
 
-            $tableIndexes[$keyName][] = array(
-                'name' => $result['Key_name'],
-                'sequence' => $result['Seq_in_index'],
-                'column' => $result['Column_name'],
-                'collation' => $result['Collation'],
-                'cardinality' => $result['Cardinality'],
-                'type' => $result['Index_type'],
-                'unique' => $result['Non_unique'] === '0' ? true : false,
-            );
+            if (isset($tableIndexes[$keyName])) {
+                $tableIndexes[$keyName]->addColumn($result['Column_name']);
+            } else {
+
+                $index = new Index();
+
+                $index->setName($result['Key_name']);
+                $index->addColumn($result['Column_name']);
+                $index->setCollation($result['Collation']);
+                $index->setCardinality($result['Cardinality']);
+
+                $type = $result['Index_type']==='BTRE' ? Index::BTREE : Index::UNKNOWN;
+
+                $index->setType($type);
+                $index->setUnique( $result['Non_unique'] === '0' ? true : false);
+
+                $tableIndexes[$keyName] = $index;
+
+            }
 
         }
 
@@ -151,10 +181,11 @@ SQL;
 
             $column = $result['column'];
 
-            $tableReferences[$column][] = array(
-                'table' => $result['reference_table'],
-                'column' => $result['reference_column'],
-            );
+            $reference = new Reference();
+            $reference->setColumn($result['reference_column']);
+            $reference->setTable($result['reference_table']);
+
+            $tableReferences[$column][] = $reference;
 
         }
 

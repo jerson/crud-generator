@@ -3,7 +3,7 @@
 namespace CrudGenerator\Table;
 
 
-class TableType
+class Type
 {
 
     CONST INTEGER = 1;
@@ -22,7 +22,7 @@ class TableType
     CONST UNKNOWN = 15;
 
     /**
-     * @const int
+     * @var int
      */
     private $type;
 
@@ -84,6 +84,4 @@ class TableType
         return $this->options;
     }
 
-
-
-} 
+}

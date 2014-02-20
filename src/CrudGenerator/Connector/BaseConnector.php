@@ -2,8 +2,10 @@
 
 namespace CrudGenerator\Connector;
 
+use CrudGenerator\Table\Field;
+use CrudGenerator\Table\Key;
 use CrudGenerator\Table\Table;
-use CrudGenerator\Table\TableType;
+use CrudGenerator\Table\Type;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class BaseConnector
@@ -12,16 +14,16 @@ class BaseConnector
 
     /**
      * @param $string
-     * @return TableType
+     * @return Type
      * @throws \Exception
      */
-    protected function parseType($string)
+    protected function parseFieldType($string)
     {
 
-        $tableType = new TableType();
+        $tableType = new Type();
         $options = array();
         $length = 0;
-        preg_match('|(?P<type>[A-Za-z0-9]+)(?P<length>\([0-9A-Za-z]+\))?|', $string, $matches);
+        preg_match('|(?P<type>[A-Za-z0-9]+)(?P<length>\([0-9A-Za-z\\\'\\\'\,]+\))?|', $string, $matches);
 
         if (isset($matches['type']) && !empty($matches['type'])) {
 
@@ -29,53 +31,53 @@ class BaseConnector
 
             switch ($matches['type']) {
                 case 'int':
-                    $type = TableType::INTEGER;
+                    $type = Type::INTEGER;
                     break;
                 case 'char':
-                    $type = TableType::CHAR;
+                    $type = Type::CHAR;
                     break;
                 case 'varchar':
-                    $type = TableType::VARCHAR;
+                    $type = Type::VARCHAR;
                     break;
                 case 'enum':
-                    $type = TableType::ENUM;
+                    $type = Type::ENUM;
                     break;
                 case 'double':
-                    $type = TableType::DOUBLE;
+                    $type = Type::DOUBLE;
                     break;
                 case 'float':
-                    $type = TableType::FLOAT;
+                    $type = Type::FLOAT;
                     break;
                 case 'real':
-                    $type = TableType::FLOAT;
+                    $type = Type::FLOAT;
                     break;
                 case 'text':
-                    $type = TableType::TEXT;
+                    $type = Type::TEXT;
                     break;
                 case 'bool':
-                    $type = TableType::BOOL;
+                    $type = Type::BOOL;
                     break;
                 case 'date':
-                    $type = TableType::DATE;
+                    $type = Type::DATE;
                     break;
                 case 'datetime':
-                    $type = TableType::DATE_TIME;
+                    $type = Type::DATE_TIME;
                     break;
                 case 'time':
-                    $type = TableType::TIME;
+                    $type = Type::TIME;
                     break;
                 case 'timestamp':
-                    $type = TableType::TIMESTAMP;
+                    $type = Type::TIMESTAMP;
                     break;
                 default:
-                    $type = TableType::UNKNOWN;
+                    $type = Type::UNKNOWN;
                     break;
 
             }
             $tableType->setType($type);
 
 
-            if ($type === TableType::ENUM) {
+            if ($type === Type::ENUM) {
                 $stringOptions = str_replace(array('(', ')', '\''), '', $matches['length']);
                 $options = explode(',', $stringOptions);
             } else {
@@ -97,7 +99,7 @@ class BaseConnector
      * @param $string
      * @return bool
      */
-    protected function parseAllowNull($string)
+    protected function parseFieldAllowNull($string)
     {
         return $string === 'NO' ? false : true;
     }
@@ -106,7 +108,7 @@ class BaseConnector
      * @param $string
      * @return bool
      */
-    protected function parseAutoIncrement($string)
+    protected function parseFieldAutoIncrement($string)
     {
         return $string === 'auto_increment' ? true : false;
     }
@@ -115,7 +117,7 @@ class BaseConnector
      * @param $string
      * @return string
      */
-    protected function parseDefault($string)
+    protected function parseFieldDefault($string)
     {
         return !empty($string) ? $string : '';
     }
@@ -124,7 +126,7 @@ class BaseConnector
      * @param $string
      * @return mixed
      */
-    protected function parseField($string)
+    protected function parseFieldName($string)
     {
         return $string;
     }
@@ -133,18 +135,18 @@ class BaseConnector
      * @param $string
      * @return int
      */
-    protected function parseKey($string)
+    protected function parseFieldKey($string)
     {
 
         switch ($string) {
             case 'PRI':
-                return Table::PRIMARY_KEY;
+                return Key::PRIMARY;
                 break;
             case 'MUL':
-                return Table::FOREIGN_KEY;
+                return Key::FOREIGN;
                 break;
             default:
-                return Table::NO_KEY;
+                return Key::NO;
                 break;
         }
 

@@ -3,7 +3,9 @@
 namespace CrudGenerator\Connector;
 
 
-use CrudGenerator\Table\Table;
+use CrudGenerator\Table\Field;
+use CrudGenerator\Table\Reference;
+use CrudGenerator\Table\Index;
 
 interface ConnectorInterface {
 
@@ -22,13 +24,13 @@ interface ConnectorInterface {
 
     /**
      * @param $name
-     * @return array
+     * @return Index[]
      */
     public function getIndexes($name);
 
     /**
      * @param $name
-     * @return array
+     * @return Reference[]
      */
     public function getReferences($name);
 

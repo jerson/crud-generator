@@ -49,7 +49,7 @@ class CrudCommand extends Command
         foreach ($tables as $table) {
             $tableProperties = $mysql->getTable($table);
 
-           // print_r($tableProperties);
+            print_r($tableProperties);
         }
 
 

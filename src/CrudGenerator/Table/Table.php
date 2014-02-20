@@ -1,184 +1,59 @@
 <?php
+
 namespace CrudGenerator\Table;
 
 
 class Table
 {
 
-    const PRIMARY_KEY = 1;
-    const FOREIGN_KEY = 2;
-    const NO_KEY = 3;
-
-
-    /**
-     * @var int
-     */
-    private $field;
-
-    /**
-     * @var TableType
-     */
-    private $type;
-
-    /**
-     * @var bool
-     */
-    private $allowNull;
-
-    /**
-     * @var int
-     */
-    private $key;
-
     /**
      * @var string
      */
-    private $default;
+    private $name;
 
     /**
-     * @var bool
+     * @var Field[]
      */
-    private $autoIncrement;
+    private $fields;
 
     /**
-     * @var array
+     * @param \CrudGenerator\Table\Field[] $fields
      */
-    private $references;
-
-    /**
-     * @var array
-     */
-    private $indexes;
-
-    /**
-     * @param boolean $allowNull
-     */
-    public function setAllowNull($allowNull)
+    public function setFields($fields)
     {
-        $this->allowNull = $allowNull;
+        $this->fields = $fields;
     }
 
     /**
-     * @return boolean
+     * @param Field $field
      */
-    public function getAllowNull()
+    public function addField(Field $field)
     {
-        return $this->allowNull;
+        $this->fields[] = $field;
     }
 
     /**
-     * @param boolean $autoIncrement
+     * @return \CrudGenerator\Table\Field[]
      */
-    public function setAutoIncrement($autoIncrement)
+    public function getFields()
     {
-        $this->autoIncrement = $autoIncrement;
+        return $this->fields;
     }
 
     /**
-     * @return boolean
+     * @param string $name
      */
-    public function getAutoIncrement()
+    public function setName($name)
     {
-        return $this->autoIncrement;
-    }
-
-    /**
-     * @param string $default
-     */
-    public function setDefault($default)
-    {
-        $this->default = $default;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getDefault()
+    public function getName()
     {
-        return $this->default;
+        return $this->name;
     }
-
-    /**
-     * @param int $field
-     */
-    public function setField($field)
-    {
-        $this->field = $field;
-    }
-
-    /**
-     * @return int
-     */
-    public function getField()
-    {
-        return $this->field;
-    }
-
-    /**
-     * @param int $key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-    }
-
-    /**
-     * @return int
-     */
-    public function getKey()
-    {
-        return $this->key;
-    }
-
-    /**
-     * @param \CrudGenerator\Table\TableType $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return \CrudGenerator\Table\TableType
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param array $indexes
-     */
-    public function setIndexes($indexes)
-    {
-        $this->indexes = $indexes;
-    }
-
-    /**
-     * @return array
-     */
-    public function getIndexes()
-    {
-        return $this->indexes;
-    }
-
-    /**
-     * @param array $references
-     */
-    public function setReferences($references)
-    {
-        $this->references = $references;
-    }
-
-    /**
-     * @return array
-     */
-    public function getReferences()
-    {
-        return $this->references;
-    }
-
-
-
 
 } 
