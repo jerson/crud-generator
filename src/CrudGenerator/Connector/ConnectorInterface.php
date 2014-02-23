@@ -6,13 +6,14 @@ namespace CrudGenerator\Connector;
 use CrudGenerator\Table\Field;
 use CrudGenerator\Table\Reference;
 use CrudGenerator\Table\Index;
+use CrudGenerator\Table\Table;
 
 interface ConnectorInterface {
 
     public function __construct(\PDO $pdo);
 
     /**
-     * @return Array
+     * @return Table[]
      */
     public function getTables();
 

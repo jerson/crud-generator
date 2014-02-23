@@ -31,7 +31,9 @@ class MySQL extends BaseConnector implements ConnectorInterface
         $tables = array();
 
         foreach ($results as $result) {
-            $tables[] = isset($result[0]) ? $result[0] : '';
+
+            $name = isset($result[0]) ? $result[0] : '';
+            $tables[] = $this->getTable($name);
         }
 
         return $tables;

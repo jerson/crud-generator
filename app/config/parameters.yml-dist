@@ -1,5 +1,0 @@
-parameters:
-
-  pdo.dsn: 'mysql:host=localhost;dbname=Example'
-  pdo.username: root
-  pdo.password: password

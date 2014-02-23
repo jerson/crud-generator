@@ -16,6 +16,56 @@ class Table
      */
     private $fields;
 
+
+    /**
+     * @return Field|null
+     */
+    public function getPrimaryField()
+    {
+        $fields = $this->getPrimaryFields();
+        return isset($fields[0]) ? $fields[0] : null;
+    }
+
+    /**
+     * @return Field[]|array
+     */
+    public function getPrimaryFields()
+    {
+
+        $primaryFields = array();
+
+        foreach ($this->fields as $field) {
+
+            if ($field->getKey() == Key::PRIMARY) {
+                $primaryFields[] = $field;
+
+            }
+
+        }
+
+        return $primaryFields;
+    }
+
+    /**
+     * @return Field[]|array
+     */
+    public function getForeignFields()
+    {
+
+        $foreignFields = array();
+
+        foreach ($this->fields as $field) {
+
+            if ($field->getKey() == Key::FOREIGN) {
+                $foreignFields[] = $field;
+
+            }
+
+        }
+
+        return $foreignFields;
+    }
+
     /**
      * @param \CrudGenerator\Table\Field[] $fields
      */

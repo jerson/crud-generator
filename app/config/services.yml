@@ -1,7 +1,4 @@
 services:
-  pdo:
-    class:     PDO
-    arguments: ['%pdo.dsn%','%pdo.username%','%pdo.password%']
 
   filesystem:
     class: Symfony\Component\Filesystem\Filesystem

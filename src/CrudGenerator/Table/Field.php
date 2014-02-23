@@ -37,14 +37,34 @@ class Field
     private $autoIncrement;
 
     /**
-     * @var array
+     * @var Reference[]
      */
     private $references;
 
     /**
-     * @var array
+     * @var Index[]
      */
     private $indexes;
+
+    /**
+     * @return bool
+     */
+    public function isPrimary()
+    {
+
+        return $this->key == Key::PRIMARY;
+
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForeign()
+    {
+
+        return $this->key == Key::FOREIGN;
+
+    }
 
     /**
      * @param boolean $allowNull
@@ -127,7 +147,7 @@ class Field
     }
 
     /**
-     * @param \CrudGenerator\Table\Type $type
+     * @param Type $type
      */
     public function setType($type)
     {
@@ -135,7 +155,7 @@ class Field
     }
 
     /**
-     * @return \CrudGenerator\Table\Type
+     * @return Type
      */
     public function getType()
     {
@@ -143,7 +163,7 @@ class Field
     }
 
     /**
-     * @param array $indexes
+     * @param Index[] $indexes
      */
     public function setIndexes($indexes)
     {
@@ -151,7 +171,7 @@ class Field
     }
 
     /**
-     * @return array
+     * @return Index[]
      */
     public function getIndexes()
     {
@@ -159,7 +179,7 @@ class Field
     }
 
     /**
-     * @param array $references
+     * @param Reference[] $references
      */
     public function setReferences($references)
     {
@@ -167,7 +187,7 @@ class Field
     }
 
     /**
-     * @return array
+     * @return Reference[]
      */
     public function getReferences()
     {

@@ -20,6 +20,9 @@
         "symfony/finder": "2.4.x-dev",
         "symfony/filesystem": "2.4.x-dev",
         "symfony/dependency-injection": "2.4.x-dev",
-        "symfony/config": "2.4.x-dev"
+        "symfony/config": "2.4.x-dev",
+        "knplabs/gaufrette": "0.2.x-dev",
+        "danielstjules/stringy": "1.4.0",
+        "twig/extensions": "1.0.x-dev"
     }
 }

@@ -1,0 +1,8 @@
+parameters:
+
+  packages:
+    base:
+#      database:
+      model: base
+#      controller: base
+#      base: base

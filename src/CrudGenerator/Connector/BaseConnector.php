@@ -31,53 +31,53 @@ class BaseConnector
 
             switch ($matches['type']) {
                 case 'int':
-                    $type = Type::INTEGER;
+                    $name = Type::INTEGER;
                     break;
                 case 'char':
-                    $type = Type::CHAR;
+                    $name = Type::CHAR;
                     break;
                 case 'varchar':
-                    $type = Type::VARCHAR;
+                    $name = Type::VARCHAR;
                     break;
                 case 'enum':
-                    $type = Type::ENUM;
+                    $name = Type::ENUM;
                     break;
                 case 'double':
-                    $type = Type::DOUBLE;
+                    $name = Type::DOUBLE;
                     break;
                 case 'float':
-                    $type = Type::FLOAT;
+                    $name = Type::FLOAT;
                     break;
                 case 'real':
-                    $type = Type::FLOAT;
+                    $name = Type::REAL;
                     break;
                 case 'text':
-                    $type = Type::TEXT;
+                    $name = Type::TEXT;
                     break;
                 case 'bool':
-                    $type = Type::BOOL;
+                    $name = Type::BOOL;
                     break;
                 case 'date':
-                    $type = Type::DATE;
+                    $name = Type::DATE;
                     break;
                 case 'datetime':
-                    $type = Type::DATE_TIME;
+                    $name = Type::DATE_TIME;
                     break;
                 case 'time':
-                    $type = Type::TIME;
+                    $name = Type::TIME;
                     break;
                 case 'timestamp':
-                    $type = Type::TIMESTAMP;
+                    $name = Type::TIMESTAMP;
                     break;
                 default:
-                    $type = Type::UNKNOWN;
+                    $name = Type::UNKNOWN;
                     break;
 
             }
-            $tableType->setType($type);
+            $tableType->setName($name);
 
 
-            if ($type === Type::ENUM) {
+            if ($name === Type::ENUM) {
                 $stringOptions = str_replace(array('(', ')', '\''), '', $matches['length']);
                 $options = explode(',', $stringOptions);
             } else {

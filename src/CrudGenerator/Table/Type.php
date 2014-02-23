@@ -12,6 +12,7 @@ class Type
     CONST TEXT = 4;
     CONST DOUBLE = 6;
     CONST FLOAT = 7;
+    CONST REAL = 70;
     CONST BOOL = 8;
     CONST CHAR = 9;
     CONST DATE = 10;
@@ -24,7 +25,7 @@ class Type
     /**
      * @var int
      */
-    private $type;
+    private $name;
 
     /**
      * @var int
@@ -55,17 +56,17 @@ class Type
     /**
      * @param int $type
      */
-    public function setType($type)
+    public function setName($type)
     {
-        $this->type = $type;
+        $this->name = $type;
     }
 
     /**
      * @return int
      */
-    public function getType()
+    public function getName()
     {
-        return $this->type;
+        return $this->name;
     }
 
     /**

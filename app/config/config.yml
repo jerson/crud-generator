@@ -1,6 +1,6 @@
 imports:
 - { resource: services.yml }
-- { resource: parameters.yml }
+- { resource: packages.yml }
 
 parameters:
 

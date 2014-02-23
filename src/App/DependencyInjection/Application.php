@@ -51,7 +51,6 @@ class Application extends \Symfony\Component\Console\Application
         // may be we have some commands also
         $this->addConsoleCommands(__NAMESPACE__);
 
-
         //$this->container->compile();
     }
 

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: daustinsac
- * Date: 2/19/14
- * Time: 22:56
- */
 
 namespace CrudGenerator\Table;
 
