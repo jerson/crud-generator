@@ -1,0 +1,52 @@
+
+
+{% macro getParam(name, field) %}
+    {% set parseType = java.parseType(field) %}
+    {% set realType = java.realType(field) %}
+    {% set value = '' %}
+    {% if field.isForeign  %}
+        {% set value = '' %}
+        {{ name }}.set{{ field | upperCamelize }}(new {{ field.reference.table | upperCamelize }}({{ parseType | upperCamelize }}.parse{{ realType | upperCamelize }}(request.getParameter("{{ field.name }}"))));
+    {% else %}
+
+        {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') %}
+            SimpleDateFormat sdf{{ field | upperCamelize }} = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                {{ name }}.set{{ field | upperCamelize }}(sdf{{ field | upperCamelize }}.parse(request.getParameter("{{ field.name }}")));
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::DATE_TIME') %}
+            SimpleDateFormat sdf{{ field | upperCamelize }} = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                {{ name }}.set{{ field | upperCamelize }}(sdf{{ field | upperCamelize }}.parse(request.getParameter("{{ field.name }}")));
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
+            SimpleDateFormat sdf{{ field | upperCamelize }} = new SimpleDateFormat("HH:mm:ss");
+            try {
+                {{ name }}.set{{ field | upperCamelize }}(sdf{{ field | upperCamelize }}.parse(request.getParameter("{{ field.name }}")));
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIMESTAMP') %}
+            SimpleDateFormat sdf{{ field | upperCamelize }} = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                {{ name }}.set{{ field | upperCamelize }}(sdf{{ field | upperCamelize }}.parse(request.getParameter("{{ field.name }}")));
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+        {% elseif parseType %}
+            {{ name }}.set{{ field | upperCamelize }}({{ parseType | upperCamelize }}.parse{{ realType | upperCamelize }}(request.getParameter("{{ field.name }}")));
+        {% else %}
+            {{ name }}.set{{ field | upperCamelize }}(request.getParameter("{{ field.name }}"));
+        {% endif %}
+
+
+    {% endif %}
+
+
+{% endmacro %}
+
+

@@ -7,4 +7,4 @@ database:
     password: fundo
 
 output:
-    dir: 'output'
+    dir: 'output/project'

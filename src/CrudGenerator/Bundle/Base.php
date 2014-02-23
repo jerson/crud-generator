@@ -9,17 +9,18 @@ use CrudGenerator\Parser\Php;
 use CrudGenerator\Table\Table;
 use Gaufrette\Filesystem;
 
-class Base implements BundleInterface{
+class Base implements BundleInterface
+{
 
     /**
      * @var Table[]
      */
-    protected  $tables;
+    protected $tables;
 
     /**
      * @var array
      */
-    protected $options;
+    protected $config;
 
     /**
      * @var Filesystem
@@ -34,16 +35,16 @@ class Base implements BundleInterface{
     /**
      * @inheritdoc
      */
-    public function __construct(Filesystem $fileSystem, \Twig_Environment $twig, array $options)
+    public function __construct(Filesystem $fileSystem, \Twig_Environment $twig, array $config)
     {
         $this->fileSystem = $fileSystem;
         $this->twig = $twig;
-        $this->options = $options;
+        $this->config = $config;
 
         //$this->twig->addGlobal('fileSystem',$this->fileSystem);
-        $this->twig->addGlobal('options',$this->options);
-        $this->twig->addGlobal('java',new Java());
-        $this->twig->addGlobal('php',new Php());
+        $this->twig->addGlobal('config', $this->config);
+        $this->twig->addGlobal('java', new Java());
+        $this->twig->addGlobal('php', new Php());
 
         $this->configure();
     }
@@ -51,20 +52,21 @@ class Base implements BundleInterface{
     /**
      * @inheritdoc
      */
-    public function configure(){
+    public function configure()
+    {
 
         $calledClass = get_called_class();
 
-        $calledClass = str_replace('\\','/',$calledClass);
-        $parts = explode('/Bundle/',$calledClass);
+        $calledClass = str_replace('\\', '/', $calledClass);
+        $parts = explode('/Bundle/', $calledClass);
 
         $extraClass = (isset($parts[1]) ? $parts[1] : '');
-        $parts = explode('/',$extraClass);
+        $parts = explode('/', $extraClass);
 
-        unset($parts[count($parts)-1]);
-        $baseDir= __DIR__.'/'.join('/',$parts);
+        unset($parts[count($parts) - 1]);
+        $baseDir = __DIR__ . '/' . join('/', $parts);
 
-        $loader = new \Twig_Loader_Filesystem(sprintf('%s/Template',$baseDir));
+        $loader = new \Twig_Loader_Filesystem(sprintf('%s/Template', $baseDir));
         $this->twig->setLoader($loader);
 
     }
@@ -75,7 +77,7 @@ class Base implements BundleInterface{
     public function setTables(array $tables)
     {
         $this->tables = $tables;
-        $this->twig->addGlobal('tables',$this->tables);
+        $this->twig->addGlobal('tables', $this->tables);
     }
 
     /**

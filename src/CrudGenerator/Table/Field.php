@@ -46,6 +46,12 @@ class Field
      */
     private $indexes;
 
+    function __toString()
+    {
+       return $this->getName();
+    }
+
+
     /**
      * @return bool
      */
@@ -192,6 +198,14 @@ class Field
     public function getReferences()
     {
         return $this->references;
+    }
+
+    /**
+     * @return Reference
+     */
+    public function getReference()
+    {
+        return isset($this->references[0]) ? $this->references[0] : array();
     }
 
 } 

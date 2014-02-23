@@ -1,14 +1,9 @@
 package Model;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
 
 {% set tableName = table.name | upperCamelize %}
-
-{#{{ table | columns }}#}
-{#{{ table | columnsWithoutPrimary }}#}
-{#{{ table | columnsPrimary }}#}
-{#{{ table | columnsForeign }}#}
 
 public class {{ tableName }}{
 

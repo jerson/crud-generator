@@ -83,8 +83,6 @@ class CrudCommand extends Command
             }
         }
 
-        $options = isset($config['options']) ? $config['options'] : array();
-
         $output->writeln('<comment>Iniciando Generador</comment>');
         $this->generator = new Generator($config);
 
@@ -103,7 +101,7 @@ class CrudCommand extends Command
                     $bundleType = Stringy::create($bundleType)->upperCamelize();
 
                     $output->writeln(sprintf('<info>- %s</info>', $bundleType));
-                    $this->generator->generate($bundleType, $bundleLayout, $options);
+                    $this->generator->generate($bundleType, $bundleLayout);
                 }
 
 
@@ -116,19 +114,19 @@ class CrudCommand extends Command
 
             if ($type == 'database') {
                 $output->writeln('<info>Generando Scripts de Base de Datos</info>');
-                $this->generator->generateDatabase($layout, $options);
+                $this->generator->generateDatabase($layout);
             }
             if ($type == 'model') {
                 $output->writeln('<info>Generando Modelos</info>');
-                $this->generator->generateModel($layout, $options);
+                $this->generator->generateModel($layout);
             }
             if ($type == 'controller') {
                 $output->writeln('<info>Generando Controladores</info>');
-                $this->generator->generateController($layout, $options);
+                $this->generator->generateController($layout);
             }
             if ($type == 'view') {
                 $output->writeln('<info>Generando Interfaces</info>');
-                $this->generator->generateView($layout, $options);
+                $this->generator->generateView($layout);
             }
 
         }

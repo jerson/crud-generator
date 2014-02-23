@@ -5,7 +5,7 @@
     "files": [
         "app/config/config.yml",
         "app/config/services.yml",
-        "app/config/parameters.yml"
+        "app/config/packages.yml"
     ],
     "finder": [
         {

@@ -1,0 +1,221 @@
+{% import "macros.twig" as macro %}
+
+package Dao;
+
+
+        import Dao.Conexion.Conexion;
+        import java.sql.*;
+        import java.util.*;
+
+        import Model.{{ table.name | upperCamelize }};
+{% for field in table.foreignFields  %}
+    import Model.{{ field.reference.table | upperCamelize }};
+{% endfor %}
+
+{% set tableName = table.name | upperCamelize %}
+{% set tableParam = table.name | camelize %}
+
+public class {{ tableName }}Dao {
+
+    public boolean registrar({{ tableName }} {{ tableParam }}) {
+
+        boolean correcto = false;
+
+        try {
+
+            {% set columns = table | columnsWithoutPrimary %}
+            {% set totalColumns = columns | length %}
+            String sql = "INSERT INTO {{ table.name }}({{ columns | join(',') }}) VALUES({{ '?' | repeat(totalColumns) | join(',') }})";
+
+            Connection cn = Conexion.getInstancia();
+            PreparedStatement st = cn.prepareStatement(sql);
+
+            {% set i=0 %}
+            {% for field in table.fields %}
+                {% if field.isPrimary==false %}
+                    {% set i=i+1 %}
+                    {{ macro.setStatementParam(i,field,tableParam) }}
+                {% endif %}
+            {% endfor %}
+
+            if (st.executeUpdate() > 0) {
+                correcto = true;
+            }
+
+            cn.close();
+            st.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            return correcto;
+        }
+    }
+
+    public List<{{ tableName }}> listar() {
+        List<{{ tableName }}> resultados = new ArrayList<{{ tableName }}>();
+
+        try {
+
+            String sql = "SELECT * FROM {{ table.name }}";
+
+            Connection cn = Conexion.getInstancia();
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+
+
+                {% set objectName = tableParam %}
+                {{ tableName }} {{ objectName }} = new {{ tableName }}();
+
+                {% for field in table.fields %}
+                    {{ macro.setObject(objectName,field) }}
+                {% endfor %}
+
+                resultados.add({{ objectName }});
+
+            }
+            rs.close();
+            cn.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            return resultados;
+        }
+    }
+
+     public boolean eliminar({{ tableName }} {{ tableParam }}) {
+
+        boolean correcto = false;
+
+         try {
+
+            String sql = "DELETE FROM {{ table.name }} WHERE {{ table.primaryField.name }} = ?";
+
+            Connection cn = Conexion.getInstancia();
+            PreparedStatement st = cn.prepareStatement(sql);
+
+            st.set{{ java.realType(table.primaryField) | upperCamelize }}(1, {{ tableParam }}.get{{ table.primaryField.name | upperCamelize }}());
+
+            if (st.executeUpdate()>0) {
+                correcto = true;
+            }
+
+            cn.close();
+            st.close();
+         } catch (Exception e) {
+             e.printStackTrace();
+         } finally{
+            return correcto;
+        }
+     }
+
+     public boolean modificar({{ tableName }} {{ tableParam }}) {
+
+         boolean correcto = false;
+
+         try {
+
+            String sql = "UPDATE FROM {{ table.name }} SET "
+
+            {% set i=0 %}
+            {% set totalFields= table.fields | length %}
+            {% for field in table.fields %}
+                {% set i=i+1 %}
+                {% if field.isPrimary==false %}
+                     + " {{ field.name }}= ? {{ i < totalFields ? ',' : ''}}"
+                {% endif %}
+            {% endfor %}
+             + " WHERE {{ table.primaryField.name }}= ? ";
+
+            Connection cn = Conexion.getInstancia();
+            PreparedStatement st = cn.prepareStatement(sql);
+
+            {% set i=0 %}
+            {% for field in table.fields %}
+                {% if field.isPrimary==false %}
+                    {% set i=i+1 %}
+                    {{ macro.setStatementParam(i,field,tableParam) }}
+                {% endif %}
+            {% endfor %}
+
+            {% set i=i+1 %}
+            {{ macro.setStatementParam(i,table.primaryField,tableParam) }}
+
+            if (st.executeUpdate()>0) {
+                correcto = true;
+            }
+
+            cn.close();
+            st.close();
+         } catch (Exception e) {
+             e.printStackTrace();
+         } finally{
+            return correcto;
+         }
+     }
+
+    public List<{{ tableName }}> buscar({{ tableName }} {{ tableParam }}) {
+
+
+        List<{{ tableName }}> resultados = new ArrayList<{{ tableName }}>();
+
+        try {
+
+            String sql = "SELECT * FROM {{ table.name }} WHERE {{ table.primaryField.name }} LIKE '%" + {{ tableParam }}.get{{ table.primaryField.name | upperCamelize }}() + "%'";
+
+            Connection cn = Conexion.getInstancia();
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+
+                {% set objectName = 'nuevo' ~ tableNewParam %}
+                {{ tableName }} {{ objectName }} = new {{ tableName }}();
+
+                {% for field in table.fields %}
+                    {{ macro.setObject(objectName,field) }}
+                {% endfor %}
+
+                resultados.add({{ objectName }});
+
+            }
+            cn.close();
+            st.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally{
+            return resultados;
+        }
+
+    }
+
+    public {{ tableName }} obtener({{ tableName }} {{ tableParam }}) {
+
+        {% set resultParam = 'resultado' ~ tableParam  %}
+        {{ tableName }} {{ resultParam }} = null;
+
+        try {
+
+            String sql = "SELECT * FROM {{ table.name }} WHERE {{ table.primaryField.name }} = '" + {{ tableParam }}.get{{ table.primaryField.name | upperCamelize }}() + "'";
+
+            Connection cn = Conexion.getInstancia();
+            Statement st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                {% set objectName = resultParam %}
+                {% for field in table.fields %}
+                    {{ macro.setObject(objectName,field) }}
+                {% endfor %}
+            }
+            cn.close();
+            st.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally{
+          return {{ resultParam }};
+        }
+
+    }
+}

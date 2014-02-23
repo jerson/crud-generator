@@ -52,7 +52,7 @@ class Extension extends \Twig_Extension
             'isSerialized' => new \Twig_Filter_Method($this, 'isSerialized'),
             'isUpperCase' => new \Twig_Filter_Method($this, 'isUpperCase'),
             'last' => new \Twig_Filter_Method($this, 'last'),
-            'length' => new \Twig_Filter_Method($this, 'length'),
+            //'length' => new \Twig_Filter_Method($this, 'length'),
             'longestCommonPrefix' => new \Twig_Filter_Method($this, 'longestCommonPrefix'),
             'longestCommonSuffix' => new \Twig_Filter_Method($this, 'longestCommonSuffix'),
             'longestCommonSubstring' => new \Twig_Filter_Method($this, 'longestCommonSubstring'),
@@ -89,7 +89,10 @@ class Extension extends \Twig_Extension
             'columns' => new \Twig_Filter_Method($this, 'columnsToString'),
             'columnsWithoutPrimary' => new \Twig_Filter_Method($this, 'columnsWithoutPrimaryToString'),
             'columnsPrimary' => new \Twig_Filter_Method($this, 'columnsPrimaryToString'),
-            'columnsForeign' => new \Twig_Filter_Method($this, 'columnsForeignToString')
+            'columnsForeign' => new \Twig_Filter_Method($this, 'columnsForeignToString'),
+
+            'pluralize' => new \Twig_Filter_Method($this, 'pluralize'),
+            'repeat' => new \Twig_Filter_Method($this, 'repeat')
         );
     }
 
@@ -103,8 +106,33 @@ class Extension extends \Twig_Extension
     }
 
     /**
-     * @param Table $table
+     * @param $text
      * @return string
+     */
+    public function pluralize($text)
+    {
+        return $text . 's';
+    }
+
+    /**
+     * @param $text
+     * @param $times
+     * @return array
+     */
+    public function repeat($text, $times)
+    {
+        $texts = array();
+
+        for ($i = 0; $i < $times; $i++) {
+            $texts[] = $text;
+        }
+
+        return $texts;
+    }
+
+    /**
+     * @param Table $table
+     * @return array
      */
     public function columnsToString(Table $table)
     {
@@ -113,12 +141,12 @@ class Extension extends \Twig_Extension
             $columns[] = $field->getName();
         }
 
-        return join(',', $columns);
+        return $columns;
     }
 
     /**
      * @param Table $table
-     * @return string
+     * @return array
      */
     public function columnsWithoutPrimaryToString(Table $table)
     {
@@ -132,12 +160,12 @@ class Extension extends \Twig_Extension
             $columns[] = $field->getName();
         }
 
-        return join(',', $columns);
+        return $columns;
     }
 
     /**
      * @param Table $table
-     * @return string
+     * @return array
      */
     public function columnsPrimaryToString(Table $table)
     {
@@ -146,12 +174,12 @@ class Extension extends \Twig_Extension
             $columns[] = $field->getName();
         }
 
-        return join(',', $columns);
+        return $columns;
     }
 
     /**
      * @param Table $table
-     * @return string
+     * @return array
      */
     public function columnsForeignToString(Table $table)
     {
@@ -160,7 +188,7 @@ class Extension extends \Twig_Extension
             $columns[] = $field->getName();
         }
 
-        return join(',', $columns);
+        return $columns;
     }
 
     /**

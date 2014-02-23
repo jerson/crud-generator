@@ -25,9 +25,9 @@ class Generator
     private $connector;
 
     /**
-     * @var ModelInterface
+     * @var array
      */
-    private $model;
+    private $config;
 
     /**
      * @var Table[]
@@ -60,6 +60,8 @@ class Generator
         $this->twig = new \Twig_Environment(null, array('autoescape' => false));
         $extension = new Extension();
         $this->twig->addExtension($extension);
+
+        $this->config = $config;
 
     }
 
@@ -102,47 +104,42 @@ class Generator
 
     /**
      * @param $layout
-     * @param array $options
      */
-    public function generateModel($layout, array $options)
+    public function generateModel($layout)
     {
-        $this->generate('Model', $layout, $options);
+        $this->generate('Model', $layout);
     }
 
     /**
      * @param $layout
-     * @param array $options
      */
-    public function generateDatabase($layout, array $options)
+    public function generateDatabase($layout)
     {
-        $this->generate('Database', $layout, $options);
+        $this->generate('Database', $layout);
     }
 
     /**
      * @param $layout
-     * @param array $options
      */
-    public function generateView($layout, array $options)
+    public function generateView($layout)
     {
-        $this->generate('View', $layout, $options);
+        $this->generate('View', $layout);
     }
 
     /**
      * @param $layout
-     * @param array $options
      */
-    public function generateController($layout, array $options)
+    public function generateController($layout)
     {
-        $this->generate('Controller', $layout, $options);
+        $this->generate('Controller', $layout);
     }
 
     /**
      * @param $type
      * @param $layout
-     * @param array $options
      * @throws \Exception
      */
-    public  function generate($type, $layout, array $options)
+    public  function generate($type, $layout)
     {
 
         $layout = $this->parseLayout($layout);
@@ -152,7 +149,7 @@ class Generator
             throw new \Exception(sprintf('El %s Layout "%s" no existe', $type, $layout));
         }
 
-        $model = new $class($this->fileSystem, $this->twig, $options);
+        $model = new $class($this->fileSystem, $this->twig, $this->config);
 
         $model->setTables($this->tables);
         $model->generate();
