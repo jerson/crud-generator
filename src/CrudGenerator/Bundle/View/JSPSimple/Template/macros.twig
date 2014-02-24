@@ -24,7 +24,7 @@
 
                     {% if value %}
                         <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableParamList }}{{ '}' }}">
-                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}{{ '}' }}" ${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}=={{ tableParam }}.{{ field.name | camelize }} ?  'selected' : '' {{ '}' }}>${{ '{' }}{{ tableParam }}{{ '}' }}</option>
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}{{ '}' }}" ${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}=={{ tableParam }}.{{ field.name | camelize }}.{{ tableColumnParam }} ?  'selected' : '' {{ '}' }}>${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
                         </jstl:forEach>
                     {% else %}
                         <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableParamList }}{{ '}' }}">
@@ -43,9 +43,7 @@
             <div class="form-group">
                 <label for="input{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
                 <div class="col-lg-9">
-                    <textarea class="form-control" {{ field.allowNull ? '' : 'required' }} {{ field.type.length > 0 ? 'maxlength="'~field.type.length~'"' : '' }} name="{{ field.name }}" id="input{{ fieldTitleParam }}" placeholder="{{ field.default }}">
-                        {{ value ? value : '' }}
-                    </textarea>
+                    <textarea class="form-control" {{ field.allowNull ? '' : 'required' }} {{ field.type.length > 0 ? 'maxlength="'~field.type.length~'"' : '' }} name="{{ field.name }}" id="input{{ fieldTitleParam }}" placeholder="{{ field.default }}">{{ value ? value : '' }}</textarea>
                 </div>
             </div>
 
