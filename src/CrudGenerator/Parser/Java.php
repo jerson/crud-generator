@@ -36,6 +36,7 @@ class Java implements ParserInterface{
 
         switch ($field->getType()->getName()) {
             case Type::INTEGER:
+            case Type::TINYINT:
                 $type = 'int';
                 break;
             case Type::CHAR:
@@ -93,6 +94,7 @@ class Java implements ParserInterface{
 
         switch ($field->getType()->getName()) {
             case Type::INTEGER:
+            case Type::TINYINT:
                 $type = 'Integer';
                 break;
             case Type::CHAR:

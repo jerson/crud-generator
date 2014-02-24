@@ -1,7 +1,7 @@
 parameters:
 
   packages:
-    base:
-      model: base
-      controller: base
-      view: base
+    JSPBase:
+      model: JavaSimple
+      controller: JSPSimple
+      view: JSPSimple

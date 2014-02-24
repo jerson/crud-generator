@@ -1,0 +1,125 @@
+
+
+{% macro getInput(field,value,tableParam) %}
+    {% set fieldTitle = field.name | humanize | titleize %}
+    {% set fieldTitleParam = field.name | upperCamelize %}
+    {% set fieldParam = field.name | camelize %}
+
+    {% set type = html.type(field) %}
+    {% if field.isForeign  %}
+
+        {% set tableTitle = field.reference.table | humanize | titleize %}
+        {% set tableDao = (field.reference.table | upperCamelize) ~  'Dao' %}
+        {% set tableForeignParam = field.reference.table | camelize %}
+        {% set tableColumnParam = field.reference.column | camelize %}
+        {% set tableParamList = tableForeignParam | pluralize %}
+        <jsp:useBean id="{{ tableDao }}" scope="application" class="Dao.{{ tableDao }}"/>
+        <jstl:set var="{{ tableParamList }}" value="${{ '{' }}{{ tableDao }}.listar(){{ '}' }}"/>
+
+
+        <div class="form-group">
+            <label for="select{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ tableTitle }} {{ field.allowNull ? '' : '*' }}</label>
+            <div class="col-lg-9">
+                <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
+
+                    {% if value %}
+                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableParamList }}{{ '}' }}">
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}{{ '}' }}" ${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}=={{ tableParam }}.{{ field.name | camelize }} ?  'selected' : '' {{ '}' }}>${{ '{' }}{{ tableParam }}{{ '}' }}</option>
+                        </jstl:forEach>
+                    {% else %}
+                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableParamList }}{{ '}' }}">
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}{{ '}' }}" >${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
+                        </jstl:forEach>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+
+    {% else %}
+
+
+        {% if field.type.name == constant('CrudGenerator\\Table\\Type::TEXT') %}
+
+            <div class="form-group">
+                <label for="input{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+                <div class="col-lg-9">
+                    <textarea class="form-control" {{ field.allowNull ? '' : 'required' }} {{ field.type.length > 0 ? 'maxlength="'~field.type.length~'"' : '' }} name="{{ field.name }}" id="input{{ fieldTitleParam }}" placeholder="{{ field.default }}">
+                        {{ value ? value : '' }}
+                    </textarea>
+                </div>
+            </div>
+
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::ENUM') %}
+
+            <div class="form-group">
+                <label for="select{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+                <div class="col-lg-9">
+
+                    {% if value %}
+                        <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
+                            {% for option in field.type.options %}
+                                <option value="{{ option }}" ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option }}' ?  'selected' : '' {{ '}' }}>{{ option | humanize | titleize }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
+                            {% for option in field.type.options %}
+                                <option value="{{ option }}">{{ option | humanize | titleize }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+
+
+                </div>
+            </div>
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TINYINT') %}
+            <div class="form-group">
+                <label for="select{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+                <div class="col-lg-9">
+
+                    {% if value %}
+                            <div class="radio">
+                                <label>
+                                    <input ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}==1 ?  'selected' : '' {{ '}' }} type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" value="1">
+                                    SI
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}==0 ?  'selected' : '' {{ '}' }} type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" value="0">
+                                    NO
+                                </label>
+                            </div>
+                    {% else %}
+                        <div class="radio">
+                            <label>
+                                <input type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" value="1">
+                                SI
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" value="0">
+                                NO
+                            </label>
+                        </div>
+
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="form-group">
+                <label for="input{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+                <div class="col-lg-9">
+                    <input type="{{ type }}" {{ value ? 'value="'~value~'"' : '' }} {{ field.allowNull ? '' : 'required' }}  {{ field.type.length > 0 ? 'maxlength="'~field.type.length~'"' : '' }} name="{{ field.name }}" class="form-control" id="input{{ fieldTitleParam }}" placeholder="{{ field.default }}">
+                </div>
+            </div>
+        {% endif %}
+
+
+    {% endif %}
+
+
+{% endmacro %}
+
+

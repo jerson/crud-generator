@@ -7,6 +7,7 @@ class Type
 {
 
     CONST INTEGER = 1;
+    CONST TINYINT = 100;
     CONST VARCHAR = 2;
     CONST ENUM = 3;
     CONST TEXT = 4;

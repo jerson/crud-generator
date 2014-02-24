@@ -32,7 +32,7 @@ import Dao.{{ tableDaoName }};
 @WebServlet(name = "{{ nameServlet }}", urlPatterns = {"/{{ tableSlug }}/{{ actionSlug }}"})
 public class {{ nameServlet }} extends HttpServlet {
 
-    private static final String REDIRECT_URL = "/{{ tableSlug }}/{{ actionSlug }}.jsp";
+    private static final String REDIRECT_URL = "../forms/{{ tableSlug }}/listar.jsp";
 
     /**
      * Processes requests for both HTTP

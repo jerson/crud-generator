@@ -1,0 +1,54 @@
+{% set basePath='../../' %}
+{% extends "index.jsp.twig"%}
+
+{% block content %}
+
+    {% set tableTile = table.name | humanize | titleize %}
+    {% set actionTitle = action | humanize | titleize %}
+    {% set tableSlug = table.name | dasherize %}
+    {% set actionSlug = action | dasherize %}
+
+    {% set tableName = table.name | upperCamelize %}
+    {% set tableDao = tableName ~  'Dao' %}
+    {% set tableParam = table.name | camelize %}
+    {% set tableParamSearch = tableParam ~  'Buscar' %}
+
+
+    <div class="row">
+        <div class="col-lg-7 col-lg-offset-2 col-sm-8 col-sm-offset-2">
+            <div class="well">
+                <form class="form-horizontal" action="{{ basePath }}{{ tableSlug }}/{{ actionSlug }}" method="post">
+                    <fieldset>
+                        <legend>{% block title %}{{ action | humanize | titleize }} {{ table.name | humanize | titleize }}{% endblock %}</legend>
+
+
+                        <jsp:useBean id="{{ tableDao }}" scope="application" class="Dao.{{ tableDao }}"/>
+                        <jsp:useBean id="{{ tableParamSearch }}" scope="application" class="Model.{{ tableName }}"/>
+
+                        <jsp:setProperty name="{{ tableParamSearch }}" property="{{ table.primaryField.name | camelize }}" value="${{ '{' }}param.{{ table.primaryField.name }}{{ '}' }}"/>
+                        <jstl:set var="{{ tableParam }}" value="${{ '{' }}{{ tableDao }}.obtener({{ tableParamSearch }}){{ '}' }}"/>
+
+                        <input type="hidden" name="{{ table.primaryField.name }}" value="${{ '{' }}{{ tableParamSearch }}.{{ table.primaryField.name | camelize }}{{ '}' }}"/>
+                        {% for field in table.fields %}
+                            {% if field.isPrimary==false %}
+
+                                {% set value = '${'~ tableParam ~ '.'~ (field.name | camelize) ~ '}' %}
+                                {{ macro.getInput(field,value,tableParam) }}
+                            {% endif %}
+
+                        {% endfor %}
+
+                        <div class="form-group">
+                            <div class="col-lg-9 col-lg-offset-3">
+                                <button class="btn btn-default">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">{{ actionTitle }}</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

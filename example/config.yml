@@ -6,5 +6,8 @@ database:
     user: fundo
     password: fundo
 
+project:
+    name: 'Fundo Las Lomas'
+
 output:
     dir: 'output/project'

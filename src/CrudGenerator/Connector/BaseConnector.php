@@ -30,6 +30,9 @@ class BaseConnector
             $matches['type'] = strtolower($matches['type']);
 
             switch ($matches['type']) {
+                case 'tinyint':
+                    $name = Type::TINYINT;
+                    break;
                 case 'int':
                     $name = Type::INTEGER;
                     break;

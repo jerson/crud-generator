@@ -1,7 +1,7 @@
 <?php
 
 
-namespace CrudGenerator\Bundle\Model\Base;
+namespace CrudGenerator\Bundle\Model\JavaSimple;
 
 
 use CrudGenerator\Bundle\Base;

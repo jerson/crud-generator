@@ -42,7 +42,7 @@ public class {{ tableName }}Dao {
                 correcto = true;
             }
 
-            cn.close();
+            //cn.close();
             st.close();
 
         } catch (Exception e) {
@@ -76,7 +76,7 @@ public class {{ tableName }}Dao {
 
             }
             rs.close();
-            cn.close();
+            //cn.close();
             st.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class {{ tableName }}Dao {
                 correcto = true;
             }
 
-            cn.close();
+            //cn.close();
             st.close();
          } catch (Exception e) {
              e.printStackTrace();
@@ -117,7 +117,7 @@ public class {{ tableName }}Dao {
 
          try {
 
-            String sql = "UPDATE FROM {{ table.name }} SET "
+            String sql = "UPDATE {{ table.name }} SET "
 
             {% set i=0 %}
             {% set totalFields= table.fields | length %}
@@ -147,7 +147,7 @@ public class {{ tableName }}Dao {
                 correcto = true;
             }
 
-            cn.close();
+            //cn.close();
             st.close();
          } catch (Exception e) {
              e.printStackTrace();
@@ -156,18 +156,33 @@ public class {{ tableName }}Dao {
          }
      }
 
-    public List<{{ tableName }}> buscar({{ tableName }} {{ tableParam }}) {
+    public List<{{ tableName }}> buscar(String palabra) {
 
 
         List<{{ tableName }}> resultados = new ArrayList<{{ tableName }}>();
 
         try {
+            String query = '%'+palabra+'%';
+            String sql = "SELECT * FROM {{ table.name }} WHERE "
 
-            String sql = "SELECT * FROM {{ table.name }} WHERE {{ table.primaryField.name }} LIKE '%" + {{ tableParam }}.get{{ table.primaryField.name | upperCamelize }}() + "%'";
+                        {% set i=0 %}
+                        {% set totalFields= table.fields | length %}
+                        {% for field in table.fields %}
+                                 {% set i=i+1 %}
+                                + "{{ i >1 ? 'OR' : ''}} {{ field.name }} LIKE ?"
+                        {% endfor %}
+            + " ";
 
             Connection cn = Conexion.getInstancia();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+            PreparedStatement st = cn.prepareStatement(sql);
+
+            {% set i=0 %}
+            {% for field in table.fields %}
+                    {% set i=i+1 %}
+                    st.setString({{ i }},query);
+            {% endfor %}
+
+            ResultSet rs = st.executeQuery();
             while (rs.next()) {
 
                 {% set objectName = 'nuevo' ~ tableNewParam %}
@@ -180,7 +195,7 @@ public class {{ tableName }}Dao {
                 resultados.add({{ objectName }});
 
             }
-            cn.close();
+            //cn.close();
             st.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,7 +208,7 @@ public class {{ tableName }}Dao {
     public {{ tableName }} obtener({{ tableName }} {{ tableParam }}) {
 
         {% set resultParam = 'resultado' ~ tableParam  %}
-        {{ tableName }} {{ resultParam }} = null;
+        {{ tableName }} {{ resultParam }} = new {{ tableName }}();
 
         try {
 
@@ -208,7 +223,7 @@ public class {{ tableName }}Dao {
                     {{ macro.setObject(objectName,field) }}
                 {% endfor %}
             }
-            cn.close();
+            //cn.close();
             st.close();
 
         } catch (Exception e) {

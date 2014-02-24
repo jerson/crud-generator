@@ -36,7 +36,7 @@ class CrudCommand extends Command
                 'layout',
                 InputArgument::OPTIONAL,
                 'Plantilla a usar para el generador o el nombre del paquete',
-                'base'
+                'JSPBase'
             )->addOption(
                 'config',
                 null,
@@ -91,7 +91,7 @@ class CrudCommand extends Command
             $packages = $this->container->getParameter('packages');
 
             if (isset($packages[$layout])) {
-                $output->writeln('<info>Generando Paquete</info>');
+                $output->writeln(sprintf('<info>Generando Paquete "%s"</info>', $layout));
 
                 $package = $packages[$layout];
 
@@ -100,7 +100,7 @@ class CrudCommand extends Command
                     $bundleLayout = empty($bundleLayout) ? 'base' : $bundleLayout;
                     $bundleType = Stringy::create($bundleType)->upperCamelize();
 
-                    $output->writeln(sprintf('<info>- %s</info>', $bundleType));
+                    $output->writeln(sprintf('<info>- %s (%s)</info>', $bundleType, $bundleLayout));
                     $this->generator->generate($bundleType, $bundleLayout);
                 }
 

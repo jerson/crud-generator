@@ -1,7 +1,7 @@
 <?php
 
 
-namespace CrudGenerator\Bundle\Controller\Base;
+namespace CrudGenerator\Bundle\Controller\JSPSimple;
 
 
 use CrudGenerator\Bundle\Base;

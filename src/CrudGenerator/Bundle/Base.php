@@ -4,6 +4,7 @@
 namespace CrudGenerator\Bundle;
 
 
+use CrudGenerator\Parser\Html;
 use CrudGenerator\Parser\Java;
 use CrudGenerator\Parser\Php;
 use CrudGenerator\Table\Table;
@@ -45,6 +46,7 @@ class Base implements BundleInterface
         $this->twig->addGlobal('config', $this->config);
         $this->twig->addGlobal('java', new Java());
         $this->twig->addGlobal('php', new Php());
+        $this->twig->addGlobal('html', new Html());
 
         $this->configure();
     }

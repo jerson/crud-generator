@@ -46,4 +46,9 @@ public class {{ tableName }}{
 
     {% endfor %}
 
+    @Override
+    public String toString(){
+         return  "{{ tableName }}: " + this.{{ table.primaryField.name }};
+    }
+
 }
