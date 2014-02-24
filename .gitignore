@@ -5,3 +5,4 @@ output/
 app/config/parameters.yml
 composer.lock
 config.php
+config.yml

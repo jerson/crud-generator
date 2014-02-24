@@ -26,13 +26,13 @@
     {% else %}
 
         {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') or field.type.name == constant('CrudGenerator\\Table\\Type::DATE_TIME') %}
-            {{ name }}.set{{ field | upperCamelize }}(new java.util.Date(rs.getDate("{{ field.name }}").getTime()));
+            {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getDate("{{ field.name }}").getTime()));
         {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
-            {{ name }}.set{{ field | upperCamelize }}(new java.util.Date(rs.getTime("{{ field.name }}").getTime()));
+            {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getTime("{{ field.name }}").getTime()));
         {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIMESTAMP') %}
-            {{ name }}.set{{ field | upperCamelize }}(new java.util.Date(rs.getTimestamp("{{ field.name }}").getTime()));
+            {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getTimestamp("{{ field.name }}").getTime()));
         {% else %}
-            {{ name }}.set{{ field | upperCamelize }}(rs.get{{ java.realType(field) | upperCamelize }}("{{ field.name }}"));
+            {{ name }}.set{{ field.name | upperCamelize }}(rs.get{{ java.realType(field) | upperCamelize }}("{{ field.name }}"));
         {% endif %}
     {% endif %}
 

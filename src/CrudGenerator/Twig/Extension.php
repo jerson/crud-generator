@@ -198,7 +198,14 @@ class Extension extends \Twig_Extension
      */
     public function __call($name, $arguments)
     {
-        return Stringy::create($arguments[0])->$name();
+        $text = $arguments[0];
+        if($name=='upperCamelize'){
+            $text = strtolower(Stringy::create($text)->humanize());
+        }else if($name=='camelize'){
+            $text = strtolower(Stringy::create($text)->humanize());
+
+        }
+        return Stringy::create($text)->$name();
     }
 
 }

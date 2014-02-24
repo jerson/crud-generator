@@ -48,7 +48,7 @@ public class {{ tableName }}{
 
     @Override
     public String toString(){
-         return  "{{ tableName }}: " + this.{{ table.primaryField.name }};
+         return  "{{ tableName }}: " + this.{{ table.primaryField.name | camelize }};
     }
 
 }
