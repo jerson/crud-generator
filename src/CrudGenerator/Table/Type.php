@@ -17,7 +17,7 @@ class Type
     CONST BOOL = 8;
     CONST CHAR = 9;
     CONST DATE = 10;
-    CONST DATE_TIME = 11;
+    CONST DATETIME = 11;
     CONST TIME = 12;
     CONST TIMESTAMP = 13;
     CONST BLOB = 14;

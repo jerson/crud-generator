@@ -66,7 +66,7 @@ class Java implements ParserInterface{
             case Type::DATE:
                 $type = 'Date';
                 break;
-            case Type::DATE_TIME:
+            case Type::DATETIME:
                 $type = 'Date';
                 break;
             case Type::TIME:
@@ -124,7 +124,7 @@ class Java implements ParserInterface{
             case Type::DATE:
                 $type = 'Date';
                 break;
-            case Type::DATE_TIME:
+            case Type::DATETIME:
                 $type = 'Date';
                 break;
             case Type::TIME:

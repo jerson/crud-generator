@@ -3,7 +3,7 @@
         st.set{{ java.realType(field) | upperCamelize }}({{ i }}, {{ tableParam }}.get{{ field.name | upperCamelize }}().get{{ field.reference.column | upperCamelize }}());
     {% else %}
 
-        {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') or field.type.name == constant('CrudGenerator\\Table\\Type::DATE_TIME') %}
+        {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') or field.type.name == constant('CrudGenerator\\Table\\Type::DATETIME') %}
             st.setDate({{ i }}, new java.sql.Date({{ tableParam }}.get{{ field.name | upperCamelize }}().getTime()));
         {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
             st.setTime({{ i }}, new java.sql.Time({{ tableParam }}.get{{ field.name | upperCamelize }}().getTime()));
@@ -25,7 +25,7 @@
         {{ name }}.set{{ field | upperCamelize }}(new {{ field.reference.table | upperCamelize }}(rs.get{{ java.realType(field) | upperCamelize }}("{{ field.name }}")));
     {% else %}
 
-        {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') or field.type.name == constant('CrudGenerator\\Table\\Type::DATE_TIME') %}
+        {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') or field.type.name == constant('CrudGenerator\\Table\\Type::DATETIME') %}
             {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getDate("{{ field.name }}").getTime()));
         {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
             {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getTime("{{ field.name }}").getTime()));

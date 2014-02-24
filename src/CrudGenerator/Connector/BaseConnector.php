@@ -64,7 +64,7 @@ class BaseConnector
                     $name = Type::DATE;
                     break;
                 case 'datetime':
-                    $name = Type::DATE_TIME;
+                    $name = Type::DATETIME;
                     break;
                 case 'time':
                     $name = Type::TIME;

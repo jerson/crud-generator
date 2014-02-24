@@ -50,7 +50,7 @@ class Html implements ParserInterface
             case Type::DATE:
                 $type = 'date';
                 break;
-            case Type::DATE_TIME:
+            case Type::DATETIME:
                 $type = 'datetime-local';
                 break;
             case Type::TIME:

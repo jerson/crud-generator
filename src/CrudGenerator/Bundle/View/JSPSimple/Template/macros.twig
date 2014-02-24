@@ -109,14 +109,28 @@
         {% else %}
 
 
-            {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') %}
-                {% set value = '<fmt:formatDate pattern="yyyy-MM-dd" value="'~value~'"/>' %}
-            {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::DATE_TIME') %}
-                {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="'~value~'"/>' %}
-            {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIMESTAMP') %}
-                {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="'~value~'"/>' %}
-            {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
-                {% set value = '<fmt:formatDate pattern="HH:mm" value="'~value~'"/>' %}
+
+            {% if value %}
+                {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd" value="'~value~'"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::DATETIME') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="'~value~'"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIMESTAMP') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="'~value~'"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
+                    {% set value = '<fmt:formatDate pattern="HH:mm" value="'~value~'"/>' %}
+                {% endif %}
+            {% else %}
+                <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>" />
+                {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd" value="${now'~ fieldTitleParam ~'}"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::DATETIME') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="${now'~ fieldTitleParam ~'}"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIMESTAMP') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="${now'~ fieldTitleParam ~'}"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
+                    {% set value = '<fmt:formatDate pattern="HH:mm" value="${now' ~fieldTitleParam ~'}"/>' %}
+                {% endif %}
             {% endif %}
 
             <div class="form-group">

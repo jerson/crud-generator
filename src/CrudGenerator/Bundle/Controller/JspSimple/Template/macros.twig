@@ -14,7 +14,7 @@
             } catch (ParseException ex) {
                 ex.printStackTrace();
             }
-        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::DATE_TIME') %}
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::DATETIME') %}
             SimpleDateFormat sdf{{ field | upperCamelize }} = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
             try {
                 {{ name }}.set{{ field | upperCamelize }}(sdf{{ field | upperCamelize }}.parse(request.getParameter("{{ field.name }}")));
