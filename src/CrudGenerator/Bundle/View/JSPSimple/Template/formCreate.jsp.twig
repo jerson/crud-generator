@@ -17,7 +17,7 @@
                             <legend>{% block title %}{{ action | humanize | titleize }} {{ table.name | humanize | titleize }}{% endblock %}</legend>
 
                             {% for field in table.fields %}
-                                {% if field.isPrimary==false %}
+                                {% if field.isAutoIncrement==false %}
                                     {{ macro.getInput(field) }}
                                 {% endif %}
 

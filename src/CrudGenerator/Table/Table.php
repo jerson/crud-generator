@@ -23,7 +23,19 @@ class Table
     public function getPrimaryField()
     {
         $fields = $this->getPrimaryFields();
-        return isset($fields[0]) ? $fields[0] : null;
+        if (isset($fields[0])) {
+            $field = $fields[0];
+        } else if (isset($this->fields[0])) {
+            $field = $this->fields[0];
+        } else {
+            $field = new Field();
+            $field->setName('error');
+
+            $fieldType = new Type();
+            $fieldType->setName(Type::UNKNOWN);
+            $field->setType($fieldType);
+        }
+        return $field;
     }
 
     /**
@@ -49,6 +61,26 @@ class Table
     /**
      * @return Field[]|array
      */
+    public function getUniqueFields()
+    {
+
+        $uniqueFields = array();
+
+        foreach ($this->fields as $field) {
+
+            if ($field->getKey() == Key::UNIQUE) {
+                $uniqueFields[] = $field;
+
+            }
+
+        }
+
+        return $uniqueFields;
+    }
+
+    /**
+     * @return Field[]|array
+     */
     public function getForeignFields()
     {
 
@@ -56,7 +88,7 @@ class Table
 
         foreach ($this->fields as $field) {
 
-            if ($field->getKey() == Key::FOREIGN) {
+            if (count($field->getReferences())>0) {
                 $foreignFields[] = $field;
 
             }

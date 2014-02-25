@@ -66,6 +66,24 @@ class Generator
     }
 
     /**
+     * @param Table[] $tables
+     */
+    public function setTables($tables)
+    {
+        $this->tables = $tables;
+    }
+
+    /**
+     * @return Table[]
+     */
+    public function getTables()
+    {
+        return $this->tables;
+    }
+
+
+
+    /**
      * @param array $database
      * @throws \Exception
      */

@@ -18,16 +18,13 @@ public class {{ tableName }}{
     public {{ tableName }}() {
     }
 
-    {% for field in table.primaryFields  %}
+    {% set fieldMethod = table.primaryField.name | upperCamelize %}
+    {% set fieldParam = table.primaryField.name | camelize %}
+    {% set type = java.type(table.primaryField) %}
 
-        {% set fieldMethod = field.name | upperCamelize %}
-        {% set fieldParam = field.name | camelize %}
-        {% set type = java.type(field) %}
-
-        public {{ tableName }}({{ type }} {{ fieldParam }}) {
-            this.{{ fieldParam }} = {{ fieldParam }};
-        }
-    {% endfor %}
+    public {{ tableName }}({{ type }} {{ fieldParam }}) {
+        this.{{ fieldParam }} = {{ fieldParam }};
+    }
 
     {% for field in table.fields  %}
 
@@ -45,6 +42,7 @@ public class {{ tableName }}{
 
 
     {% endfor %}
+
 
     @Override
     public String toString(){

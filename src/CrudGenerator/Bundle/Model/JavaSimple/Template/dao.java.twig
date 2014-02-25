@@ -23,7 +23,7 @@ public class {{ tableName }}Dao {
 
         try {
 
-            {% set columns = table | columnsWithoutPrimary %}
+            {% set columns = table | columnsNoAutoIncrement %}
             {% set totalColumns = columns | length %}
             String sql = "INSERT INTO {{ table.name }}({{ columns | join(',') }}) VALUES({{ '?' | repeat(totalColumns) | join(',') }})";
 
@@ -32,7 +32,7 @@ public class {{ tableName }}Dao {
 
             {% set i=0 %}
             {% for field in table.fields %}
-                {% if field.isPrimary==false %}
+                {% if field.isAutoIncrement==false %}
                     {% set i=i+1 %}
                     {{ macro.setStatementParam(i,field,tableParam) }}
                 {% endif %}
@@ -212,11 +212,14 @@ public class {{ tableName }}Dao {
 
         try {
 
-            String sql = "SELECT * FROM {{ table.name }} WHERE {{ table.primaryField.name }} = '" + {{ tableParam }}.get{{ table.primaryField.name | upperCamelize }}() + "'";
+            String sql = "SELECT * FROM {{ table.name }} WHERE {{ table.primaryField.name }} = ?";
 
             Connection cn = Conexion.getInstancia();
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+            PreparedStatement st = cn.prepareStatement(sql);
+
+            {{ macro.setStatementParam(1,table.primaryField,tableParam) }}
+
+            ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 {% set objectName = resultParam %}
                 {% for field in table.fields %}

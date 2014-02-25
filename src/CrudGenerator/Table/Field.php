@@ -68,7 +68,27 @@ class Field
     public function isForeign()
     {
 
-        return $this->key == Key::FOREIGN;
+        return count($this->references) > 0;
+
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUnique()
+    {
+
+        return $this->key == Key::UNIQUE;
+
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoIncrement()
+    {
+
+        return $this->autoIncrement;
 
     }
 
@@ -205,7 +225,7 @@ class Field
      */
     public function getReference()
     {
-        return isset($this->references[0]) ? $this->references[0] : array();
+        return isset($this->references[0]) ? $this->references[0] : null;
     }
 
 } 

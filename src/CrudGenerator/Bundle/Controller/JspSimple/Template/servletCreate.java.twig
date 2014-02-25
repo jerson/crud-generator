@@ -4,7 +4,7 @@
             {{ tableName }} {{ tableParam }} = new {{ tableName }}();
 
             {% for field in table.fields %}
-                {% if field.isPrimary==false %}
+                {% if field.isAutoIncrement==false %}
                     {{ macro.getParam(tableParam,field) }}
                 {% endif %}
             {% endfor %}

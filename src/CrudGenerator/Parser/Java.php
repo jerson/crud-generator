@@ -8,7 +8,8 @@ use CrudGenerator\Table\Field;
 use CrudGenerator\Table\Type;
 use Stringy\Stringy;
 
-class Java implements ParserInterface{
+class Java implements ParserInterface
+{
 
 
     /**
@@ -17,10 +18,9 @@ class Java implements ParserInterface{
     public function getType(Field $field)
     {
 
-        if($field->isForeign()){
-            $references = $field->getReferences();
-            $tableReference = $references[0]->getTable();
-
+        if ($field->isForeign()) {
+            $reference = $field->getReference();
+            $tableReference = $reference->getTable();
             return Stringy::create($tableReference)->upperCamelize();
         }
 

@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
 
 
@@ -68,7 +69,7 @@ class CrudCommand extends Command
         $configFile = $input->getOption('config');
         $type = $input->getOption('type');
         $layout = $input->getArgument('layout');
-        $configFile = empty($configFile) ? __DIR__ . '/../../../example/config.yml' : $configFile;
+        $configFile = empty($configFile) ? 'config.yml' : $configFile;
         $type = empty($type) ? 'all' : $type;
         $config = array();
         if (!empty($configFile)) {

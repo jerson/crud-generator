@@ -56,13 +56,19 @@
                     {% if value %}
                         <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
                             {% for option in field.type.options %}
-                                <option value="{{ option }}" ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option }}' ?  'selected' : '' {{ '}' }}>{{ option | humanize | titleize }}</option>
+                                <option value="{{ option }}" ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option }}' ?  'selected' : '' {{ '}' }}>{{ option | slugify | humanize | titleize }}</option>
+                            {% endfor %}
+                        </select>
+                    {% elseif field.default %}
+                        <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
+                            {% for option in field.type.options %}
+                                <option value="{{ option }}" {{ field.default==option ? 'selected' : '' }}>{{ option | slugify | humanize | titleize }}</option>
                             {% endfor %}
                         </select>
                     {% else %}
                         <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
                             {% for option in field.type.options %}
-                                <option value="{{ option }}">{{ option | humanize | titleize }}</option>
+                                <option value="{{ option }}">{{ option | slugify | humanize | titleize }}</option>
                             {% endfor %}
                         </select>
                     {% endif %}
@@ -121,14 +127,17 @@
                     {% set value = '<fmt:formatDate pattern="HH:mm" value="'~value~'"/>' %}
                 {% endif %}
             {% else %}
-                <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>" />
                 {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>" />
                     {% set value = '<fmt:formatDate pattern="yyyy-MM-dd" value="${now'~ fieldTitleParam ~'}"/>' %}
                 {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::DATETIME') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>" />
                     {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="${now'~ fieldTitleParam ~'}"/>' %}
                 {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIMESTAMP') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>" />
                     {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="${now'~ fieldTitleParam ~'}"/>' %}
                 {% elseif field.type.name == constant('CrudGenerator\\Table\\Type::TIME') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>" />
                     {% set value = '<fmt:formatDate pattern="HH:mm" value="${now' ~fieldTitleParam ~'}"/>' %}
                 {% endif %}
             {% endif %}

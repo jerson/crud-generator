@@ -81,7 +81,8 @@ class BaseConnector
 
 
             if ($name === Type::ENUM) {
-                $stringOptions = str_replace(array('(', ')', '\''), '', $matches['length']);
+                //TODO a veces no encuentra las opciones de enum
+                $stringOptions = str_replace(array('(', ')', '\''), '', isset($matches['length']) ? $matches['length'] : '');
                 $options = explode(',', $stringOptions);
             } else {
                 $length = isset($matches['length']) ? (int)str_replace(array('(', ')'), '', $matches['length']) : 0;
@@ -146,7 +147,10 @@ class BaseConnector
                 return Key::PRIMARY;
                 break;
             case 'MUL':
-                return Key::FOREIGN;
+                return Key::MULTIPLE;
+                break;
+            case 'UNI':
+                return Key::UNIQUE;
                 break;
             default:
                 return Key::NO;

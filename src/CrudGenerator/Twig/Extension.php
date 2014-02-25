@@ -88,6 +88,7 @@ class Extension extends \Twig_Extension
 
             'columns' => new \Twig_Filter_Method($this, 'columnsToString'),
             'columnsWithoutPrimary' => new \Twig_Filter_Method($this, 'columnsWithoutPrimaryToString'),
+            'columnsNoAutoIncrement' => new \Twig_Filter_Method($this, 'columnsNoAutoIncrementToString'),
             'columnsPrimary' => new \Twig_Filter_Method($this, 'columnsPrimaryToString'),
             'columnsForeign' => new \Twig_Filter_Method($this, 'columnsForeignToString'),
 
@@ -154,6 +155,25 @@ class Extension extends \Twig_Extension
         foreach ($table->getFields() as $field) {
 
             if ($field->isPrimary()) {
+                continue;
+            }
+
+            $columns[] = $field->getName();
+        }
+
+        return $columns;
+    }
+
+    /**
+     * @param Table $table
+     * @return array
+     */
+    public function columnsNoAutoIncrementToString(Table $table)
+    {
+        $columns = array();
+        foreach ($table->getFields() as $field) {
+
+            if ($field->isAutoIncrement()) {
                 continue;
             }
 
