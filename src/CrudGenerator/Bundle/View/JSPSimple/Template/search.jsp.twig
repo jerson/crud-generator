@@ -33,7 +33,7 @@
                 <div class="col-lg-24">
                     <div class="form-group col-md-8 col-sm-7">
                         <div class="row">
-                            <form action="{{ basePath }}forms/{{ tableSlug }}/buscar.jsp" method="get">
+                            <form action="forms/{{ tableSlug }}/buscar.jsp" method="get">
                                 <span class="col-md-4 col-sm-5">
                                   <button class="btn btn-default btn-block" type="submit">Buscar</button>
                                 </span>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="col-md-offset-2 col-md-2 col-sm-offset-2 col-sm-3">
                         <div class="row">
-                            <a class="btn btn-warning btn-block" href="{{ basePath }}forms/{{ tableSlug }}/listar.jsp">&laquo; Listar</a>
+                            <a class="btn btn-warning btn-block" href="forms/{{ tableSlug }}/listar.jsp">&laquo; Listar</a>
                         </div>
                     </div>
 
@@ -79,8 +79,8 @@
                                     {% endif %}
                                 {% endfor %}
                                 <td>
-                                    <a class="btn btn-danger pull-right" href="{{ basePath }}forms/{{ tableSlug }}/eliminar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Eliminar</a>
-                                    <a class="btn btn-info pull-right" href="{{ basePath }}forms/{{ tableSlug }}/modificar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Modificar</a>
+                                    <a class="btn btn-danger pull-right" href="forms/{{ tableSlug }}/eliminar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Eliminar</a>
+                                    <a class="btn btn-info pull-right" href="forms/{{ tableSlug }}/modificar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Modificar</a>
                                 </td>
 
                             </tr>

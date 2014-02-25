@@ -32,6 +32,32 @@ class View extends Base
         $symfonyFileSystem->copy(__DIR__ . '/Resource/js/jquery.min.js', $this->config['output']['dir'] . '/web/js/jquery.min.js', true);
         $symfonyFileSystem->copy(__DIR__ . '/Resource/js/jquery.h5validate.min.js', $this->config['output']['dir'] . '/web/js/jquery.h5validate.min.js', true);
 
+
+
+        $fileHeader = $this->twig->render('include/header.jspf.twig');
+        $filePath = sprintf('%s/WEB-INF/template/header.jspf', $baseDir);
+        $this->fileSystem->write($filePath, $fileHeader, true);
+
+        $fileFooter = $this->twig->render('include/footer.jspf.twig');
+        $filePath = sprintf('%s/WEB-INF/template/footer.jspf', $baseDir);
+        $this->fileSystem->write($filePath, $fileFooter, true);
+
+        $fileMenu = $this->twig->render('include/menu.jspf.twig');
+        $filePath = sprintf('%s/WEB-INF/template/menu.jspf', $baseDir);
+        $this->fileSystem->write($filePath, $fileMenu, true);
+
+        $fileMetas = $this->twig->render('include/metas.jspf.twig');
+        $filePath = sprintf('%s/WEB-INF/include/metas.jspf', $baseDir);
+        $this->fileSystem->write($filePath, $fileMetas, true);
+
+        $fileJs = $this->twig->render('include/javascripts.jspf.twig');
+        $filePath = sprintf('%s/WEB-INF/include/javascripts.jspf', $baseDir);
+        $this->fileSystem->write($filePath, $fileJs, true);
+
+        $fileStyles = $this->twig->render('include/stylesheets.jspf.twig');
+        $filePath = sprintf('%s/WEB-INF/include/stylesheets.jspf', $baseDir);
+        $this->fileSystem->write($filePath, $fileStyles, true);
+
         $baseDir = 'web/forms';
 
         foreach ($this->tables as $table) {
