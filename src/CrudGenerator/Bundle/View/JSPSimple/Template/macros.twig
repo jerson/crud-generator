@@ -8,27 +8,28 @@
     {% set type = html.type(field) %}
     {% if field.isForeign  %}
 
-        {% set tableTitle = field.reference.table | humanize | titleize %}
-        {% set tableDao = (field.reference.table | upperCamelize) ~  'Dao' %}
+        {% set tableForeignTitle = field.reference.table | humanize | titleize %}
+        {% set tableForeignDao = (field.reference.table | upperCamelize) ~  'Dao' %}
         {% set tableForeignParam = field.reference.table | camelize %}
-        {% set tableColumnParam = field.reference.column | camelize %}
-        {% set tableParamList = tableForeignParam | pluralize %}
-        <jsp:useBean id="{{ tableDao }}" scope="application" class="Dao.{{ tableDao }}"/>
-        <jstl:set var="{{ tableParamList }}" value="${{ '{' }}{{ tableDao }}.listar(){{ '}' }}"/>
+        {% set tableForeignColumnParam = field.reference.column | camelize %}
+        {% set tableForeignParamList = tableForeignParam | pluralize %}
+        
+        <jsp:useBean id="{{ fieldParam }}{{ tableForeignDao }}" scope="application" class="Dao.{{ tableForeignDao }}"/>
+        <jstl:set var="{{ tableForeignParamList }}" value="${{ '{' }}{{ fieldParam }}{{ tableForeignDao }}.listar(){{ '}' }}"/>
 
 
         <div class="form-group">
-            <label for="select{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ tableTitle }} {{ field.allowNull ? '' : '*' }}</label>
+            <label for="select{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ tableForeignTitle }} {{ field.allowNull ? '' : '*' }}</label>
             <div class="col-lg-9">
                 <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
 
                     {% if value %}
-                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableParamList }}{{ '}' }}">
-                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}{{ '}' }}" ${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}=={{ tableParam }}.{{ field.name | camelize }}.{{ tableColumnParam }} ?  'selected' : '' {{ '}' }}>${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
+                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}{{ '}' }}" ${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}=={{ tableParam }}.{{ field.name | camelize }}.{{ tableForeignColumnParam }} ?  'selected' : '' {{ '}' }}>${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
                         </jstl:forEach>
                     {% else %}
-                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableParamList }}{{ '}' }}">
-                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableColumnParam }}{{ '}' }}" >${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
+                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}{{ '}' }}" >${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
                         </jstl:forEach>
                     {% endif %}
                 </select>
@@ -53,25 +54,21 @@
                 <label for="select{{ fieldTitleParam }}" class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
                 <div class="col-lg-9">
 
-                    {% if value %}
-                        <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
-                            {% for option in field.type.options %}
-                                <option value="{{ option }}" ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option }}' ?  'selected' : '' {{ '}' }}>{{ option | slugify | humanize | titleize }}</option>
-                            {% endfor %}
-                        </select>
-                    {% elseif field.default %}
-                        <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
-                            {% for option in field.type.options %}
-                                <option value="{{ option }}" {{ field.default==option ? 'selected' : '' }}>{{ option | slugify | humanize | titleize }}</option>
-                            {% endfor %}
-                        </select>
-                    {% else %}
-                        <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
-                            {% for option in field.type.options %}
-                                <option value="{{ option }}">{{ option | slugify | humanize | titleize }}</option>
-                            {% endfor %}
-                        </select>
-                    {% endif %}
+                    <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}" id="select{{ fieldTitleParam }}">
+                        {% if value %}
+                                {% for option in field.type.options %}
+                                    <option value="{{ option }}" ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option }}' ?  'selected' : '' {{ '}' }}>{{ option | slugify | humanize | titleize }}</option>
+                                {% endfor %}
+                        {% elseif field.default %}
+                                {% for option in field.type.options %}
+                                    <option value="{{ option }}" {{ field.default==option ? 'selected' : '' }}>{{ option | slugify | humanize | titleize }}</option>
+                                {% endfor %}
+                        {% else %}
+                                {% for option in field.type.options %}
+                                    <option value="{{ option }}">{{ option | slugify | humanize | titleize }}</option>
+                                {% endfor %}
+                        {% endif %}
+                    </select>
 
 
                 </div>

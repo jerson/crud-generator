@@ -4,7 +4,14 @@
     {% set parseType = java.parseType(field) %}
     {% set realType = java.realType(field) %}
     {% if field.isForeign  %}
-        {{ name }}.set{{ field | upperCamelize }}(new {{ field.reference.table | upperCamelize }}({{ parseType | upperCamelize }}.parse{{ realType | upperCamelize }}(request.getParameter("{{ field.name }}"))));
+
+        {% if parseType %}
+            {{ name }}.set{{ field | upperCamelize }}(new {{ field.reference.table | upperCamelize }}({{ parseType | upperCamelize }}.parse{{ realType | upperCamelize }}(request.getParameter("{{ field.name }}"))));
+        {% else %}
+            {{ name }}.set{{ field | upperCamelize }}(new {{ field.reference.table | upperCamelize }}(request.getParameter("{{ field.name }}")));
+        {% endif %}
+
+
     {% else %}
 
         {% if field.type.name == constant('CrudGenerator\\Table\\Type::DATE') %}

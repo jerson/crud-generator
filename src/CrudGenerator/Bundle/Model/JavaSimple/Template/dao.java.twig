@@ -96,7 +96,7 @@ public class {{ tableName }}Dao {
             Connection cn = Conexion.getInstancia();
             PreparedStatement st = cn.prepareStatement(sql);
 
-            st.set{{ java.realType(table.primaryField) | upperCamelize }}(1, {{ tableParam }}.get{{ table.primaryField.name | upperCamelize }}());
+            {{ macro.setStatementParam(1,table.primaryField,tableParam) }}
 
             if (st.executeUpdate()>0) {
                 correcto = true;
