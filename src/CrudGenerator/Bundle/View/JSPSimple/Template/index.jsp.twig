@@ -8,73 +8,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <base href="{{ basePath }}">
+    <%@include file="/WEB-INF/include/metas.jspf" %>
     <title>{% if block('title') is not empty %} {{ block('title') }} | {% endif %}{{ config.project.name }}</title>
-
-    <link href="{{ basePath }}css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ basePath }}css/navbar.css" rel="stylesheet">
-
+    <%@include file="/WEB-INF/include/stylesheets.jspf" %>
 </head>
 
 <body>
-<div class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{{ basePath }}">{{ config.project.name }}</a>
-            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse collapse" id="navbar-main">
-            <ul class="nav navbar-nav">
-                {% for table in tables|slice(0, 5) %}
-                    {% set tableTile = table.name | humanize | titleize %}
-                    {% set tableSlug = table.name | dasherize %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle"
-                           data-toggle="dropdown">{{ tableTile }} <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="{{ basePath }}forms/{{ tableSlug }}/registrar.jsp">Crear {{ tableTile }}</a>
-                            </li>
-                            <li>
-                                <a href="{{ basePath }}forms/{{ tableSlug }}/listar.jsp">Listar {{ tableTile | pluralize }}</a>
-                            </li>
-                        </ul>
-                    </li>
-                {% endfor %}
-                {% if tables | length > 5 %}
-
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">M&aacute;s <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-
-                            {% for table in tables|slice(6, (tables | length)) %}
-                                {% set tableTile = table.name | humanize | titleize %}
-                                {% set tableSlug = table.name | dasherize %}
-                                <li>
-                                    <a href="{{ basePath }}forms/{{ tableSlug }}/registrar.jsp">Crear {{ tableTile }}</a>
-                                </li>
-                                <li>
-                                    <a href="{{ basePath }}forms/{{ tableSlug }}/listar.jsp">Listar {{ tableTile | pluralize }}</a>
-                                </li>
-                            {% endfor %}
-
-                        </ul>
-                    </li>
-                {% endif %}
-
-            </ul>
-
-        </div>
-    </div>
-</div>
-
+<%@include file="/WEB-INF/template/header.jspf" %>
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
@@ -92,19 +33,8 @@
     </div>
 </div>
 
+<%@include file="/WEB-INF/template/footer.jspf" %>
+<%@include file="/WEB-INF/include/javascripts.jspf" %>
 
-<script src="{{ basePath }}js/jquery.min.js"></script>
-<script src="{{ basePath }}js/bootstrap.min.js"></script>
-<script src="{{ basePath }}js/jquery.h5validate.min.js"></script>
-<script>
-
-    $(document).ready(function () {
-        $('form').h5Validate({
-            errorClass: 'has-error',
-            validClass: 'has-success'
-        });
-
-    });
-</script>
 </body>
 </html>
