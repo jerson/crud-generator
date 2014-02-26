@@ -45,10 +45,10 @@ class MySQL extends BaseConnector implements ConnectorInterface
     public function getTable($name)
     {
 
-        $statement = $this->pdo->prepare(sprintf('SHOW COLUMNS FROM %s', $name));
+        $statement = $this->pdo->prepare(sprintf('SHOW FULL COLUMNS FROM %s', $name));
 
         // TODO corregir no me funciona usando bindParam
-        //$statement = $this->pdo->prepare('SHOW COLUMNS FROM :name');
+        //$statement = $this->pdo->prepare('SHOW FULL COLUMNS FROM :name');
         //$statement->bindParam(':name', $name, \PDO::PARAM_STR);
 
         $statement->execute();
@@ -81,6 +81,8 @@ class MySQL extends BaseConnector implements ConnectorInterface
             $field->setKey($this->parseFieldKey($result['Key']));
             $field->setDefault($this->parseFieldDefault($result['Default']));
             $field->setAutoIncrement($this->parseFieldAutoIncrement($result['Extra']));
+            $field->setSpecialType($this->parseFieldSpecialType($result['Comment']));
+            $field->setComment($this->parseFieldComment($result['Comment']));
             $field->setReferences($fieldReferences);
             $field->setIndexes($fieldIndexes);
 

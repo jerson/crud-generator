@@ -17,6 +17,11 @@ class Field
     private $type;
 
     /**
+     * @var SpecialType
+     */
+    private $specialType;
+
+    /**
      * @var bool
      */
     private $allowNull;
@@ -30,6 +35,11 @@ class Field
      * @var string
      */
     private $default;
+
+    /**
+     * @var string
+     */
+    private $comment;
 
     /**
      * @var bool
@@ -173,22 +183,6 @@ class Field
     }
 
     /**
-     * @param Type $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return Type
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
      * @param Index[] $indexes
      */
     public function setIndexes($indexes)
@@ -227,5 +221,55 @@ class Field
     {
         return isset($this->references[0]) ? $this->references[0] : null;
     }
+
+    /**
+     * @param SpecialType $specialType
+     */
+    public function setSpecialType($specialType)
+    {
+        $this->specialType = $specialType;
+    }
+
+    /**
+     * @return SpecialType
+     */
+    public function getSpecialType()
+    {
+        return $this->specialType;
+    }
+
+    /**
+     * @param Type $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return Type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+
 
 } 

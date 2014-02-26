@@ -5,6 +5,7 @@ namespace CrudGenerator\Parser;
 
 
 use CrudGenerator\Table\Field;
+use CrudGenerator\Table\SpecialType;
 use CrudGenerator\Table\Type;
 use Stringy\Stringy;
 
@@ -67,4 +68,44 @@ class Html implements ParserInterface
         return $type;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getSpecialType(Field $field)
+    {
+        switch ($field->getSpecialType()->getName()) {
+            case SpecialType::DOCUMENT:
+                $type = 'textarea';
+                break;
+            case SpecialType::URL:
+                $type = 'url';
+                break;
+            case SpecialType::MONTH:
+                $type = 'month';
+                break;
+            case SpecialType::WEEK:
+                $type = 'week';
+                break;
+            case SpecialType::RANGE:
+                $type = 'range';
+                break;
+            case SpecialType::PHONE:
+                $type = 'tel';
+                break;
+            case SpecialType::CELLPHONE:
+                $type = 'tel';
+                break;
+            case SpecialType::EMAIL:
+                $type = 'email';
+                break;
+            case SpecialType::PASSWORD:
+                $type = 'password';
+                break;
+            default:
+                $type = '';
+                break;
+
+        }
+        return $type;
+    }
 }

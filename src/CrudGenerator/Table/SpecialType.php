@@ -1,27 +1,16 @@
 <?php
-
 namespace CrudGenerator\Table;
 
 
-class Type implements TypeInterface
-{
+class SpecialType implements TypeInterface {
 
-    CONST INTEGER = 1;
-    CONST TINYINT = 11;
-    CONST VARCHAR = 2;
-    CONST ENUM = 3;
-    CONST TEXT = 4;
-    CONST DOUBLE = 6;
-    CONST FLOAT = 7;
-    CONST REAL = 77;
-    CONST BOOL = 8;
-    CONST CHAR = 9;
-    CONST DATE = 10;
-    CONST DATETIME = 11;
-    CONST TIME = 12;
-    CONST TIMESTAMP = 13;
-    CONST BLOB = 14;
-    CONST UNKNOWN = 15;
+
+    CONST EMAIL = 100;
+    CONST PASSWORD = 200;
+    CONST CELLPHONE = 300;
+    CONST PHONE = 400;
+    CONST DOCUMENT = 500;
+    CONST UNKNOWN = 999;
 
     /**
      * @var int
@@ -85,5 +74,4 @@ class Type implements TypeInterface
     {
         return $this->options;
     }
-
 }

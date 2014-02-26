@@ -4,6 +4,7 @@ namespace CrudGenerator\Connector;
 
 use CrudGenerator\Table\Field;
 use CrudGenerator\Table\Key;
+use CrudGenerator\Table\SpecialType;
 use CrudGenerator\Table\Table;
 use CrudGenerator\Table\Type;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -128,12 +129,61 @@ class BaseConnector
 
     /**
      * @param $string
-     * @return mixed
+     * @return string
      */
     protected function parseFieldName($string)
     {
         return $string;
     }
+
+
+    /**
+     * @param $comment
+     * @return string
+     */
+    protected  function parseFieldSpecialType($comment)
+    {
+        preg_match('|\[type:(?P<type>[a-zA-Z0-9]+)]|',$comment,$match);
+      //  preg_match('|\[(?P<type>[a-zA-Z0-9]+):(?P<value>[a-zA-Z0-9]+)]|',$comment,$match);
+
+        if(empty($match)){
+            return;
+        }
+
+        $match['type'] = strtolower($match['type']);
+
+        switch ($match['type']) {
+            case 'email':
+                return SpecialType::EMAIL;
+                break;
+            case 'password':
+                return SpecialType::PASSWORD;
+                break;
+            case 'cellphone':
+                return SpecialType::CELLPHONE;
+                break;
+            case 'phone':
+                return SpecialType::PHONE;
+                break;
+            case 'document':
+                return SpecialType::DOCUMENT;
+                break;
+            default:
+                return SpecialType::UNKNOWN;
+                break;
+        }
+
+    }
+
+    /**
+     * @param $comment
+     * @return string
+     */
+    protected  function parseFieldComment($comment)
+    {
+        return preg_replace('(\[([a-zA-Z0-9]+):([a-zA-Z0-9]+)])','',$comment);
+    }
+
 
     /**
      * @param $string
