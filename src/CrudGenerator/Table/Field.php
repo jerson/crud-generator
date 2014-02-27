@@ -2,6 +2,9 @@
 namespace CrudGenerator\Table;
 
 
+use CrudGenerator\Table\Type\Special;
+use CrudGenerator\Table\Type\Type;
+
 class Field
 {
 
@@ -17,7 +20,7 @@ class Field
     private $type;
 
     /**
-     * @var SpecialType
+     * @var Special
      */
     private $specialType;
 
@@ -223,7 +226,7 @@ class Field
     }
 
     /**
-     * @param SpecialType $specialType
+     * @param Special $specialType
      */
     public function setSpecialType($specialType)
     {
@@ -231,7 +234,7 @@ class Field
     }
 
     /**
-     * @return SpecialType
+     * @return Special
      */
     public function getSpecialType()
     {

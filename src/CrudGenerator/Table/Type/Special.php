@@ -1,27 +1,24 @@
 <?php
+namespace CrudGenerator\Table\Type;
 
-namespace CrudGenerator\Table;
+
+class Special implements TypeInterface {
 
 
-class Type implements TypeInterface
-{
-
-    CONST INTEGER = 1;
-    CONST TINYINT = 11;
-    CONST VARCHAR = 2;
-    CONST ENUM = 3;
-    CONST TEXT = 4;
-    CONST DOUBLE = 6;
-    CONST FLOAT = 7;
-    CONST REAL = 77;
-    CONST BOOL = 8;
-    CONST CHAR = 9;
-    CONST DATE = 10;
-    CONST DATETIME = 11;
-    CONST TIME = 12;
-    CONST TIMESTAMP = 13;
-    CONST BLOB = 14;
-    CONST UNKNOWN = 15;
+    CONST EMAIL = 100;
+    CONST PASSWORD = 101;
+    CONST CELLPHONE = 102;
+    CONST PHONE = 103;
+    CONST WEEK = 104;
+    CONST URL = 105;
+    CONST MONTH = 106;
+    CONST RANGE = 107;
+    CONST HTML = 108;
+    CONST MARKDOWN = 109;
+    CONST OPTIONS = 110;
+    CONST FILE = 111;
+    CONST IMAGE = 112;
+    CONST UNKNOWN = 113;
 
     /**
      * @var int
@@ -34,7 +31,7 @@ class Type implements TypeInterface
     private $length;
 
     /**
-     * @var array
+     * @var Option[]
      */
     private $options;
 
@@ -71,7 +68,7 @@ class Type implements TypeInterface
     }
 
     /**
-     * @inheritdoc
+     * @param Option[] $options
      */
     public function setOptions($options)
     {
@@ -79,11 +76,12 @@ class Type implements TypeInterface
     }
 
     /**
-     * @inheritdoc
+     * @return Option[]
      */
     public function getOptions()
     {
         return $this->options;
     }
+
 
 }

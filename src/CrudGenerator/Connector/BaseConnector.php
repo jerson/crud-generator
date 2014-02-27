@@ -4,9 +4,11 @@ namespace CrudGenerator\Connector;
 
 use CrudGenerator\Table\Field;
 use CrudGenerator\Table\Key;
-use CrudGenerator\Table\SpecialType;
+use CrudGenerator\Table\Type\Option;
+use CrudGenerator\Table\Type\Special;
 use CrudGenerator\Table\Table;
-use CrudGenerator\Table\Type;
+use CrudGenerator\Table\Type\Type;
+use Stringy\Stringy;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class BaseConnector
@@ -82,9 +84,20 @@ class BaseConnector
 
 
             if ($name === Type::ENUM) {
-                //TODO a veces no encuentra las opciones de enum
+                //FIXME a veces no encuentra las opciones de enum
                 $stringOptions = str_replace(array('(', ')', '\''), '', isset($matches['length']) ? $matches['length'] : '');
                 $options = explode(',', $stringOptions);
+
+                $newOptions = array();
+                foreach ($options as $value) {
+
+                    $option = new Option();
+                    $option->setName(Stringy::create($value)->slugify()->humanize()->titleize());
+                    $option->setValue($value);
+                    $newOptions[] = $option;
+                }
+                $options = $newOptions;
+
             } else {
                 $length = isset($matches['length']) ? (int)str_replace(array('(', ')'), '', $matches['length']) : 0;
             }
@@ -138,40 +151,92 @@ class BaseConnector
 
 
     /**
-     * @param $comment
-     * @return string
+     * @param string $comment
+     * @return Special
+     * @throws \Exception
      */
-    protected  function parseFieldSpecialType($comment)
+    protected function parseFieldSpecialType($comment)
     {
-        preg_match('|\[type:(?P<type>[a-zA-Z0-9]+)]|',$comment,$match);
-      //  preg_match('|\[(?P<type>[a-zA-Z0-9]+):(?P<value>[a-zA-Z0-9]+)]|',$comment,$match);
+        $tableType = new Special();
 
-        if(empty($match)){
-            return;
+        preg_match('|\[type:(?P<type>[a-zA-Z0-9\s]+)(, ?options:(?P<options>[\w\W}{]+))?]|', $comment, $matches);
+        //  preg_match('|\[(?P<type>[a-zA-Z0-9]+):(?P<value>[a-zA-Z0-9]+)]|',$comment,$match);
+
+
+        if (!empty($matches['type'])) {
+
+            $matches['type'] = strtolower($matches['type']);
+
+            switch ($matches['type']) {
+                case 'email':
+                    $name = Special::EMAIL;
+                    break;
+                case 'password':
+                    $name = Special::PASSWORD;
+                    break;
+                case 'cellphone':
+                    $name = Special::CELLPHONE;
+                    break;
+                case 'phone':
+                    $name = Special::PHONE;
+                    break;
+                case 'week':
+                    $name = Special::WEEK;
+                    break;
+                case 'url':
+                    $name = Special::URL;
+                    break;
+                case 'month':
+                    $name = Special::MONTH;
+                    break;
+                case 'range':
+                    $name = Special::RANGE;
+                    break;
+                case 'html':
+                    $name = Special::HTML;
+                    break;
+                case 'markdown':
+                    $name = Special::MARKDOWN;
+                    break;
+                case 'options':
+                    $name = Special::OPTIONS;
+                    break;
+                case 'file':
+                    $name = Special::FILE;
+                    break;
+                case 'image':
+                    $name = Special::IMAGE;
+                    break;
+                default:
+                    $name = Special::UNKNOWN;
+                    break;
+            }
+
+            $tableType->setName($name);
+
+            if (isset($matches['options'])) {
+
+                $options = @json_decode($matches['options'], true);
+                $tableType->setLength(isset($options['length']) ? (int)$options['length'] : 0);
+
+                $newOptions = array();
+                foreach ($options as $value => $name) {
+
+                    $option = new Option();
+                    $option->setName(Stringy::create($name)->slugify()->humanize()->titleize());
+                    $option->setValue($value);
+                    $newOptions[] = $option;
+                }
+                $options = $newOptions;
+                $tableType->setOptions($options);
+
+            }
+
+
+
         }
 
-        $match['type'] = strtolower($match['type']);
-
-        switch ($match['type']) {
-            case 'email':
-                return SpecialType::EMAIL;
-                break;
-            case 'password':
-                return SpecialType::PASSWORD;
-                break;
-            case 'cellphone':
-                return SpecialType::CELLPHONE;
-                break;
-            case 'phone':
-                return SpecialType::PHONE;
-                break;
-            case 'document':
-                return SpecialType::DOCUMENT;
-                break;
-            default:
-                return SpecialType::UNKNOWN;
-                break;
-        }
+        return $tableType;
 
     }
 
@@ -179,9 +244,9 @@ class BaseConnector
      * @param $comment
      * @return string
      */
-    protected  function parseFieldComment($comment)
+    protected function parseFieldComment($comment)
     {
-        return preg_replace('(\[([a-zA-Z0-9]+):([a-zA-Z0-9]+)])','',$comment);
+        return trim(preg_replace('|\[type:([a-zA-Z0-9\s]+)(, ?options:([\w\W}{]+))?]|', '', $comment));
     }
 
 

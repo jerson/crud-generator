@@ -5,8 +5,8 @@ namespace CrudGenerator\Parser;
 
 
 use CrudGenerator\Table\Field;
-use CrudGenerator\Table\SpecialType;
-use CrudGenerator\Table\Type;
+use CrudGenerator\Table\Type\Special;
+use CrudGenerator\Table\Type\Type;
 use Stringy\Stringy;
 
 class Html implements ParserInterface
@@ -73,32 +73,48 @@ class Html implements ParserInterface
      */
     public function getSpecialType(Field $field)
     {
+        if(!$field->getSpecialType()){
+            return '';
+        }
+
         switch ($field->getSpecialType()->getName()) {
-            case SpecialType::DOCUMENT:
+            case Special::HTML:
                 $type = 'textarea';
                 break;
-            case SpecialType::URL:
+            case Special::MARKDOWN:
+                $type = 'textarea';
+                break;
+            case Special::URL:
                 $type = 'url';
                 break;
-            case SpecialType::MONTH:
+            case Special::MONTH:
                 $type = 'month';
                 break;
-            case SpecialType::WEEK:
+            case Special::FILE:
+                $type = 'file';
+                break;
+            case Special::IMAGE:
+                $type = 'file';
+                break;
+            case Special::OPTIONS:
+                $type = 'text';
+                break;
+            case Special::WEEK:
                 $type = 'week';
                 break;
-            case SpecialType::RANGE:
+            case Special::RANGE:
                 $type = 'range';
                 break;
-            case SpecialType::PHONE:
+            case Special::PHONE:
                 $type = 'tel';
                 break;
-            case SpecialType::CELLPHONE:
+            case Special::CELLPHONE:
                 $type = 'tel';
                 break;
-            case SpecialType::EMAIL:
+            case Special::EMAIL:
                 $type = 'email';
                 break;
-            case SpecialType::PASSWORD:
+            case Special::PASSWORD:
                 $type = 'password';
                 break;
             default:

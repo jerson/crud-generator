@@ -1,16 +1,16 @@
 <?php
 
-namespace CrudGenerator\Table;
+namespace CrudGenerator\Table\Type;
 
 interface TypeInterface
 {
     /**
-     * @param array $options
+     * @param Option[] $options
      */
     public function setOptions($options);
 
     /**
-     * @return array
+     * @return Option[]
      */
     public function getOptions();
 

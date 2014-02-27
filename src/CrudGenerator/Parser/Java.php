@@ -5,7 +5,7 @@ namespace CrudGenerator\Parser;
 
 
 use CrudGenerator\Table\Field;
-use CrudGenerator\Table\Type;
+use CrudGenerator\Table\Type\Type;
 use Stringy\Stringy;
 
 class Java implements ParserInterface
