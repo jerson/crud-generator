@@ -2,14 +2,11 @@
 
 namespace CrudGenerator\Connector;
 
-use CrudGenerator\Table\Field;
 use CrudGenerator\Table\Key;
 use CrudGenerator\Table\Type\Option;
 use CrudGenerator\Table\Type\Special;
-use CrudGenerator\Table\Table;
 use CrudGenerator\Table\Type\Type;
 use Stringy\Stringy;
-use Symfony\Component\Config\Definition\Exception\Exception;
 
 class BaseConnector
 {
@@ -85,7 +82,8 @@ class BaseConnector
 
             if ($name === Type::ENUM) {
                 //FIXME a veces no encuentra las opciones de enum
-                $stringOptions = str_replace(array('(', ')', '\''), '', isset($matches['length']) ? $matches['length'] : '');
+                $lengthParam = isset($matches['length']) ? $matches['length'] : '';
+                $stringOptions = str_replace(array('(', ')', '\''), '', $lengthParam);
                 $options = explode(',', $stringOptions);
 
                 $newOptions = array();
@@ -233,7 +231,6 @@ class BaseConnector
             }
 
 
-
         }
 
         return $tableType;
@@ -273,6 +270,4 @@ class BaseConnector
         }
 
     }
-
-
-} 
+}

@@ -67,9 +67,9 @@ class MySQL extends BaseConnector implements ConnectorInterface
 
             $fieldIndexes = array();
 
-            foreach($indexes as $index){
+            foreach ($indexes as $index) {
                 $columns = $index->getColumns();
-                if(in_array($result['Field'],$columns)){
+                if (in_array($result['Field'], $columns)) {
                     $fieldIndexes[] = $index;
                 }
             }
@@ -90,64 +90,6 @@ class MySQL extends BaseConnector implements ConnectorInterface
         }
 
         return $table;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getDatabaseName()
-    {
-        $statement = $this->pdo->query('SELECT DATABASE()');
-        $statement->execute();
-
-        return $statement->fetchColumn(0);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIndexes($name)
-    {
-
-        $statement = $this->pdo->prepare(sprintf('SHOW INDEX FROM %s', $name));
-
-        // TODO corregir no me funciona usando bindParam
-        //$statement = $this->pdo->prepare('SHOW INDEX FROM \':name\'');
-        //$statement->bindParam(':name', $name, \PDO::PARAM_STR);
-
-        $statement->execute();
-
-        $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $tableIndexes = array();
-
-        foreach ($results as $result) {
-
-            $keyName = $result['Key_name'];
-
-            if (isset($tableIndexes[$keyName])) {
-                $tableIndexes[$keyName]->addColumn($result['Column_name']);
-            } else {
-
-                $index = new Index();
-
-                $index->setName($result['Key_name']);
-                $index->addColumn($result['Column_name']);
-                $index->setCollation($result['Collation']);
-                $index->setCardinality($result['Cardinality']);
-
-                $type = $result['Index_type']==='BTRE' ? Index::BTREE : Index::UNKNOWN;
-
-                $index->setType($type);
-                $index->setUnique( $result['Non_unique'] === '0' ? true : false);
-
-                $tableIndexes[$keyName] = $index;
-
-            }
-
-        }
-
-
-        return $tableIndexes;
     }
 
     /**
@@ -197,4 +139,61 @@ SQL;
 
     }
 
+    /**
+     * @return string
+     */
+    protected function getDatabaseName()
+    {
+        $statement = $this->pdo->query('SELECT DATABASE()');
+        $statement->execute();
+
+        return $statement->fetchColumn(0);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIndexes($name)
+    {
+
+        $statement = $this->pdo->prepare(sprintf('SHOW INDEX FROM %s', $name));
+
+        // TODO corregir no me funciona usando bindParam
+        //$statement = $this->pdo->prepare('SHOW INDEX FROM \':name\'');
+        //$statement->bindParam(':name', $name, \PDO::PARAM_STR);
+
+        $statement->execute();
+
+        $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $tableIndexes = array();
+
+        foreach ($results as $result) {
+
+            $keyName = $result['Key_name'];
+
+            if (isset($tableIndexes[$keyName])) {
+                $tableIndexes[$keyName]->addColumn($result['Column_name']);
+            } else {
+
+                $index = new Index();
+
+                $index->setName($result['Key_name']);
+                $index->addColumn($result['Column_name']);
+                $index->setCollation($result['Collation']);
+                $index->setCardinality($result['Cardinality']);
+
+                $type = $result['Index_type'] === 'BTRE' ? Index::BTREE : Index::UNKNOWN;
+
+                $index->setType($type);
+                $index->setUnique($result['Non_unique'] === '0' ? true : false);
+
+                $tableIndexes[$keyName] = $index;
+
+            }
+
+        }
+
+
+        return $tableIndexes;
+    }
 }

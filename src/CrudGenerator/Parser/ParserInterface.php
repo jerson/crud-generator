@@ -20,5 +20,4 @@ interface ParserInterface
      * @return string
      */
     public function getSpecialType(Field $field);
-
-} 
+}

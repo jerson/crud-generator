@@ -88,6 +88,5 @@ class Base implements BundleInterface
     public function generate()
     {
         throw new \Exception('falta implementar método generate');
-
     }
-} 
+}

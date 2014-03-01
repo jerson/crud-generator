@@ -7,7 +7,6 @@ namespace CrudGenerator\Parser;
 use CrudGenerator\Table\Field;
 use CrudGenerator\Table\Type\Special;
 use CrudGenerator\Table\Type\Type;
-use Stringy\Stringy;
 
 class Html implements ParserInterface
 {
@@ -73,7 +72,7 @@ class Html implements ParserInterface
      */
     public function getSpecialType(Field $field)
     {
-        if(!$field->getSpecialType()){
+        if (!$field->getSpecialType()) {
             return '';
         }
 

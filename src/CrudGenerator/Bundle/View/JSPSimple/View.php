@@ -26,12 +26,31 @@ class View extends Base
         $this->fileSystem->write($filePath, $fileContent, true);
 
         $symfonyFileSystem = new Filesystem();
-        $symfonyFileSystem->copy(__DIR__ . '/Resource/css/bootstrap.min.css', $this->config['output']['dir'] . '/web/css/bootstrap.min.css', true);
-        $symfonyFileSystem->copy(__DIR__ . '/Resource/css/navbar.css', $this->config['output']['dir'] . '/web/css/navbar.css', true);
-        $symfonyFileSystem->copy(__DIR__ . '/Resource/js/bootstrap.min.js', $this->config['output']['dir'] . '/web/js/bootstrap.min.js', true);
-        $symfonyFileSystem->copy(__DIR__ . '/Resource/js/jquery.min.js', $this->config['output']['dir'] . '/web/js/jquery.min.js', true);
-        $symfonyFileSystem->copy(__DIR__ . '/Resource/js/jquery.h5validate.min.js', $this->config['output']['dir'] . '/web/js/jquery.h5validate.min.js', true);
-
+        $symfonyFileSystem->copy(
+            __DIR__ . '/Resource/css/bootstrap.min.css',
+            $this->config['output']['dir'] . '/web/css/bootstrap.min.css',
+            true
+        );
+        $symfonyFileSystem->copy(
+            __DIR__ . '/Resource/css/navbar.css',
+            $this->config['output']['dir'] . '/web/css/navbar.css',
+            true
+        );
+        $symfonyFileSystem->copy(
+            __DIR__ . '/Resource/js/bootstrap.min.js',
+            $this->config['output']['dir'] . '/web/js/bootstrap.min.js',
+            true
+        );
+        $symfonyFileSystem->copy(
+            __DIR__ . '/Resource/js/jquery.min.js',
+            $this->config['output']['dir'] . '/web/js/jquery.min.js',
+            true
+        );
+        $symfonyFileSystem->copy(
+            __DIR__ . '/Resource/js/jquery.h5validate.min.js',
+            $this->config['output']['dir'] . '/web/js/jquery.h5validate.min.js',
+            true
+        );
 
 
         $fileHeader = $this->twig->render('include/header.jspf.twig');

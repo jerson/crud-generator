@@ -25,7 +25,7 @@ class Table
         $fields = $this->getPrimaryFields();
         if (isset($fields[0])) {
             $field = $fields[0];
-        } else if (isset($this->fields[0])) {
+        } elseif (isset($this->fields[0])) {
             $field = $this->fields[0];
         } else {
             $field = new Field();
@@ -88,7 +88,7 @@ class Table
 
         foreach ($this->fields as $field) {
 
-            if (count($field->getReferences())>0) {
+            if (count($field->getReferences()) > 0) {
                 $foreignFields[] = $field;
 
             }
@@ -96,14 +96,6 @@ class Table
         }
 
         return $foreignFields;
-    }
-
-    /**
-     * @param \CrudGenerator\Table\Field[] $fields
-     */
-    public function setFields($fields)
-    {
-        $this->fields = $fields;
     }
 
     /**
@@ -123,11 +115,11 @@ class Table
     }
 
     /**
-     * @param string $name
+     * @param \CrudGenerator\Table\Field[] $fields
      */
-    public function setName($name)
+    public function setFields($fields)
     {
-        $this->name = $name;
+        $this->fields = $fields;
     }
 
     /**
@@ -138,4 +130,11 @@ class Table
         return $this->name;
     }
 
-} 
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+}

@@ -41,14 +41,6 @@ class Index
     private $unique;
 
     /**
-     * @param int $cardinality
-     */
-    public function setCardinality($cardinality)
-    {
-        $this->cardinality = $cardinality;
-    }
-
-    /**
      * @return int
      */
     public function getCardinality()
@@ -57,11 +49,11 @@ class Index
     }
 
     /**
-     * @param string $collation
+     * @param int $cardinality
      */
-    public function setCollation($collation)
+    public function setCardinality($cardinality)
     {
-        $this->collation = $collation;
+        $this->cardinality = $cardinality;
     }
 
     /**
@@ -73,11 +65,11 @@ class Index
     }
 
     /**
-     * @param array $columns
+     * @param string $collation
      */
-    public function setColumns($columns)
+    public function setCollation($collation)
     {
-        $this->columns = $columns;
+        $this->collation = $collation;
     }
 
     /**
@@ -97,11 +89,11 @@ class Index
     }
 
     /**
-     * @param string $name
+     * @param array $columns
      */
-    public function setName($name)
+    public function setColumns($columns)
     {
-        $this->name = $name;
+        $this->columns = $columns;
     }
 
     /**
@@ -113,11 +105,11 @@ class Index
     }
 
     /**
-     * @param int $type
+     * @param string $name
      */
-    public function setType($type)
+    public function setName($name)
     {
-        $this->type = $type;
+        $this->name = $name;
     }
 
     /**
@@ -129,11 +121,11 @@ class Index
     }
 
     /**
-     * @param boolean $unique
+     * @param int $type
      */
-    public function setUnique($unique)
+    public function setType($type)
     {
-        $this->unique = $unique;
+        $this->type = $type;
     }
 
     /**
@@ -144,4 +136,11 @@ class Index
         return $this->unique;
     }
 
-} 
+    /**
+     * @param boolean $unique
+     */
+    public function setUnique($unique)
+    {
+        $this->unique = $unique;
+    }
+}

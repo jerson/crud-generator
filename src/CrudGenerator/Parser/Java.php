@@ -28,14 +28,6 @@ class Java implements ParserInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getSpecialType(Field $field)
-    {
-        return;
-    }
-
-    /**
      * @param Field $field
      * @return string
      */
@@ -92,6 +84,13 @@ class Java implements ParserInterface
         return $type;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getSpecialType(Field $field)
+    {
+        return;
+    }
 
     /**
      * @param Field $field

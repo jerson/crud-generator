@@ -2,23 +2,24 @@
 namespace CrudGenerator\Table\Type;
 
 
-class Special implements TypeInterface {
+class Special implements TypeInterface
+{
 
 
-    CONST EMAIL = 100;
-    CONST PASSWORD = 101;
-    CONST CELLPHONE = 102;
-    CONST PHONE = 103;
-    CONST WEEK = 104;
-    CONST URL = 105;
-    CONST MONTH = 106;
-    CONST RANGE = 107;
-    CONST HTML = 108;
-    CONST MARKDOWN = 109;
-    CONST OPTIONS = 110;
-    CONST FILE = 111;
-    CONST IMAGE = 112;
-    CONST UNKNOWN = 113;
+    const EMAIL = 100;
+    const PASSWORD = 101;
+    const CELLPHONE = 102;
+    const PHONE = 103;
+    const WEEK = 104;
+    const URL = 105;
+    const MONTH = 106;
+    const RANGE = 107;
+    const HTML = 108;
+    const MARKDOWN = 109;
+    const OPTIONS = 110;
+    const FILE = 111;
+    const IMAGE = 112;
+    const UNKNOWN = 113;
 
     /**
      * @var int
@@ -38,14 +39,6 @@ class Special implements TypeInterface {
     /**
      * @inheritdoc
      */
-    public function setLength($length)
-    {
-        $this->length = $length;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getLength()
     {
         return $this->length;
@@ -54,9 +47,9 @@ class Special implements TypeInterface {
     /**
      * @inheritdoc
      */
-    public function setName($type)
+    public function setLength($length)
     {
-        $this->name = $type;
+        $this->length = $length;
     }
 
     /**
@@ -68,11 +61,11 @@ class Special implements TypeInterface {
     }
 
     /**
-     * @param Option[] $options
+     * @inheritdoc
      */
-    public function setOptions($options)
+    public function setName($type)
     {
-        $this->options = $options;
+        $this->name = $type;
     }
 
     /**
@@ -83,5 +76,11 @@ class Special implements TypeInterface {
         return $this->options;
     }
 
-
+    /**
+     * @param Option[] $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
 }

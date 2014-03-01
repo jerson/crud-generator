@@ -3,12 +3,12 @@
 namespace CrudGenerator\Connector;
 
 
-use CrudGenerator\Table\Field;
-use CrudGenerator\Table\Reference;
 use CrudGenerator\Table\Index;
+use CrudGenerator\Table\Reference;
 use CrudGenerator\Table\Table;
 
-interface ConnectorInterface {
+interface ConnectorInterface
+{
 
     public function __construct(\PDO $pdo);
 
@@ -34,5 +34,4 @@ interface ConnectorInterface {
      * @return Reference[]
      */
     public function getReferences($name);
-
 }

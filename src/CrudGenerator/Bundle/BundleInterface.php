@@ -20,7 +20,7 @@ interface BundleInterface
     /**
      * @return void
      */
-    public  function configure();
+    public function configure();
 
     /**
      * @param Table[] $tables
@@ -32,5 +32,4 @@ interface BundleInterface
      * @return void
      */
     public function generate();
-
-} 
+}

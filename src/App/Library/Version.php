@@ -45,5 +45,4 @@ class Version
 
         file_put_contents($this->versionFile, Yaml::dump($this->data));
     }
-
 }

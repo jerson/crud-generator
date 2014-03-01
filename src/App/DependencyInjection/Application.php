@@ -2,10 +2,10 @@
 namespace App\DependencyInjection;
 
 use App\Library\ErrorHandler;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Finder\Finder;
 
 class Application extends \Symfony\Component\Console\Application
 {
@@ -13,11 +13,6 @@ class Application extends \Symfony\Component\Console\Application
      * @var ContainerBuilder
      */
     protected $container;
-
-    public function getContainer()
-    {
-        return $this->container;
-    }
 
     /**
      * @param string $baseNamespaceName Highest level namespace for the application
@@ -72,14 +67,18 @@ class Application extends \Symfony\Component\Console\Application
                 foreach ($lookupPaths as $path) {
                     $commandPath = $path . '/' . $namespace . '/Command/';
                     if (is_dir($commandPath)) {
-                        $files = Finder::create()->files()->name('*Command.php')->in($path . '/' . $namespace . '/Command/');
+                        $files = Finder::create()
+                            ->files()
+                            ->name('*Command.php')
+                            ->in($path . '/' . $namespace . '/Command/');
+
                         foreach ($files as $file) {
                             $className = $file->getBasename('.php'); // strip .php extension
                             $r = new \ReflectionClass($baseNamespaceName . '\Command' . '\\' . $className);
                             if (!$r->isAbstract()) {
                                 $instance = $r->newInstance();
 
-                                if(method_exists($instance,'setContainer')){
+                                if (method_exists($instance, 'setContainer')) {
                                     $instance->setContainer($this->container);
                                 }
                                 $this->add($instance);
@@ -90,5 +89,10 @@ class Application extends \Symfony\Component\Console\Application
                 break;
             }
         }
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
     }
 }

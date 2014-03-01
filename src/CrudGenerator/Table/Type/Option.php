@@ -4,7 +4,8 @@
 namespace CrudGenerator\Table\Type;
 
 
-class Option {
+class Option
+{
 
     /**
      * @var string
@@ -17,6 +18,14 @@ class Option {
     private $value;
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * @param string $name
      */
     public function setName($name)
@@ -27,9 +36,9 @@ class Option {
     /**
      * @return string
      */
-    public function getName()
+    public function getValue()
     {
-        return $this->name;
+        return $this->value;
     }
 
     /**
@@ -39,15 +48,4 @@ class Option {
     {
         $this->value = $value;
     }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-
-
-} 
+}

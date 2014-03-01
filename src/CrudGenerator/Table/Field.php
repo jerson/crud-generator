@@ -59,11 +59,26 @@ class Field
      */
     private $indexes;
 
-    function __toString()
+    public function __toString()
     {
-       return $this->getName();
+        return $this->getName();
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 
     /**
      * @return bool
@@ -106,14 +121,6 @@ class Field
     }
 
     /**
-     * @param boolean $allowNull
-     */
-    public function setAllowNull($allowNull)
-    {
-        $this->allowNull = $allowNull;
-    }
-
-    /**
      * @return boolean
      */
     public function getAllowNull()
@@ -122,11 +129,11 @@ class Field
     }
 
     /**
-     * @param boolean $autoIncrement
+     * @param boolean $allowNull
      */
-    public function setAutoIncrement($autoIncrement)
+    public function setAllowNull($allowNull)
     {
-        $this->autoIncrement = $autoIncrement;
+        $this->allowNull = $allowNull;
     }
 
     /**
@@ -138,11 +145,11 @@ class Field
     }
 
     /**
-     * @param string $default
+     * @param boolean $autoIncrement
      */
-    public function setDefault($default)
+    public function setAutoIncrement($autoIncrement)
     {
-        $this->default = $default;
+        $this->autoIncrement = $autoIncrement;
     }
 
     /**
@@ -154,27 +161,11 @@ class Field
     }
 
     /**
-     * @param string $name
+     * @param string $default
      */
-    public function setName($name)
+    public function setDefault($default)
     {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param int $key
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
+        $this->default = $default;
     }
 
     /**
@@ -186,11 +177,11 @@ class Field
     }
 
     /**
-     * @param Index[] $indexes
+     * @param int $key
      */
-    public function setIndexes($indexes)
+    public function setKey($key)
     {
-        $this->indexes = $indexes;
+        $this->key = $key;
     }
 
     /**
@@ -202,11 +193,11 @@ class Field
     }
 
     /**
-     * @param Reference[] $references
+     * @param Index[] $indexes
      */
-    public function setReferences($references)
+    public function setIndexes($indexes)
     {
-        $this->references = $references;
+        $this->indexes = $indexes;
     }
 
     /**
@@ -218,19 +209,19 @@ class Field
     }
 
     /**
+     * @param Reference[] $references
+     */
+    public function setReferences($references)
+    {
+        $this->references = $references;
+    }
+
+    /**
      * @return Reference
      */
     public function getReference()
     {
         return isset($this->references[0]) ? $this->references[0] : null;
-    }
-
-    /**
-     * @param Special $specialType
-     */
-    public function setSpecialType($specialType)
-    {
-        $this->specialType = $specialType;
     }
 
     /**
@@ -242,11 +233,11 @@ class Field
     }
 
     /**
-     * @param Type $type
+     * @param Special $specialType
      */
-    public function setType($type)
+    public function setSpecialType($specialType)
     {
-        $this->type = $type;
+        $this->specialType = $specialType;
     }
 
     /**
@@ -258,11 +249,11 @@ class Field
     }
 
     /**
-     * @param string $comment
+     * @param Type $type
      */
-    public function setComment($comment)
+    public function setType($type)
     {
-        $this->comment = $comment;
+        $this->type = $type;
     }
 
     /**
@@ -273,6 +264,11 @@ class Field
         return $this->comment;
     }
 
-
-
-} 
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
+}

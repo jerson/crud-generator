@@ -4,16 +4,13 @@ namespace CrudGenerator\Command;
 
 use CrudGenerator\Generator;
 use Stringy\Stringy;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
-
 
 class CrudCommand extends Command
 {
@@ -27,6 +24,11 @@ class CrudCommand extends Command
      * @var ContainerInterface
      */
     private $container;
+
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 
     protected function configure()
     {
@@ -50,11 +52,6 @@ class CrudCommand extends Command
                 'Eliges lo que vas a generar package|model|database|view|controller',
                 'package'
             );
-    }
-
-    public function setContainer(ContainerInterface $container)
-    {
-        $this->container = $container;
     }
 
     /**
@@ -131,7 +128,6 @@ class CrudCommand extends Command
             }
 
         }
-
 
     }
 }

@@ -3,7 +3,8 @@
 namespace CrudGenerator\Table;
 
 
-class Reference {
+class Reference
+{
 
     /**
      * @var string
@@ -16,6 +17,14 @@ class Reference {
     private $column;
 
     /**
+     * @return string
+     */
+    public function getColumn()
+    {
+        return $this->column;
+    }
+
+    /**
      * @param string $column
      */
     public function setColumn($column)
@@ -26,9 +35,9 @@ class Reference {
     /**
      * @return string
      */
-    public function getColumn()
+    public function getTable()
     {
-        return $this->column;
+        return $this->table;
     }
 
     /**
@@ -38,13 +47,4 @@ class Reference {
     {
         $this->table = $table;
     }
-
-    /**
-     * @return string
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-} 
+}

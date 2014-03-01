@@ -6,16 +6,14 @@ namespace CrudGenerator\Twig;
 use CrudGenerator\Table\Table;
 use Stringy\Stringy;
 
-
 class Extension extends \Twig_Extension
 {
 
     /**
      * Returns the name of the extension.
-     *
      * @return string The extension name
      */
-    function getName()
+    public function getName()
     {
         return 'CrudGenerator';
     }
@@ -26,7 +24,6 @@ class Extension extends \Twig_Extension
     public function getFilters()
     {
 
-        // 'number_format' => new Twig_Filter_Function('twig_number_format_filter', array('needs_environment' => true)),
         return array(
             'at' => new \Twig_Filter_Method($this, 'at'),
             'camelize' => new \Twig_Filter_Method($this, 'camelize'),
@@ -219,13 +216,13 @@ class Extension extends \Twig_Extension
     public function __call($name, $arguments)
     {
         $text = $arguments[0];
-        if($name=='upperCamelize'){
+        if ($name == 'upperCamelize') {
             $text = strtolower(Stringy::create($text)->humanize());
-        }else if($name=='camelize'){
+        } elseif ($name == 'camelize') {
             $text = strtolower(Stringy::create($text)->humanize());
 
         }
+
         return Stringy::create($text)->$name();
     }
-
 }

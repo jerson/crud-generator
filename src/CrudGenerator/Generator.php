@@ -3,14 +3,14 @@
 namespace CrudGenerator;
 
 
+use CrudGenerator\Bundle\Controller;
+use CrudGenerator\Bundle\Database;
+use CrudGenerator\Bundle\Model;
 use CrudGenerator\Bundle\ModelInterface;
+use CrudGenerator\Bundle\View;
 use CrudGenerator\Connector\ConnectorInterface;
 use CrudGenerator\Connector\MySQL;
 use CrudGenerator\Table\Table;
-use CrudGenerator\Bundle\Model;
-use CrudGenerator\Bundle\Controller;
-use CrudGenerator\Bundle\Database;
-use CrudGenerator\Bundle\View;
 use CrudGenerator\Twig\Extension;
 use Gaufrette\Adapter\Local;
 use Gaufrette\Filesystem;
@@ -66,24 +66,6 @@ class Generator
     }
 
     /**
-     * @param Table[] $tables
-     */
-    public function setTables($tables)
-    {
-        $this->tables = $tables;
-    }
-
-    /**
-     * @return Table[]
-     */
-    public function getTables()
-    {
-        return $this->tables;
-    }
-
-
-
-    /**
      * @param array $database
      * @throws \Exception
      */
@@ -95,7 +77,14 @@ class Generator
         switch ($driver) {
             case 'mysql':
 
-                $dsn = sprintf('%s:host=%s:%s;dbname=%s', $database['driver'], $database['host'], $database['port'], $database['name']);
+                $dsn = sprintf(
+                    '%s:host=%s:%s;dbname=%s',
+                    $database['driver'],
+                    $database['host'],
+                    $database['port'],
+                    $database['name']
+                );
+
                 $pdo = new \PDO($dsn, $database['user'], $database['password']);
 
                 $this->connector = new MySQL($pdo);
@@ -111,13 +100,19 @@ class Generator
     }
 
     /**
-     * @param $string
-     * @return string
+     * @return Table[]
      */
-    private function parseLayout($string)
+    public function getTables()
     {
-        $layout = Stringy::create($string)->upperCamelize();
-        return $layout;
+        return $this->tables;
+    }
+
+    /**
+     * @param Table[] $tables
+     */
+    public function setTables($tables)
+    {
+        $this->tables = $tables;
     }
 
     /**
@@ -126,6 +121,39 @@ class Generator
     public function generateModel($layout)
     {
         $this->generate('Model', $layout);
+    }
+
+    /**
+     * @param $type
+     * @param $layout
+     * @throws \Exception
+     */
+    public function generate($type, $layout)
+    {
+
+        $layout = $this->parseLayout($layout);
+        $class = sprintf('\\CrudGenerator\\Bundle\\%s\\%s\\%s', $type, $layout, $type);
+
+        if (!class_exists($class)) {
+            throw new \Exception(sprintf('El %s Layout "%s" no existe', $type, $layout));
+        }
+
+        $model = new $class($this->fileSystem, $this->twig, $this->config);
+
+        $model->setTables($this->tables);
+        $model->generate();
+
+
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    private function parseLayout($string)
+    {
+        $layout = Stringy::create($string)->upperCamelize();
+        return $layout;
     }
 
     /**
@@ -151,28 +179,4 @@ class Generator
     {
         $this->generate('Controller', $layout);
     }
-
-    /**
-     * @param $type
-     * @param $layout
-     * @throws \Exception
-     */
-    public  function generate($type, $layout)
-    {
-
-        $layout = $this->parseLayout($layout);
-        $class = sprintf('\\CrudGenerator\\Bundle\\%s\\%s\\%s', $type, $layout, $type);
-
-        if (!class_exists($class)) {
-            throw new \Exception(sprintf('El %s Layout "%s" no existe', $type, $layout));
-        }
-
-        $model = new $class($this->fileSystem, $this->twig, $this->config);
-
-        $model->setTables($this->tables);
-        $model->generate();
-
-
-    }
-
-} 
+}
