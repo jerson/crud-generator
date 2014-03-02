@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>CRUD-generator by jerson</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>CRUD-generator</h1>
+        <p>Generador de CRUD para aplicaciones simples</p>
+
+        <p class="view"><a href="https://github.com/jerson/crud-generator">View the Project on GitHub <small>jerson/crud-generator</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/jerson/crud-generator/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/jerson/crud-generator/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/jerson/crud-generator">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="crud-generator" class="anchor" href="#crud-generator"><span class="octicon octicon-link"></span></a>CRUD Generator</h1>
+
+<p><a href="https://www.gittip.com/jerson/"><img src="https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png" alt="Support via Gittip"></a></p>
+
+<p>Genera CRUD's simples en base a plantillas que tu mismo puedes crear, los CRUD's se generan usando la información de las tablas: nombres, tipos de dato,
+referencias e indices.</p>
+
+<blockquote>
+<p>Actualmente solo existe una plantilla que genera un proyecto "<strong>JSP Simple</strong>"
+que genera paquetes Model, DAO's, Servelts y Formularios para todas las tablas</p>
+</blockquote>
+
+<p><img src="https://github.com/jerson/crud-generator/raw/master/doc/images/console.gif" alt="consola" title="Generando el CRUD"></p>
+
+<p>El archivo de configuración que necesitas para generar el crud es <strong>config.yml</strong></p>
+
+<div class="highlight highlight-YAML"><pre><span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">driver</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mysql</span>
+    <span class="l-Scalar-Plain">host</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">127.0.0.1</span>
+    <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">3306</span>
+    <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">base_de_datos</span>
+    <span class="l-Scalar-Plain">user</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">usuario</span>
+    <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">clave</span>
+
+<span class="l-Scalar-Plain">project</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="s">'Titulo</span><span class="nv"> </span><span class="s">del</span><span class="nv"> </span><span class="s">Proyecto'</span>
+
+<span class="l-Scalar-Plain">output</span><span class="p-Indicator">:</span>
+    <span class="l-Scalar-Plain">dir</span><span class="p-Indicator">:</span> <span class="s">'directorio/salida</span>
+
+</pre></div>
+
+<p>Despúes de generar el proyecto puedes usar algún IDE como netbeans para que veas tu proyecto.</p>
+
+<blockquote>
+<p>Debes agregar las librerías necesarias, por ejemplo "<strong>JSP Simple</strong>" necesita JSTL y MySQL Driver</p>
+</blockquote>
+
+<p><img src="https://github.com/jerson/crud-generator/raw/master/doc/images/netbeans.gif" alt="consola" title="Abriendo el Proyecto"></p>
+
+<h2>
+<a name="campos-especiales" class="anchor" href="#campos-especiales"><span class="octicon octicon-link"></span></a>Campos Especiales</h2>
+
+<p>Los campos especiales permiten aumentar las opciones al generar el código, los campos especiales que existen son:</p>
+
+<ul>
+<li>
+<strong>EMAIL</strong>: <em>Disponile en:</em> JSPSimple</li>
+<li>
+<strong>PASSWORD</strong>:: <em>Disponile en:</em> JSPSimple</li>
+<li><strong>CELLPHONE</strong></li>
+<li>
+<strong>PHONE</strong>: <em>Disponile en:</em> JSPSimple</li>
+<li>
+<strong>WEEK</strong>: <em>Disponile en:</em> JSPSimple</li>
+<li>
+<strong>URL</strong>: <em>Disponile en:</em> JSPSimple</li>
+<li>
+<strong>MONTH</strong>: <em>Disponile en:</em> JSPSimple</li>
+<li><strong>RANGE</strong></li>
+<li><strong>HTML</strong></li>
+<li><strong>MARKDOWN</strong></li>
+<li>
+<strong>OPTIONS</strong>: <em>Disponile en:</em> JSPSimple</li>
+<li><strong>FILE</strong></li>
+<li><strong>IMAGE</strong></li>
+</ul><p>Para agregar campos especiales debes definirlo en un comentario de la columna donde desees</p>
+
+<p><img src="https://github.com/jerson/crud-generator/raw/master/doc/images/special-types.gif" alt="special-types" title="Special Types"></p>
+
+<blockquote>
+<p>Las posibilidades de los campos especiales son muchas, como por ejemplo validar que una columna sea un email, un texto HTML, MARKDOWN o incluso agregar un subidor de imagenes.</p>
+</blockquote>
+
+<h2>
+<a name="limitaciones" class="anchor" href="#limitaciones"><span class="octicon octicon-link"></span></a>Limitaciones</h2>
+
+<ul>
+<li>Para que funcione correctamente las tablas deben tener una clave primaria, no necesariamente auto-incrementable pero es recomendable para mas facilidad.</li>
+</ul><h2>
+<a name="visi%C3%B3n" class="anchor" href="#visi%C3%B3n"><span class="octicon octicon-link"></span></a>Visión</h2>
+
+<p>Mi Meta es que se creen muchas plantillas "<strong>Bundles</strong>" para distintos lenguajes de programación, actualmente las plantillas disponibles son:</p>
+
+<ul>
+<li>JSPSimple</li>
+</ul><p>Los Gestores de Bases de Datos soportados son:</p>
+
+<ul>
+<li>MariaDB</li>
+<li>MySQL</li>
+</ul><p>Y puedes ejecutar la aplicación con:</p>
+
+<ul>
+<li>PHP 5.4 o Superior</li>
+<li>HHVM</li>
+</ul><blockquote>
+<p>Sí, a las plantillas les llamo <strong>Bundles</strong></p>
+</blockquote>
+
+<h2>
+<a name="creditos" class="anchor" href="#creditos"><span class="octicon octicon-link"></span></a>Creditos</h2>
+
+<p>Gerson Alexander Pardo Gamez, Estudiante de Ingeniería de Software.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/jerson">jerson</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
