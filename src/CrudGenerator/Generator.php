@@ -77,11 +77,11 @@ class Generator
         switch ($driver) {
             case 'mysql':
 
+
                 $dsn = sprintf(
-                    '%s:host=%s:%s;dbname=%s',
-                    $database['driver'],
-                    $database['host'],
-                    $database['port'],
+                    'mysql:host=%s%s;dbname=%s',
+                    !empty($database['host']) ? $database['host'] : 'localhost',
+                    !empty($database['port']) ?  ':'.$database['port'] : '',
                     $database['name']
                 );
 

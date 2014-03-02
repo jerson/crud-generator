@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php
-namespace CrudGenerator;
 
 use App\DependencyInjection\Application;
 
@@ -8,7 +7,7 @@ use App\DependencyInjection\Application;
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
 // create application
-$application = new Application(__NAMESPACE__);
+$application = new Application('CrudGenerator');
 
 // and run
 $application->run();
