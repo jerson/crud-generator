@@ -81,7 +81,7 @@ class Generator
                 $dsn = sprintf(
                     'mysql:host=%s%s;dbname=%s',
                     !empty($database['host']) ? $database['host'] : 'localhost',
-                    !empty($database['port']) ?  ':'.$database['port'] : '',
+                    !empty($database['port']) ? ':' . $database['port'] : '',
                     $database['name']
                 );
 
