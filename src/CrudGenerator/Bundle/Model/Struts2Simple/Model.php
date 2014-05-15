@@ -18,7 +18,7 @@ class Model extends Base
     {
 
 
-        $baseDir = 'src/main/Model';
+        $baseDir = 'src/main/java/com/app/model';
 
         foreach ($this->tables as $table) {
 
@@ -30,7 +30,7 @@ class Model extends Base
 
         }
 
-        $baseDir = 'src/main/Dao';
+        $baseDir = 'src/main/java/com/app/dao';
 
         foreach ($this->tables as $table) {
 
@@ -44,7 +44,7 @@ class Model extends Base
 
 
         $fileContent = $this->twig->render('conexion.java.twig');
-        $filePath = sprintf('%s/Conexion/Conexion.java', $baseDir);
+        $filePath = sprintf('%s/conexion/Conexion.java', $baseDir);
         $this->fileSystem->write($filePath, $fileContent, true);
     }
 }

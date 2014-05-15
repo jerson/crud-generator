@@ -1,0 +1,56 @@
+{% import "macros.twig" as macro %}
+{% set tableName = table.name | upperCamelize %}
+{% set tableParam = table.name | camelize %}
+{% set tableSlug = table.name | dasherize %}
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+    <package name="{{ tableParam }}" namespace="/{{ tableSlug }}" extends="struts-default">
+
+        {% set action = 'Listar' %}
+        {% set actionName = action | upperCamelize  %}
+        {% set actionSlug = action | dasherize %}
+
+        <action name="{{ actionSlug }}" class="com.app.controller.{{ tableParam }}.{{ actionName }}Action">
+            <result name="input">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="error">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="success">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+        </action>
+
+        {% set action = 'Registrar' %}
+        {% set actionName = action | upperCamelize  %}
+        {% set actionSlug = action | dasherize %}
+
+        <action name="{{ actionSlug }}" class="com.app.controller.{{ tableParam }}.{{ actionName }}Action">
+            <result name="input">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="error">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="success" type="redirectAction">listar</result>
+        </action>
+
+        {% set action = 'Modificar' %}
+        {% set actionName = action | upperCamelize  %}
+        {% set actionSlug = action | dasherize %}
+
+        <action name="{{ actionSlug }}" class="com.app.controller.{{ tableParam }}.{{ actionName }}Action">
+            <result name="input">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="error">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="success" type="redirectAction">listar</result>
+        </action>
+
+        {% set action = 'Eliminar' %}
+        {% set actionName = action | upperCamelize  %}
+        {% set actionSlug = action | dasherize %}
+
+        <action name="{{ actionSlug }}" class="com.app.controller.{{ tableParam }}.{{ actionName }}Action">
+            <result name="input">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="error">/forms/{{ tableSlug }}/{{ actionSlug }}.jsp</result>
+            <result name="success" type="redirectAction">listar</result>
+        </action>
+
+    </package>
+
+</struts>

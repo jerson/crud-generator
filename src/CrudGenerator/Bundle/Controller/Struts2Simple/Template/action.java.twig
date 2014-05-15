@@ -13,12 +13,12 @@
 
 {% set actionName = action | upperCamelize %}
 
-package Controller.{{ tableName }};
+package com.app.controller.{{ tableParam }};
 
-import Model.{{ tableName }};
-import Dao.{{ tableDaoName }};
+import com.app.model.{{ tableName }};
+import com.app.dao.{{ tableDaoName }};
 {% for field in table.foreignFields  %}
-    import Model.{{ field.reference.table | upperCamelize }};
+    import com.app.model.{{ field.reference.table | upperCamelize }};
 {% endfor %}
 import com.opensymphony.xwork2.ActionSupport;
 

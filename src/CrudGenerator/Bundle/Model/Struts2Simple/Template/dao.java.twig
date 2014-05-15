@@ -1,15 +1,15 @@
 {% import "macros.twig" as macro %}
 
-package Dao;
+package com.app.dao;
 
 
-        import Dao.Conexion.Conexion;
+        import com.app.dao.conexion.Conexion;
         import java.sql.*;
         import java.util.*;
 
-        import Model.{{ table.name | upperCamelize }};
+        import com.app.model.{{ table.name | upperCamelize }};
 {% for field in table.foreignFields  %}
-    import Model.{{ field.reference.table | upperCamelize }};
+    import com.app.model.{{ field.reference.table | upperCamelize }};
 {% endfor %}
 
 {% set tableName = table.name | upperCamelize %}
