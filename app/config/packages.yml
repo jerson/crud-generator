@@ -5,3 +5,7 @@ parameters:
       model: JavaSimple
       controller: JSPSimple
       view: JSPSimple
+    Struts2:
+      model: Struts2Simple
+      controller: Struts2
+      view: Struts2

@@ -1,0 +1,24 @@
+{% extends "action.java.twig" %}
+
+{% block post %}
+            {{ tableDaoName }} {{ tableDaoParam }} = new {{ tableDaoName }}();
+
+            {{ tableName }} {{ tableParam }} = new {{ tableName }}();
+            {{ macro.getParam(tableParam,table.primaryField) }}
+
+            {{ tableParam }} = {{ tableDaoParam }}.obtener({{ tableParam }});
+
+            if({{ tableParam }}==null){
+                response.sendRedirect(REDIRECT_URL + "?resultado=no-existe");
+                return;
+            }
+
+            boolean correcto = {{ tableDaoParam }}.{{ actionParam }}({{ tableParam }});
+
+            if(correcto){
+                response.sendRedirect(REDIRECT_URL + "?resultado=correcto");
+            }else{
+                response.sendRedirect(REDIRECT_URL + "?resultado=error");
+            }
+
+{% endblock %}

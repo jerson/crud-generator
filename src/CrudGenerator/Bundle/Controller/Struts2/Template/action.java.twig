@@ -1,0 +1,58 @@
+{% import "macros.twig" as macro %}
+
+
+{% set tableName = table.name | upperCamelize %}
+{% set tableParam = table.name | camelize %}
+{% set tableSlug = table.name | dasherize %}
+
+{% set tableDaoName = tableName ~ 'Dao' %}
+{% set tableDaoParam = tableParam ~ 'Dao' %}
+
+{% set actionParam = action | camelize %}
+{% set actionSlug = action | dasherize %}
+
+{% set actionName = action | upperCamelize %}
+
+package Controller.{{ tableName }};
+
+import Model.{{ tableName }};
+import Dao.{{ tableDaoName }};
+{% for field in table.foreignFields  %}
+    import Model.{{ field.reference.table | upperCamelize }};
+{% endfor %}
+import com.opensymphony.xwork2.ActionSupport;
+
+
+public class {{ actionName }}Action extends ActionSupport {
+
+    private {{ tableName }} {{ tableParam }};
+
+    @Override
+    public String execute() throws Exception {
+
+        {% block execute %}
+        if ({{ tableParam }} == null) {
+            return INPUT;
+        }
+
+        validate();
+
+        if (hasErrors()) {
+            return ERROR;
+        } else {
+            return SUCCESS;
+        }
+        {% endblock  %}
+
+    }
+
+    public {{ tableName }} get{{ tableName }}() {
+    return {{ tableParam }};
+    }
+
+    public void set{{ tableName }}({{ tableName }} {{ tableParam }}) {
+    this.{{ tableParam }} = {{ tableParam }};
+    }
+
+}
+
