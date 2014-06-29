@@ -1,0 +1,54 @@
+{% macro setQueryParam(field,tableParam) %}
+    {% if field.isForeign %}
+        query.set{{ java.realType(field) | upperCamelize }}("{{ field.name }}",{{ tableParam }}.get{{ field.name | upperCamelize }}().get{{ field.reference.column | upperCamelize }}());
+    {% else %}
+
+        {% if field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATE') or field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATETIME') %}
+            query.setDate("{{ field.name }}",new java.sql.Date({{ tableParam }}.get{{ field.name | upperCamelize }}().getTime()));
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIME') %}
+            query.setTime("{{ field.name }}",new java.sql.Time({{ tableParam }}.get{{ field.name | upperCamelize }}().getTime()));
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIMESTAMP') %}
+            query.setTimestamp("{{ field.name }}",new java.sql.Timestamp({{ tableParam }}.get{{ field.name | upperCamelize }}().getTime()));
+        {% else %}
+            query.set{{ java.parseType(field) | upperCamelize }}("{{ field.name }}",{{ tableParam }}.get{{ field.name | upperCamelize }}());
+        {% endif %}
+
+    {% endif %}
+{% endmacro %}
+
+{% macro setObject(name, field) %}
+    {% set parseType = java.parseType(field) %}
+    {% set realType = java.realType(field) %}
+
+    {% if field.isForeign  %}
+        {#{{ name }}.set{{ field | upperCamelize }}({{ parseType | upperCamelize }}.parse{{ realType | upperCamelize }}(rs.getString("{{ field.name }}")));#}
+        {{ name }}.set{{ field | upperCamelize }}(new {{ field.reference.table | upperCamelize }}(rs.get{{ java.realType(field) | upperCamelize }}("{{ field.name }}")));
+    {% else %}
+
+        {% if field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATE') or field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATETIME') %}
+            {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getDate("{{ field.name }}").getTime()));
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIME') %}
+            {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getTime("{{ field.name }}").getTime()));
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIMESTAMP') %}
+            {{ name }}.set{{ field.name | upperCamelize }}(new java.util.Date(rs.getTimestamp("{{ field.name }}").getTime()));
+        {% else %}
+            {{ name }}.set{{ field.name | upperCamelize }}(rs.get{{ java.realType(field) | upperCamelize }}("{{ field.name }}"));
+        {% endif %}
+    {% endif %}
+
+{% endmacro %}
+
+
+{% macro getObject(name, field) %}
+{% spaceless %}
+
+    {% set parseType = java.parseType(field) %}
+    {% set realType = java.realType(field) %}
+
+
+     {{ name }}.get{{ field.name | upperCamelize }}()
+
+{% endspaceless %}
+{% endmacro %}
+
+

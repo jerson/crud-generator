@@ -216,10 +216,14 @@ class Extension extends \Twig_Extension
     public function __call($name, $arguments)
     {
         $text = $arguments[0];
+        $text = str_replace( 'ID_','Id_',$text);
         if ($name == 'upperCamelize') {
-            $text = strtolower(Stringy::create($text)->humanize());
+            $text = Stringy::create($text)->dasherize()->toLowerCase();
         } elseif ($name == 'camelize') {
-            $text = strtolower(Stringy::create($text)->humanize());
+            $text = Stringy::create($text)->dasherize()->toLowerCase();
+
+        } elseif ($name == 'first') {
+            return Stringy::create($text)->first(1)->toUpperCase();
 
         }
 

@@ -1,0 +1,198 @@
+{% import "macros.twig" as macro %}
+
+package com.app.dao;
+
+import com.app.model.{{ table.name | upperCamelize }};
+{% for field in table.foreignFields  %}
+    import com.app.model.{{ field.reference.table | upperCamelize }};
+{% endfor %}
+
+import com.app.util.HibernateUtil;
+import java.util.*;
+import org.hibernate.*;
+
+{% set tableName = table.name | upperCamelize %}
+{% set tableParam = table.name | camelize %}
+{% set idTable = table.name | first %}
+
+public class {{ tableName }}Dao {
+
+    public {{ tableName }} registrar({{ tableName }} {{ tableParam }}) {
+
+            Session session = HibernateUtil.openSession();
+            Transaction tx = null;
+            try {
+                tx = session.getTransaction();
+                tx.begin();
+                session.saveOrUpdate({{ tableParam }});
+                session.flush();
+                session.refresh({{ tableParam }});
+                tx.commit();
+            } catch (Exception e) {
+                if (tx != null) {
+                     tx.rollback();
+                }
+                e.printStackTrace();
+            } finally {
+                session.close();
+            }
+            return {{ tableParam }};
+
+
+    }
+
+    public List<{{ tableName }}> listar() {
+
+{% set resultParam = 'resultado' ~ tableParam  %}
+        List list = null;
+        Session session = HibernateUtil.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery("SELECT {{ idTable }} FROM  {{ tableName }} AS {{ idTable }}");
+            list = query.list();
+
+            //habilitar para obtener datos de tablas relacionadas
+            for (Iterator it = list.iterator(); it.hasNext();) {
+                {{ tableName }} {{ resultParam }} = ({{ tableName }}) it.next();
+            {% for field in table.foreignFields %}
+                            Hibernate.initialize({{ resultParam }}.get{{ field.reference.table | upperCamelize }}());
+            {% endfor %}
+            }
+
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+            tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return list;
+
+
+    }
+
+    public boolean eliminar({{ tableName }} {{ tableParam }}){
+
+        Session session = HibernateUtil.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            {{ tableParam }} = ({{ tableName }})session.get({{ tableName }}.class, {{ macro.getObject(tableParam,table.primaryField) }});
+            session.delete({{ tableParam }});
+            tx.commit();
+
+            return true;
+        }catch (HibernateException e) {
+            if (tx!=null) tx.rollback();
+            e.printStackTrace();
+            return false;
+        }finally {
+            session.close();
+        }
+    }
+
+
+    public {{ tableName }} modificar({{ tableName }} {{ tableParam }}) {
+
+        Session session = HibernateUtil.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.getTransaction();
+            tx.begin();
+            session.update({{ tableParam }});
+            session.flush();
+            session.refresh({{ tableParam }});
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+             tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+             session.close();
+        }
+        return {{ tableParam }};
+
+
+    }
+
+    public List<{{ tableName }}> buscar(String q) {
+
+{% set resultParam = 'resultado' ~ tableParam  %}
+
+        List list = null;
+        Session session = HibernateUtil.openSession();
+        Transaction tx = null;
+
+        {% set i=0 %}
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery("SELECT {{ idTable }} FROM  {{ tableName }} AS {{ idTable }} WHERE "
+                        {% set totalFields= table.fields | length %}
+                        {% for field in table.fields %}
+                            {% if field.isForeign==false %}
+                            {% set i=i+1 %}
+                            + "{{ i >1 ? 'OR' : ''}} {{ idTable }}.{{ field.name | camelize }} LIKE :q "
+                            {% endif %}
+                        {% endfor %}
++ " ");
+
+            query.setString("q", q + "%");
+            list = query.list();
+
+            //habilitar para obtener datos de tablas relacionadas
+            for (Iterator it = list.iterator(); it.hasNext();) {
+                {{ tableName }} {{ resultParam }} = ({{ tableName }}) it.next();
+                {% for field in table.foreignFields %}
+                    Hibernate.initialize({{ resultParam }}.get{{ field.reference.table | upperCamelize }}());
+                {% endfor %}
+            }
+
+             tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+            tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+            return list;
+        }
+
+    }
+
+    public {{ tableName }} obtener({{ tableName }} {{ tableParam }}) {
+
+        {% set resultParam = 'resultado' ~ tableParam  %}
+        {{ tableName }} {{ resultParam }} = new {{ tableName }}();
+        Session session = HibernateUtil.openSession();
+        Transaction tx = null;
+
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery("SELECT {{ idTable }} FROM  {{ tableName }} AS {{ idTable }} WHERE {{ idTable }}.{{ table.primaryField.name | camelize }}=:{{ table.primaryField.name }}");
+
+            {{ macro.setQueryParam(table.primaryField,tableParam) }}
+            query.setMaxResults(1);
+
+            {{ resultParam }} = ({{ tableName }}) query.uniqueResult();
+
+
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) {
+            tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+        return {{ resultParam }};
+
+    }
+}

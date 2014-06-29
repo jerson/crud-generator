@@ -1,0 +1,53 @@
+
+package com.app.model;
+
+import java.io.*;
+import java.util.*;
+
+{% set tableName = table.name | upperCamelize %}
+
+public class {{ tableName }}{
+
+    {% for field in table.fields  %}
+
+      {% set type = java.type(field) %}
+      private {{ type }} {{ field.name | camelize}};
+
+    {% endfor %}
+
+
+    public {{ tableName }}() {
+    }
+
+    {% set fieldMethod = table.primaryField.name | upperCamelize %}
+    {% set fieldParam = table.primaryField.name | camelize %}
+    {% set type = java.type(table.primaryField) %}
+
+    public {{ tableName }}({{ type }} {{ fieldParam }}) {
+        this.{{ fieldParam }} = {{ fieldParam }};
+    }
+
+    {% for field in table.fields  %}
+
+        {% set fieldMethod = field.name | upperCamelize %}
+        {% set fieldParam = field.name | camelize %}
+        {% set type = java.type(field) %}
+
+        public {{ type }} get{{ fieldMethod }}() {
+            return {{ fieldParam}};
+        }
+
+        public void set{{ field.name | upperCamelize }}({{ type }} {{ fieldParam }}) {
+            this.{{ fieldParam }} = {{ fieldParam }};
+        }
+
+
+    {% endfor %}
+
+
+    @Override
+    public String toString(){
+         return  "{{ tableName }}: " + this.{{ table.primaryField.name | camelize }};
+    }
+
+}

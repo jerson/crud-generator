@@ -1,0 +1,31 @@
+{% extends "servlet.java.twig" %}
+
+{% block post %}
+
+            {{ tableDaoName }} {{ tableDaoParam }} = new {{ tableDaoName }}();
+
+            {{ tableName }} {{ tableParam }} = new {{ tableName }}();
+            {{ macro.getParam(tableParam,table.primaryField) }}
+
+            {{ tableParam }} = {{ tableDaoParam }}.obtener({{ tableParam }});
+
+            if({{ tableParam }}==null){
+                response.sendRedirect(REDIRECT_URL + "?resultado=no-existe");
+                return;
+            }
+
+            {% for field in table.fields %}
+                {% if field.isPrimary==false %}
+                    {{ macro.getParam(tableParam,field) }}
+                {% endif %}
+            {% endfor %}
+
+            {{ tableParam }} = {{ tableDaoParam }}.{{ actionParam }}({{ tableParam }});
+
+            if({{ tableParam }}!=null){
+                response.sendRedirect(REDIRECT_URL + "?resultado=correcto");
+            }else{
+                response.sendRedirect(REDIRECT_URL + "?resultado=error");
+            }
+
+{% endblock %}

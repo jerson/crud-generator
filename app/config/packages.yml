@@ -9,3 +9,7 @@ parameters:
       model: Struts2Simple
       controller: Struts2Simple
       view: Struts2Simple
+    Struts2Hibernate:
+      model: Struts2HibernateSimple
+      controller: Struts2HibernateSimple
+      view: Struts2HibernateSimple

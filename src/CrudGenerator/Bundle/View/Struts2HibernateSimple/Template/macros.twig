@@ -1,0 +1,221 @@
+{% macro getInput(field,value,tableParam) %}
+    {% set fieldTitle = field.name | humanize | titleize %}
+    {% set fieldTitleParam = field.name | upperCamelize %}
+    {% set fieldParam = field.name | camelize %}
+
+    {% set type = html.type(field) %}
+    {% set specialType = html.specialType(field) %}
+
+    {% if field.isForeign %}
+
+        {% set tableForeignTitle = field.reference.table | humanize | titleize %}
+        {% set tableForeignDao = (field.reference.table | upperCamelize) ~  'Dao' %}
+        {% set tableForeignParam = field.reference.table | camelize %}
+        {% set tableForeignColumnParam = field.reference.column | camelize %}
+        {% set tableForeignParamList = tableForeignParam | pluralize %}
+
+        <jsp:useBean id="{{ fieldParam }}{{ tableForeignDao }}" scope="application" class="com.app.dao.{{ tableForeignDao }}"/>
+        <jstl:set var="{{ tableForeignParamList }}"
+                  value="${{ '{' }}{{ fieldParam }}{{ tableForeignDao }}.listar(){{ '}' }}"/>
+
+
+        <div class="form-group">
+            <label for="select{{ fieldTitleParam }}"
+                   class="col-lg-3 control-label">{{ tableForeignTitle }} {{ field.allowNull ? '' : '*' }}</label>
+
+            <div class="col-lg-9">
+                <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}"
+                        id="select{{ fieldTitleParam }}">
+
+                    {% if value %}
+                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}{{ '}' }}" ${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}=={{ tableParam }}.{{ tableForeignParam  }}.{{ tableForeignColumnParam }} ? 'selected' : '' {{ '}' }}>${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
+                        </jstl:forEach>
+                    {% else %}
+                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}{{ '}' }}">
+                                ${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
+                        </jstl:forEach>
+                    {% endif %}
+                </select>
+                {% if field.comment %}
+                    <p class="help-block">{{ field.comment | titleize }}</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+    {% else %}
+
+
+        {% if field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TEXT') or
+        field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::HTML')  or
+        field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::MARKDOWN') %}
+
+            <div class="form-group">
+                <label for="input{{ fieldTitleParam }}"
+                       class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+
+                <div class="col-lg-9">
+                    <textarea
+                            class="form-control" {{ field.allowNull ? '' : 'required' }} {{ field.type.length > 0 ? 'maxlength="'~field.type.length~'"' : '' }}
+                            name="{{ field.name }}" id="input{{ fieldTitleParam }}"
+                            placeholder="{{ field.default }}">{{ value ? value : '' }}</textarea>
+
+                    {% if field.comment %}
+                        <p class="help-block">{{ field.comment | titleize }}</p>
+                    {% endif %}
+                </div>
+
+
+            </div>
+
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::ENUM') or
+        field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::OPTIONS') %}
+
+
+            {% set options = field.type.options %}
+
+            {% if field.specialType.options %}
+                {% set options = field.specialType.options %}
+            {% endif %}
+
+            <div class="form-group">
+                <label for="select{{ fieldTitleParam }}"
+                       class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+
+                <div class="col-lg-9">
+
+                    <select class="form-control" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}"
+                            id="select{{ fieldTitleParam }}">
+                        {% if value %}
+                            {% for option in options %}
+                                <option value="{{ option.value }}" ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option.value }}' ?  'selected' : '' {{ '}' }}>{{ option.name }}</option>
+                            {% endfor %}
+                        {% elseif field.default %}
+                            {% for option in options %}
+                                <option value="{{ option.value }}" {{ field.default==option.value ? 'selected' : '' }}>{{ option.name }}</option>
+                            {% endfor %}
+                        {% else %}
+                            {% for option in options %}
+                                <option value="{{ option.value }}">{{ option.name }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+
+                    {% if field.comment %}
+                        <p class="help-block">{{ field.comment | titleize }}</p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TINYINT') or field.type.name == constant('CrudGenerator\\Table\\Type\\Type::BOOL') %}
+            <div class="form-group">
+                <label for="select{{ fieldTitleParam }}"
+                       class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+
+                <div class="col-lg-9">
+
+                    {% if value %}
+                        <div class="radio">
+                            <label>
+                                <input ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}==1 ? 'selected' :
+                                '' {{ '}' }} type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}
+                                " value="1">
+                                SI
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}==0 ? 'selected' :
+                                '' {{ '}' }} type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}
+                                " value="0">
+                                NO
+                            </label>
+                        </div>
+                    {% else %}
+                        <div class="radio">
+                            <label>
+                                <input type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}"
+                                       value="1">
+                                SI
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" {{ field.allowNull ? '' : 'required' }} name="{{ field.name }}"
+                                       value="0">
+                                NO
+                            </label>
+                        </div>
+
+                    {% endif %}
+
+                    {% if field.comment %}
+                        <p class="help-block">{{ field.comment | titleize }}</p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+
+
+            {% if value %}
+                {% if field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATE') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd" value="'~value~'"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATETIME') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="'~value~'"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIMESTAMP') %}
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="'~value~'"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIME') %}
+                    {% set value = '<fmt:formatDate pattern="HH:mm" value="'~value~'"/>' %}
+                {% endif %}
+            {% else %}
+                {% if field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATE') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>"/>
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd" value="${now'~ fieldTitleParam ~'}"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::DATETIME') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>"/>
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="${now'~ fieldTitleParam ~'}"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIMESTAMP') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>"/>
+                    {% set value = '<fmt:formatDate pattern="yyyy-MM-dd\'T\'HH:mm" value="${now'~ fieldTitleParam ~'}"/>' %}
+                {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TIME') %}
+                    <jstl:set var="now{{ fieldTitleParam }}" value="<%=new java.util.Date()%>"/>
+                    {% set value = '<fmt:formatDate pattern="HH:mm" value="${now' ~fieldTitleParam ~'}"/>' %}
+                {% endif %}
+            {% endif %}
+
+
+            {% if specialType %}
+                {% set type = specialType %}
+            {% endif %}
+
+            <div class="form-group">
+                <label for="input{{ fieldTitleParam }}"
+                       class="col-lg-3 control-label">{{ fieldTitle }} {{ field.allowNull ? '' : '*' }}</label>
+
+                <div class="col-lg-9">
+                    <input type="{{ type }}" {{ value ? 'value="'~value~'"' : '' }} {{ field.allowNull ? '' : 'required' }}  {{ field.type.length > 0 ? 'maxlength="'~field.type.length~'"' : '' }}
+                           name="{{ field.name }}" class="form-control" id="input{{ fieldTitleParam }}"
+                           placeholder="{{ field.default }}">
+
+                    {% if field.comment %}
+                        <p class="help-block">{{ field.comment | titleize }}</p>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endif %}
+
+
+    {% endif %}
+
+
+{% endmacro %}
+
+

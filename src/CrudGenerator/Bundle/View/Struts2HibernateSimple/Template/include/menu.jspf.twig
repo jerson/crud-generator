@@ -1,0 +1,39 @@
+<ul class="nav navbar-nav">
+    {% for table in tables|slice(0, 5) %}
+        {% set tableTile = table.name | humanize | titleize %}
+        {% set tableSlug = table.name | dasherize %}
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+               data-toggle="dropdown">{{ tableTile }} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="forms/{{ tableSlug }}/registrar.jsp">Crear {{ tableTile }}</a>
+                </li>
+                <li>
+                    <a href="forms/{{ tableSlug }}/listar.jsp">Listar {{ tableTile | pluralize }}</a>
+                </li>
+            </ul>
+        </li>
+    {% endfor %}
+    {% if tables | length > 5 %}
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">M&aacute;s <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+
+                {% for table in tables|slice(6, (tables | length)) %}
+                    {% set tableTile = table.name | humanize | titleize %}
+                    {% set tableSlug = table.name | dasherize %}
+                    <li>
+                        <a href="forms/{{ tableSlug }}/registrar.jsp">Crear {{ tableTile }}</a>
+                    </li>
+                    <li>
+                        <a href="forms/{{ tableSlug }}/listar.jsp">Listar {{ tableTile | pluralize }}</a>
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </li>
+    {% endif %}
+
+</ul>
