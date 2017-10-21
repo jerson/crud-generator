@@ -1,4 +1,5 @@
 <?php
+
 namespace CrudGenerator\Table;
 
 
@@ -86,7 +87,7 @@ class Field
     public function isPrimary()
     {
 
-        return $this->key == Key::PRIMARY;
+        return $this->key === Key::PRIMARY;
 
     }
 
@@ -106,7 +107,7 @@ class Field
     public function isUnique()
     {
 
-        return $this->key == Key::UNIQUE;
+        return $this->key === Key::UNIQUE;
 
     }
 
@@ -123,22 +124,6 @@ class Field
     /**
      * @return boolean
      */
-    public function getAllowNull()
-    {
-        return $this->allowNull;
-    }
-
-    /**
-     * @param boolean $allowNull
-     */
-    public function setAllowNull($allowNull)
-    {
-        $this->allowNull = $allowNull;
-    }
-
-    /**
-     * @return boolean
-     */
     public function getAutoIncrement()
     {
         return $this->autoIncrement;
@@ -150,6 +135,22 @@ class Field
     public function setAutoIncrement($autoIncrement)
     {
         $this->autoIncrement = $autoIncrement;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAllowNull()
+    {
+        return $this->allowNull;
+    }
+
+    /**
+     * @param boolean $allowNull
+     */
+    public function setAllowNull($allowNull)
+    {
+        $this->allowNull = $allowNull;
     }
 
     /**

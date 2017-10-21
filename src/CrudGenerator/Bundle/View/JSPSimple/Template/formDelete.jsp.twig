@@ -1,5 +1,6 @@
+{% import "macros.twig" as macro %}
 {% set basePath='../../' %}
-{% extends "index.jsp.twig"%}
+{% extends "index.jsp.twig" %}
 
 
 {% block content %}
@@ -21,7 +22,8 @@
                         <legend>{% block title %}{{ action | humanize | titleize }} {{ table.name | humanize | titleize }}{% endblock %}</legend>
 
                         <jsp:useBean id="{{ tableParam }}" scope="application" class="Model.{{ tableName }}"/>
-                        <jsp:setProperty name="{{ tableParam }}" property="{{ table.primaryField.name | camelize }}" value="${{ '{' }}param.{{ table.primaryField.name }}{{ '}' }}"/>
+                        <jsp:setProperty name="{{ tableParam }}" property="{{ table.primaryField.name | camelize }}"
+                                         value="${{ '{' }}param.{{ table.primaryField.name }}{{ '}' }}"/>
 
                         {% set value = '${'~ tableParam ~ '.'~ (table.primaryField.name | camelize) ~ '}' %}
                         {{ macro.getInput(table.primaryField, value,tableParam) }}

@@ -1,9 +1,8 @@
-.idea/
-vendor/
-build/
-output/
-app/config/parameters.yml
-composer.lock
-composer.phar
-config.php
-config.yml
+/.idea
+/vendor
+/build
+/output
+/app/config/parameters.yml
+/composer.phar
+/config.php
+/config.yml

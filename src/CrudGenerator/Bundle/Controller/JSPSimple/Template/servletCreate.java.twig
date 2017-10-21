@@ -1,11 +1,12 @@
 {% extends "servlet.java.twig" %}
+{% import "macros.twig" as macro %}
 
 {% block post %}
             {{ tableName }} {{ tableParam }} = new {{ tableName }}();
 
             {% for field in table.fields %}
                 {% if field.isAutoIncrement==false %}
-                    {{ macro.getParam(tableParam,field) }}
+                    {{ helper.getParam(tableParam,field) }}
                 {% endif %}
             {% endfor %}
 

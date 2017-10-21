@@ -25,7 +25,7 @@ class Model extends Base
             $fileName = Stringy::create($table->getName())->upperCamelize();
             $filePath = sprintf('%s/%s.java', $baseDir, $fileName);
 
-            $fileContent = $this->twig->render('class.java.twig', array('table' => $table));
+            $fileContent = $this->twig->render('class.java.twig', ['table' => $table]);
             $this->fileSystem->write($filePath, $fileContent, true);
 
         }
@@ -33,11 +33,10 @@ class Model extends Base
         $baseDir = 'src/Dao';
 
         foreach ($this->tables as $table) {
-
             $fileName = Stringy::create($table->getName())->upperCamelize();
             $filePath = sprintf('%s/%sDao.java', $baseDir, $fileName);
 
-            $fileContent = $this->twig->render('dao.java.twig', array('table' => $table));
+            $fileContent = $this->twig->render('dao.java.twig', ['table' => $table]);
             $this->fileSystem->write($filePath, $fileContent, true);
 
         }

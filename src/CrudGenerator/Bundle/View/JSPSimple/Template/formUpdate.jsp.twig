@@ -1,5 +1,6 @@
+{% import "macros.twig" as macro %}
 {% set basePath='../../' %}
-{% extends "index.jsp.twig"%}
+{% extends "index.jsp.twig" %}
 
 {% block content %}
 
@@ -25,10 +26,14 @@
                         <jsp:useBean id="{{ tableDao }}" scope="application" class="Dao.{{ tableDao }}"/>
                         <jsp:useBean id="{{ tableParamSearch }}" scope="application" class="Model.{{ tableName }}"/>
 
-                        <jsp:setProperty name="{{ tableParamSearch }}" property="{{ table.primaryField.name | camelize }}" value="${{ '{' }}param.{{ table.primaryField.name }}{{ '}' }}"/>
-                        <jstl:set var="{{ tableParam }}" value="${{ '{' }}{{ tableDao }}.obtener({{ tableParamSearch }}){{ '}' }}"/>
+                        <jsp:setProperty name="{{ tableParamSearch }}"
+                                         property="{{ table.primaryField.name | camelize }}"
+                                         value="${{ '{' }}param.{{ table.primaryField.name }}{{ '}' }}"/>
+                        <jstl:set var="{{ tableParam }}"
+                                  value="${{ '{' }}{{ tableDao }}.obtener({{ tableParamSearch }}){{ '}' }}"/>
 
-                        <input type="hidden" name="{{ table.primaryField.name }}" value="${{ '{' }}{{ tableParamSearch }}.{{ table.primaryField.name | camelize }}{{ '}' }}"/>
+                        <input type="hidden" name="{{ table.primaryField.name }}"
+                               value="${{ '{' }}{{ tableParamSearch }}.{{ table.primaryField.name | camelize }}{{ '}' }}"/>
                         {% for field in table.fields %}
                             {% if field.isPrimary==false %}
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace CrudGenerator\Table\Type;
 
 

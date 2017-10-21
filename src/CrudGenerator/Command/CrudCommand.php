@@ -58,6 +58,7 @@ class CrudCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -68,7 +69,7 @@ class CrudCommand extends Command
         $layout = $input->getArgument('layout');
         $configFile = empty($configFile) ? 'config.yml' : $configFile;
         $type = empty($type) ? 'all' : $type;
-        $config = array();
+        $config = [];
         if (!empty($configFile)) {
 
             if (file_exists($configFile)) {
@@ -84,7 +85,7 @@ class CrudCommand extends Command
         $output->writeln('<comment>Iniciando Generador</comment>');
         $this->generator = new Generator($config);
 
-        if ($type == 'package') {
+        if ($type === 'package') {
 
             $packages = $this->container->getParameter('packages');
 
@@ -110,19 +111,19 @@ class CrudCommand extends Command
 
         } else {
 
-            if ($type == 'database') {
+            if ($type === 'database') {
                 $output->writeln('<info>Generando Scripts de Base de Datos</info>');
                 $this->generator->generateDatabase($layout);
             }
-            if ($type == 'model') {
+            if ($type === 'model') {
                 $output->writeln('<info>Generando Modelos</info>');
                 $this->generator->generateModel($layout);
             }
-            if ($type == 'controller') {
+            if ($type === 'controller') {
                 $output->writeln('<info>Generando Controladores</info>');
                 $this->generator->generateController($layout);
             }
-            if ($type == 'view') {
+            if ($type === 'view') {
                 $output->writeln('<info>Generando Interfaces</info>');
                 $this->generator->generateView($layout);
             }

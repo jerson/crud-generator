@@ -5,6 +5,7 @@ namespace CrudGenerator\Twig;
 
 use CrudGenerator\Table\Table;
 use Stringy\Stringy;
+use Twig_SimpleFilter;
 
 class Extension extends \Twig_Extension
 {
@@ -24,74 +25,74 @@ class Extension extends \Twig_Extension
     public function getFilters()
     {
 
-        return array(
-            'at' => new \Twig_Filter_Method($this, 'at'),
-            'camelize' => new \Twig_Filter_Method($this, 'camelize'),
-            'chars' => new \Twig_Filter_Method($this, 'chars'),
-            'collapseWhitespace' => new \Twig_Filter_Method($this, 'collapseWhitespace'),
-            'contains' => new \Twig_Filter_Method($this, 'contains'),
-            'countSubstr' => new \Twig_Filter_Method($this, 'countSubstr'),
-            'create' => new \Twig_Filter_Method($this, 'create'),
-            'dasherize' => new \Twig_Filter_Method($this, 'dasherize'),
-            'endsWith' => new \Twig_Filter_Method($this, 'endsWith'),
-            'ensureLeft' => new \Twig_Filter_Method($this, 'ensureLeft'),
-            'ensureRight' => new \Twig_Filter_Method($this, 'ensureRight'),
-            'first' => new \Twig_Filter_Method($this, 'first'),
-            'getEncoding' => new \Twig_Filter_Method($this, 'getEncoding'),
-            'humanize' => new \Twig_Filter_Method($this, 'humanize'),
-            'insert' => new \Twig_Filter_Method($this, 'insert'),
-            'isAlpha' => new \Twig_Filter_Method($this, 'isAlpha'),
-            'isAlphanumeric' => new \Twig_Filter_Method($this, 'isAlphanumeric'),
-            'isBlank' => new \Twig_Filter_Method($this, 'isBlank'),
-            'isHexadecimal' => new \Twig_Filter_Method($this, 'isHexadecimal'),
-            'isJson' => new \Twig_Filter_Method($this, 'isJson'),
-            'isLowerCase' => new \Twig_Filter_Method($this, 'isLowerCase'),
-            'isSerialized' => new \Twig_Filter_Method($this, 'isSerialized'),
-            'isUpperCase' => new \Twig_Filter_Method($this, 'isUpperCase'),
-            'last' => new \Twig_Filter_Method($this, 'last'),
-            //'length' => new \Twig_Filter_Method($this, 'length'),
-            'longestCommonPrefix' => new \Twig_Filter_Method($this, 'longestCommonPrefix'),
-            'longestCommonSuffix' => new \Twig_Filter_Method($this, 'longestCommonSuffix'),
-            'longestCommonSubstring' => new \Twig_Filter_Method($this, 'longestCommonSubstring'),
-            'lowerCaseFirst' => new \Twig_Filter_Method($this, 'lowerCaseFirst'),
-            'pad' => new \Twig_Filter_Method($this, 'pad'),
-            'padBoth' => new \Twig_Filter_Method($this, 'padBoth'),
-            'padLeft' => new \Twig_Filter_Method($this, 'padLeft'),
-            'padRight' => new \Twig_Filter_Method($this, 'padRight'),
-            'regexReplace' => new \Twig_Filter_Method($this, 'regexReplace'),
-            'removeLeft' => new \Twig_Filter_Method($this, 'removeLeft'),
-            'removeRight' => new \Twig_Filter_Method($this, 'removeRight'),
-            'replace' => new \Twig_Filter_Method($this, 'replace'),
-            'reverse' => new \Twig_Filter_Method($this, 'reverse'),
-            'safeTruncate' => new \Twig_Filter_Method($this, 'safeTruncate'),
-            'shuffle' => new \Twig_Filter_Method($this, 'shuffle'),
-            'slugify' => new \Twig_Filter_Method($this, 'slugify'),
-            'startsWith' => new \Twig_Filter_Method($this, 'startsWith'),
-            'substr' => new \Twig_Filter_Method($this, 'substr'),
-            'surround' => new \Twig_Filter_Method($this, 'surround'),
-            'swapCase' => new \Twig_Filter_Method($this, 'swapCase'),
-            'tidy' => new \Twig_Filter_Method($this, 'tidy'),
-            'titleize' => new \Twig_Filter_Method($this, 'titleize'),
-            'toAscii' => new \Twig_Filter_Method($this, 'toAscii'),
-            'toLowerCase' => new \Twig_Filter_Method($this, 'toLowerCase'),
-            'toSpaces' => new \Twig_Filter_Method($this, 'toSpaces'),
-            'toTabs' => new \Twig_Filter_Method($this, 'toTabs'),
-            'toUpperCase' => new \Twig_Filter_Method($this, 'toUpperCase'),
-            'trim' => new \Twig_Filter_Method($this, 'trim'),
-            'truncate' => new \Twig_Filter_Method($this, 'truncate'),
-            'underscored' => new \Twig_Filter_Method($this, 'underscored'),
-            'upperCamelize' => new \Twig_Filter_Method($this, 'upperCamelize'),
-            'upperCaseFirst' => new \Twig_Filter_Method($this, 'upperCaseFirst'),
+        return [
+            new Twig_SimpleFilter('at', [$this, 'at']),
+            new Twig_SimpleFilter('camelize', [$this, 'camelize']),
+            new Twig_SimpleFilter('chars', [$this, 'chars']),
+            new Twig_SimpleFilter('collapseWhitespace', [$this, 'collapseWhitespace']),
+            new Twig_SimpleFilter('contains', [$this, 'contains']),
+            new Twig_SimpleFilter('countSubstr', [$this, 'countSubstr']),
+            new Twig_SimpleFilter('create', [$this, 'create']),
+            new Twig_SimpleFilter('dasherize', [$this, 'dasherize']),
+            new Twig_SimpleFilter('endsWith', [$this, 'endsWith']),
+            new Twig_SimpleFilter('ensureLeft', [$this, 'ensureLeft']),
+            new Twig_SimpleFilter('ensureRight', [$this, 'ensureRight']),
+            new Twig_SimpleFilter('first', [$this, 'first']),
+            new Twig_SimpleFilter('getEncoding', [$this, 'getEncoding']),
+            new Twig_SimpleFilter('humanize', [$this, 'humanize']),
+            new Twig_SimpleFilter('insert', [$this, 'insert']),
+            new Twig_SimpleFilter('isAlpha', [$this, 'isAlpha']),
+            new Twig_SimpleFilter('isAlphanumeric', [$this, 'isAlphanumeric']),
+            new Twig_SimpleFilter('isBlank', [$this, 'isBlank']),
+            new Twig_SimpleFilter('isHexadecimal', [$this, 'isHexadecimal']),
+            new Twig_SimpleFilter('isJson', [$this, 'isJson']),
+            new Twig_SimpleFilter('isLowerCase', [$this, 'isLowerCase']),
+            new Twig_SimpleFilter('isSerialized', [$this, 'isSerialized']),
+            new Twig_SimpleFilter('isUpperCase', [$this, 'isUpperCase']),
+            new Twig_SimpleFilter('last', [$this, 'last']),
+            //new Twig_SimpleFilter('length', [$this, 'length']),
+            new Twig_SimpleFilter('longestCommonPrefix', [$this, 'longestCommonPrefix']),
+            new Twig_SimpleFilter('longestCommonSuffix', [$this, 'longestCommonSuffix']),
+            new Twig_SimpleFilter('longestCommonSubstring', [$this, 'longestCommonSubstring']),
+            new Twig_SimpleFilter('lowerCaseFirst', [$this, 'lowerCaseFirst']),
+            new Twig_SimpleFilter('pad', [$this, 'pad']),
+            new Twig_SimpleFilter('padBoth', [$this, 'padBoth']),
+            new Twig_SimpleFilter('padLeft', [$this, 'padLeft']),
+            new Twig_SimpleFilter('padRight', [$this, 'padRight']),
+            new Twig_SimpleFilter('regexReplace', [$this, 'regexReplace']),
+            new Twig_SimpleFilter('removeLeft', [$this, 'removeLeft']),
+            new Twig_SimpleFilter('removeRight', [$this, 'removeRight']),
+            new Twig_SimpleFilter('replace', [$this, 'replace']),
+            new Twig_SimpleFilter('reverse', [$this, 'reverse']),
+            new Twig_SimpleFilter('safeTruncate', [$this, 'safeTruncate']),
+            new Twig_SimpleFilter('shuffle', [$this, 'shuffle']),
+            new Twig_SimpleFilter('slugify', [$this, 'slugify']),
+            new Twig_SimpleFilter('startsWith', [$this, 'startsWith']),
+            new Twig_SimpleFilter('substr', [$this, 'substr']),
+            new Twig_SimpleFilter('surround', [$this, 'surround']),
+            new Twig_SimpleFilter('swapCase', [$this, 'swapCase']),
+            new Twig_SimpleFilter('tidy', [$this, 'tidy']),
+            new Twig_SimpleFilter('titleize', [$this, 'titleize']),
+            new Twig_SimpleFilter('toAscii', [$this, 'toAscii']),
+            new Twig_SimpleFilter('toLowerCase', [$this, 'toLowerCase']),
+            new Twig_SimpleFilter('toSpaces', [$this, 'toSpaces']),
+            new Twig_SimpleFilter('toTabs', [$this, 'toTabs']),
+            new Twig_SimpleFilter('toUpperCase', [$this, 'toUpperCase']),
+            new Twig_SimpleFilter('trim', [$this, 'trim']),
+            new Twig_SimpleFilter('truncate', [$this, 'truncate']),
+            new Twig_SimpleFilter('underscored', [$this, 'underscored']),
+            new Twig_SimpleFilter('upperCamelize', [$this, 'upperCamelize']),
+            new Twig_SimpleFilter('upperCaseFirst', [$this, 'upperCaseFirst']),
 
-            'columns' => new \Twig_Filter_Method($this, 'columnsToString'),
-            'columnsWithoutPrimary' => new \Twig_Filter_Method($this, 'columnsWithoutPrimaryToString'),
-            'columnsNoAutoIncrement' => new \Twig_Filter_Method($this, 'columnsNoAutoIncrementToString'),
-            'columnsPrimary' => new \Twig_Filter_Method($this, 'columnsPrimaryToString'),
-            'columnsForeign' => new \Twig_Filter_Method($this, 'columnsForeignToString'),
+            new Twig_SimpleFilter('columns', [$this, 'columns']),
+            new Twig_SimpleFilter('columnsWithoutPrimary', [$this, 'columnsWithoutPrimary']),
+            new Twig_SimpleFilter('columnsNoAutoIncrement', [$this, 'columnsNoAutoIncrement']),
+            new Twig_SimpleFilter('columnsPrimary', [$this, 'columnsPrimary']),
+            new Twig_SimpleFilter('columnsForeign', [$this, 'columnsForeign']),
 
-            'pluralize' => new \Twig_Filter_Method($this, 'pluralize'),
-            'repeat' => new \Twig_Filter_Method($this, 'repeat')
-        );
+            new Twig_SimpleFilter('pluralize', [$this, 'pluralize']),
+            new Twig_SimpleFilter('repeat', [$this, 'repeat']),
+        ];
     }
 
     /**
@@ -99,8 +100,7 @@ class Extension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array( //'i_range' => new \Twig_Function_Method($this, 'iRange'),
-        );
+        return [];
     }
 
     /**
@@ -119,7 +119,7 @@ class Extension extends \Twig_Extension
      */
     public function repeat($text, $times)
     {
-        $texts = array();
+        $texts = [];
 
         for ($i = 0; $i < $times; $i++) {
             $texts[] = $text;
@@ -132,9 +132,9 @@ class Extension extends \Twig_Extension
      * @param Table $table
      * @return array
      */
-    public function columnsToString(Table $table)
+    public function columns(Table $table)
     {
-        $columns = array();
+        $columns = [];
         foreach ($table->getFields() as $field) {
             $columns[] = $field->getName();
         }
@@ -146,9 +146,9 @@ class Extension extends \Twig_Extension
      * @param Table $table
      * @return array
      */
-    public function columnsWithoutPrimaryToString(Table $table)
+    public function columnsWithoutPrimary(Table $table)
     {
-        $columns = array();
+        $columns = [];
         foreach ($table->getFields() as $field) {
 
             if ($field->isPrimary()) {
@@ -165,9 +165,9 @@ class Extension extends \Twig_Extension
      * @param Table $table
      * @return array
      */
-    public function columnsNoAutoIncrementToString(Table $table)
+    public function columnsNoAutoIncrement(Table $table)
     {
-        $columns = array();
+        $columns = [];
         foreach ($table->getFields() as $field) {
 
             if ($field->isAutoIncrement()) {
@@ -184,9 +184,9 @@ class Extension extends \Twig_Extension
      * @param Table $table
      * @return array
      */
-    public function columnsPrimaryToString(Table $table)
+    public function columnsPrimary(Table $table)
     {
-        $columns = array();
+        $columns = [];
         foreach ($table->getPrimaryFields() as $field) {
             $columns[] = $field->getName();
         }
@@ -198,9 +198,9 @@ class Extension extends \Twig_Extension
      * @param Table $table
      * @return array
      */
-    public function columnsForeignToString(Table $table)
+    public function columnsForeign(Table $table)
     {
-        $columns = array();
+        $columns = [];
         foreach ($table->getForeignFields() as $field) {
             $columns[] = $field->getName();
         }
@@ -215,14 +215,14 @@ class Extension extends \Twig_Extension
      */
     public function __call($name, $arguments)
     {
+
         $text = $arguments[0];
-        if ($name == 'upperCamelize') {
+        if ($name === 'upperCamelize') {
             $text = strtolower(Stringy::create($text)->humanize());
-        } elseif ($name == 'camelize') {
+        } elseif ($name === 'camelize') {
             $text = strtolower(Stringy::create($text)->humanize());
 
         }
-
-        return Stringy::create($text)->$name();
+        return Stringy::create($text)->$name()->__toString();
     }
 }

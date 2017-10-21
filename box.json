@@ -29,7 +29,7 @@
     ],
     "git-commit": "git-commit",
     "git-version": "git-version",
-    "main": "app/console",
+    "main": "bin/console",
     "output": "build/crud-generator.phar",
     "stub": true
 }

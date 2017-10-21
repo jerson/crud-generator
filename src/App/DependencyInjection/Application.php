@@ -1,4 +1,5 @@
 <?php
+
 namespace App\DependencyInjection;
 
 use App\Library\ErrorHandler;
@@ -26,7 +27,7 @@ class Application extends \Symfony\Component\Console\Application
         $this->container = new ContainerBuilder();
 
         // some useful paths
-        $paths = array();
+        $paths = [];
         $paths['root'] = __DIR__ . '/../../../';
         $paths['config'] = $paths['root'] . 'app/config/';
         $this->container->setParameter('paths', $paths);
@@ -62,7 +63,7 @@ class Application extends \Symfony\Component\Console\Application
 
         // find the path for the namespace
         foreach ($namespaces as $namespace => $lookupPaths) {
-            if ($namespace == $baseNamespaceName) {
+            if ($namespace === $baseNamespaceName) {
                 // add all existing commands
                 foreach ($lookupPaths as $path) {
                     $commandPath = $path . '/' . $namespace . '/Command/';

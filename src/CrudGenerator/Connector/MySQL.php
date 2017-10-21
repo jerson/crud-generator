@@ -1,4 +1,5 @@
 <?php
+
 namespace CrudGenerator\Connector;
 
 
@@ -6,7 +7,6 @@ use CrudGenerator\Table\Field;
 use CrudGenerator\Table\Index;
 use CrudGenerator\Table\Reference;
 use CrudGenerator\Table\Table;
-use CrudGenerator\Table\Type;
 
 class MySQL extends BaseConnector implements ConnectorInterface
 {
@@ -28,7 +28,7 @@ class MySQL extends BaseConnector implements ConnectorInterface
     {
         $statement = $this->pdo->query('SHOW TABLES');
         $results = $statement->fetchAll();
-        $tables = array();
+        $tables = [];
 
         foreach ($results as $result) {
 
@@ -63,9 +63,9 @@ class MySQL extends BaseConnector implements ConnectorInterface
 
         foreach ($results as $result) {
 
-            $fieldReferences = isset($references[$result['Field']]) ? $references[$result['Field']] : array();
+            $fieldReferences = isset($references[$result['Field']]) ? $references[$result['Field']] : [];
 
-            $fieldIndexes = array();
+            $fieldIndexes = [];
 
             foreach ($indexes as $index) {
                 $columns = $index->getColumns();
@@ -121,7 +121,7 @@ SQL;
         $statement->execute();
 
         $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $tableReferences = array();
+        $tableReferences = [];
 
         foreach ($results as $result) {
 
@@ -165,7 +165,7 @@ SQL;
         $statement->execute();
 
         $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $tableIndexes = array();
+        $tableIndexes = [];
 
         foreach ($results as $result) {
 

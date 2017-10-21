@@ -3,10 +3,9 @@
 namespace CrudGenerator;
 
 
+use CrudGenerator\Bundle\BundleInterface;
 use CrudGenerator\Bundle\Controller;
-use CrudGenerator\Bundle\Database;
 use CrudGenerator\Bundle\Model;
-use CrudGenerator\Bundle\ModelInterface;
 use CrudGenerator\Bundle\View;
 use CrudGenerator\Connector\ConnectorInterface;
 use CrudGenerator\Connector\MySQL;
@@ -15,6 +14,8 @@ use CrudGenerator\Twig\Extension;
 use Gaufrette\Adapter\Local;
 use Gaufrette\Filesystem;
 use Stringy\Stringy;
+use Twig_Environment;
+use Twig_Loader_Filesystem;
 
 class Generator
 {
@@ -46,6 +47,7 @@ class Generator
 
     /**
      * @param array $config
+     * @throws \Exception
      */
     public function __construct(array $config)
     {
@@ -57,7 +59,8 @@ class Generator
         $adapter = new Local($config['output']['dir']);
         $this->fileSystem = new Filesystem($adapter);
 
-        $this->twig = new \Twig_Environment(null, array('autoescape' => false));
+        $loader = new Twig_Loader_Filesystem(__DIR__);
+        $this->twig = new Twig_Environment($loader, ['autoescape' => false]);
         $extension = new Extension();
         $this->twig->addExtension($extension);
 
@@ -117,6 +120,7 @@ class Generator
 
     /**
      * @param $layout
+     * @throws \Exception
      */
     public function generateModel($layout)
     {
@@ -138,8 +142,8 @@ class Generator
             throw new \Exception(sprintf('El %s Layout "%s" no existe', $type, $layout));
         }
 
+        /** @var BundleInterface $model */
         $model = new $class($this->fileSystem, $this->twig, $this->config);
-
         $model->setTables($this->tables);
         $model->generate();
 
@@ -152,12 +156,12 @@ class Generator
      */
     private function parseLayout($string)
     {
-        $layout = Stringy::create($string)->upperCamelize();
-        return $layout;
+        return Stringy::create($string)->upperCamelize()->__toString();
     }
 
     /**
      * @param $layout
+     * @throws \Exception
      */
     public function generateDatabase($layout)
     {
@@ -166,6 +170,7 @@ class Generator
 
     /**
      * @param $layout
+     * @throws \Exception
      */
     public function generateView($layout)
     {
@@ -174,6 +179,7 @@ class Generator
 
     /**
      * @param $layout
+     * @throws \Exception
      */
     public function generateController($layout)
     {

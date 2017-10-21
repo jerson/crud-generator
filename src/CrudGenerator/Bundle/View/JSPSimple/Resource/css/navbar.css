@@ -148,13 +148,14 @@ footer p {
 }
 
 .has-error {
-    background-color:#BB1100;
-    color:white;
-}
-.has-success {
-    background-color:#fff;
+    background-color: #BB1100;
+    color: white;
 }
 
-.btn{
+.has-success {
+    background-color: #fff;
+}
+
+.btn {
     text-decoration: none !important;
 }

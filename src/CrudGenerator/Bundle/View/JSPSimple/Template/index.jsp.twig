@@ -10,7 +10,7 @@
 <head>
     <base href="{{ basePath }}">
     <%@include file="/WEB-INF/include/metas.jspf" %>
-    <title>{% if block('title') is not empty %} {{ block('title') }} | {% endif %}{{ config.project.name }}</title>
+    <title>{% block title %}{% endblock %} - {{ config.project.name }}</title>
     <%@include file="/WEB-INF/include/stylesheets.jspf" %>
 </head>
 

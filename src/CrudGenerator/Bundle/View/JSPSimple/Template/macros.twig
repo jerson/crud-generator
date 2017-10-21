@@ -28,11 +28,16 @@
                         id="select{{ fieldTitleParam }}">
 
                     {% if value %}
-                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
-                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}{{ '}' }}" ${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}=={{ tableParam }}.{{ field.name | camelize }}.{{ tableForeignColumnParam }} ? 'selected' : '' {{ '}' }}>${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
+                        <jstl:forEach var="{{ tableForeignParam }}"
+                                      items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
+                            <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}{{ '}' }}"
+                                    ${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}=={{ tableParam }}.{{ field.name | camelize }}.{{ tableForeignColumnParam }}
+                                    ?
+                            'selected' : '' {{ '}' }}>${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
                         </jstl:forEach>
                     {% else %}
-                        <jstl:forEach var="{{ tableForeignParam }}" items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
+                        <jstl:forEach var="{{ tableForeignParam }}"
+                                      items="${{ '{' }}{{ tableForeignParamList }}{{ '}' }}">
                             <option value="${{ '{' }}{{ tableForeignParam }}.{{ tableForeignColumnParam }}{{ '}' }}">
                                 ${{ '{' }}{{ tableForeignParam }}{{ '}' }}</option>
                         </jstl:forEach>
@@ -49,8 +54,8 @@
 
 
         {% if field.type.name == constant('CrudGenerator\\Table\\Type\\Type::TEXT') or
-        field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::HTML')  or
-        field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::MARKDOWN') %}
+            field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::HTML')  or
+            field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::MARKDOWN') %}
 
             <div class="form-group">
                 <label for="input{{ fieldTitleParam }}"
@@ -71,7 +76,7 @@
             </div>
 
         {% elseif field.type.name == constant('CrudGenerator\\Table\\Type\\Type::ENUM') or
-        field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::OPTIONS') %}
+            field.specialType.name == constant('CrudGenerator\\Table\\Type\\Special::OPTIONS') %}
 
 
             {% set options = field.type.options %}
@@ -90,7 +95,9 @@
                             id="select{{ fieldTitleParam }}">
                         {% if value %}
                             {% for option in options %}
-                                <option value="{{ option.value }}" ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option.value }}' ?  'selected' : '' {{ '}' }}>{{ option.name }}</option>
+                                <option value="{{ option.value }}"
+                                        ${{ '{' }}{{ tableParam }}.{{ field.name | camelize }}=='{{ option.value }}'
+                                        ?  'selected' : '' {{ '}' }}>{{ option.name }}</option>
                             {% endfor %}
                         {% elseif field.default %}
                             {% for option in options %}

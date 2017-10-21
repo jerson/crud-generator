@@ -27,7 +27,7 @@ class Controller extends Base
             $filePath = sprintf('%s/%s/%s%s.java', $baseDir, $fileName, $action, $fileName);
             $fileContent = $this->twig->render(
                 'servletCreate.java.twig',
-                array('table' => $table, 'action' => $action)
+                ['table' => $table, 'action' => $action]
             );
             $this->fileSystem->write($filePath, $fileContent, true);
 
@@ -35,7 +35,7 @@ class Controller extends Base
             $filePath = sprintf('%s/%s/%s%s.java', $baseDir, $fileName, $action, $fileName);
             $fileContent = $this->twig->render(
                 'servletUpdate.java.twig',
-                array('table' => $table, 'action' => $action)
+                ['table' => $table, 'action' => $action]
             );
             $this->fileSystem->write($filePath, $fileContent, true);
 
@@ -44,7 +44,7 @@ class Controller extends Base
             $filePath = sprintf('%s/%s/%s%s.java', $baseDir, $fileName, $action, $fileName);
             $fileContent = $this->twig->render(
                 'servletDelete.java.twig',
-                array('table' => $table, 'action' => $action)
+                ['table' => $table, 'action' => $action]
             );
             $this->fileSystem->write($filePath, $fileContent, true);
 

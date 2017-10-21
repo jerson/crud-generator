@@ -3,6 +3,8 @@
 namespace CrudGenerator\Table;
 
 
+use CrudGenerator\Table\Type\Type;
+
 class Table
 {
 
@@ -15,6 +17,14 @@ class Table
      * @var Field[]
      */
     private $fields;
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name;
+    }
 
 
     /**
@@ -44,11 +54,11 @@ class Table
     public function getPrimaryFields()
     {
 
-        $primaryFields = array();
+        $primaryFields = [];
 
         foreach ($this->fields as $field) {
 
-            if ($field->getKey() == Key::PRIMARY) {
+            if ($field->getKey() === Key::PRIMARY) {
                 $primaryFields[] = $field;
 
             }
@@ -64,11 +74,11 @@ class Table
     public function getUniqueFields()
     {
 
-        $uniqueFields = array();
+        $uniqueFields = [];
 
         foreach ($this->fields as $field) {
 
-            if ($field->getKey() == Key::UNIQUE) {
+            if ($field->getKey() === Key::UNIQUE) {
                 $uniqueFields[] = $field;
 
             }
@@ -84,7 +94,7 @@ class Table
     public function getForeignFields()
     {
 
-        $foreignFields = array();
+        $foreignFields = [];
 
         foreach ($this->fields as $field) {
 

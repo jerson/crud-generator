@@ -85,32 +85,30 @@ class View extends Base
 
             $action = 'Registrar';
             $filePath = sprintf('%s/%s/%s.jsp', $baseDir, $fileName, Stringy::create($action)->dasherize());
-            $fileContent = $this->twig->render('formCreate.jsp.twig', array('table' => $table, 'action' => $action));
+            $fileContent = $this->twig->render('formCreate.jsp.twig', ['table' => $table, 'action' => $action]);
             $this->fileSystem->write($filePath, $fileContent, true);
 
             $action = 'Listar';
             $filePath = sprintf('%s/%s/%s.jsp', $baseDir, $fileName, Stringy::create($action)->dasherize());
-            $fileContent = $this->twig->render('list.jsp.twig', array('table' => $table, 'action' => $action));
+            $fileContent = $this->twig->render('list.jsp.twig', ['table' => $table, 'action' => $action]);
             $this->fileSystem->write($filePath, $fileContent, true);
 
             $action = 'Buscar';
             $filePath = sprintf('%s/%s/%s.jsp', $baseDir, $fileName, Stringy::create($action)->dasherize());
-            $fileContent = $this->twig->render('search.jsp.twig', array('table' => $table, 'action' => $action));
+            $fileContent = $this->twig->render('search.jsp.twig', ['table' => $table, 'action' => $action]);
             $this->fileSystem->write($filePath, $fileContent, true);
 
             $action = 'Modificar';
             $filePath = sprintf('%s/%s/%s.jsp', $baseDir, $fileName, Stringy::create($action)->dasherize());
-            $fileContent = $this->twig->render('formUpdate.jsp.twig', array('table' => $table, 'action' => $action));
+            $fileContent = $this->twig->render('formUpdate.jsp.twig', ['table' => $table, 'action' => $action]);
             $this->fileSystem->write($filePath, $fileContent, true);
 
 
             $action = 'Eliminar';
             $filePath = sprintf('%s/%s/%s.jsp', $baseDir, $fileName, Stringy::create($action)->dasherize());
-            $fileContent = $this->twig->render('formDelete.jsp.twig', array('table' => $table, 'action' => $action));
+            $fileContent = $this->twig->render('formDelete.jsp.twig', ['table' => $table, 'action' => $action]);
             $this->fileSystem->write($filePath, $fileContent, true);
 
-            $this->twig->clearTemplateCache();
-            $this->twig->clearCacheFiles();
 
         }
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Library;
 
 use Symfony\Component\Yaml\Yaml;
@@ -33,7 +34,7 @@ class Version
         $versionParts = explode('.', $this->data['parameters']['version']['current']);
 
         foreach ($templateParts as $index => $part) {
-            if ('*' == $part) {
+            if ('*' === $part) {
                 $versionParts[$index]++;
                 break;
             } else {

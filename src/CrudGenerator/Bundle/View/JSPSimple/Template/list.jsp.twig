@@ -17,25 +17,25 @@
 
     <div class="row">
 
-            <jstl:choose>
+        <jstl:choose>
 
-                <jstl:when test="${{ '{' }}param.resultado == 'correcto'{{ '}' }}">
-                    <div class="alert alert-success">
-                        Petición ejecutada correctamente.
-                    </div>
-                </jstl:when>
+            <jstl:when test="${{ '{' }}param.resultado == 'correcto'{{ '}' }}">
+                <div class="alert alert-success">
+                    Petición ejecutada correctamente.
+                </div>
+            </jstl:when>
 
-                <jstl:when test="${{ '{' }}param.resultado == 'error'{{ '}' }}">
-                    <div class="alert alert-danger">
-                        Error al Ejecutar la petición.
-                    </div>
-                </jstl:when>
-                <jstl:when test="${{ '{' }}param.resultado == 'no-existe'{{ '}' }}">
-                    <div class="alert alert-danger">
-                        No existe el Registro
-                    </div>
-                </jstl:when>
-            </jstl:choose>
+            <jstl:when test="${{ '{' }}param.resultado == 'error'{{ '}' }}">
+                <div class="alert alert-danger">
+                    Error al Ejecutar la petición.
+                </div>
+            </jstl:when>
+            <jstl:when test="${{ '{' }}param.resultado == 'no-existe'{{ '}' }}">
+                <div class="alert alert-danger">
+                    No existe el Registro
+                </div>
+            </jstl:when>
+        </jstl:choose>
 
         <div class="row">
             <div class="col-lg-12">
@@ -94,8 +94,10 @@
                                     {% endif %}
                                 {% endfor %}
                                 <td>
-                                    <a class="btn btn-danger pull-right" href="forms/{{ tableSlug }}/eliminar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Eliminar</a>
-                                    <a class="btn btn-info pull-right" href="forms/{{ tableSlug }}/modificar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Modificar</a>
+                                    <a class="btn btn-danger pull-right"
+                                       href="forms/{{ tableSlug }}/eliminar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Eliminar</a>
+                                    <a class="btn btn-info pull-right"
+                                       href="forms/{{ tableSlug }}/modificar.jsp?{{ table.primaryField.name }}=${{ '{' }}{{ tableParam }}.{{ table.primaryField | camelize }}{{ '}' }}">Modificar</a>
                                 </td>
 
                             </tr>

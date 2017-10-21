@@ -21,7 +21,7 @@ class BaseConnector
     {
 
         $tableType = new Type();
-        $options = array();
+        $options = [];
         $length = 0;
         preg_match('|(?P<type>[A-Za-z0-9]+)(?P<length>\([0-9A-Za-z\\\'\\\'\,]+\))?|', $string, $matches);
 
@@ -83,10 +83,10 @@ class BaseConnector
             if ($name === Type::ENUM) {
                 //FIXME a veces no encuentra las opciones de enum
                 $lengthParam = isset($matches['length']) ? $matches['length'] : '';
-                $stringOptions = str_replace(array('(', ')', '\''), '', $lengthParam);
+                $stringOptions = str_replace(['(', ')', '\''], '', $lengthParam);
                 $options = explode(',', $stringOptions);
 
-                $newOptions = array();
+                $newOptions = [];
                 foreach ($options as $value) {
 
                     $option = new Option();
@@ -97,7 +97,7 @@ class BaseConnector
                 $options = $newOptions;
 
             } else {
-                $length = isset($matches['length']) ? (int)str_replace(array('(', ')'), '', $matches['length']) : 0;
+                $length = isset($matches['length']) ? (int)str_replace(['(', ')'], '', $matches['length']) : 0;
             }
 
             $tableType->setLength($length);
@@ -217,7 +217,7 @@ class BaseConnector
                 $options = @json_decode($matches['options'], true);
                 $tableType->setLength(isset($options['length']) ? (int)$options['length'] : 0);
 
-                $newOptions = array();
+                $newOptions = [];
                 foreach ($options as $value => $name) {
 
                     $option = new Option();

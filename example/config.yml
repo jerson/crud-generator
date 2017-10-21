@@ -2,9 +2,9 @@ database:
     driver: mysql
     host: 127.0.0.1
     port: 3306
-    name: fundo
-    user: fundo
-    password: fundo
+    name: setbeat
+    user: root
+    password:
 
 project:
     name: 'Fundo Las Lomas'
