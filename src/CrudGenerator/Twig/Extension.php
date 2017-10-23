@@ -37,7 +37,7 @@ class Extension extends \Twig_Extension
             new Twig_SimpleFilter('endsWith', [$this, 'endsWith']),
             new Twig_SimpleFilter('ensureLeft', [$this, 'ensureLeft']),
             new Twig_SimpleFilter('ensureRight', [$this, 'ensureRight']),
-            new Twig_SimpleFilter('first', [$this, 'first']),
+//            new Twig_SimpleFilter('first', [$this, 'first']),
             new Twig_SimpleFilter('getEncoding', [$this, 'getEncoding']),
             new Twig_SimpleFilter('humanize', [$this, 'humanize']),
             new Twig_SimpleFilter('insert', [$this, 'insert']),
@@ -62,7 +62,7 @@ class Extension extends \Twig_Extension
             new Twig_SimpleFilter('regexReplace', [$this, 'regexReplace']),
             new Twig_SimpleFilter('removeLeft', [$this, 'removeLeft']),
             new Twig_SimpleFilter('removeRight', [$this, 'removeRight']),
-            new Twig_SimpleFilter('replace', [$this, 'replace']),
+//            new Twig_SimpleFilter('replace', [$this, 'replace']),
             new Twig_SimpleFilter('reverse', [$this, 'reverse']),
             new Twig_SimpleFilter('safeTruncate', [$this, 'safeTruncate']),
             new Twig_SimpleFilter('shuffle', [$this, 'shuffle']),
@@ -217,12 +217,12 @@ class Extension extends \Twig_Extension
     {
 
         $text = $arguments[0];
-        if ($name === 'upperCamelize') {
-            $text = strtolower(Stringy::create($text)->humanize());
-        } elseif ($name === 'camelize') {
-            $text = strtolower(Stringy::create($text)->humanize());
-
-        }
+//        if ($name === 'upperCamelize') {
+//            $text = strtolower(Stringy::create($text)->humanize());
+//        } elseif ($name === 'camelize') {
+//            $text = strtolower(Stringy::create($text)->humanize());
+//
+//        }
         return Stringy::create($text)->$name()->__toString();
     }
 }

@@ -1,7 +1,10 @@
 parameters:
-
   packages:
     JSPSimple:
       model: JavaSimple
       controller: JSPSimple
       view: JSPSimple
+    Golang:
+      model: Golang
+#      controller: Golang
+#      view: Golang

@@ -39,7 +39,7 @@ class CrudCommand extends Command
                 'layout',
                 InputArgument::OPTIONAL,
                 'Plantilla a usar para el generador o el nombre del paquete',
-                'JSPSimple'
+                'Golang'
             )->addOption(
                 'config',
                 null,

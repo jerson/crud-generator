@@ -4,6 +4,7 @@
 namespace CrudGenerator\Bundle;
 
 
+use CrudGenerator\Parser\Golang;
 use CrudGenerator\Parser\Html;
 use CrudGenerator\Parser\Java;
 use CrudGenerator\Parser\Php;
@@ -47,6 +48,7 @@ class Base implements BundleInterface
         $this->twig->addGlobal('java', new Java());
         $this->twig->addGlobal('php', new Php());
         $this->twig->addGlobal('html', new Html());
+        $this->twig->addGlobal('golang', new Golang());
 
         $this->configure();
     }

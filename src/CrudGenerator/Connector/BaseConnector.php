@@ -33,6 +33,9 @@ class BaseConnector
                 case 'tinyint':
                     $name = Type::TINYINT;
                     break;
+                case 'bigint':
+                    $name = Type::BIGINT;
+                    break;
                 case 'int':
                     $name = Type::INTEGER;
                     break;

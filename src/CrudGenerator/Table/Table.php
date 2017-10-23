@@ -28,6 +28,39 @@ class Table
 
 
     /**
+     * @param $contains
+     * @return Field|null
+     */
+    public function getFieldWithName($contains)
+    {
+        $contains = strtolower($contains);
+        foreach ($this->getFields() as $field) {
+            $name = strtolower($field->getName());
+            if (strpos($name, $contains) !== false) {
+                return $field;
+                break;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return \CrudGenerator\Table\Field[]
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @param \CrudGenerator\Table\Field[] $fields
+     */
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    /**
      * @return Field|null
      */
     public function getPrimaryField()
@@ -114,22 +147,6 @@ class Table
     public function addField(Field $field)
     {
         $this->fields[] = $field;
-    }
-
-    /**
-     * @return \CrudGenerator\Table\Field[]
-     */
-    public function getFields()
-    {
-        return $this->fields;
-    }
-
-    /**
-     * @param \CrudGenerator\Table\Field[] $fields
-     */
-    public function setFields($fields)
-    {
-        $this->fields = $fields;
     }
 
     /**

@@ -7,6 +7,7 @@ class Type implements TypeInterface
 {
 
     const INTEGER = 1;
+    const BIGINT = 100;
     const TINYINT = 2;
     const VARCHAR = 3;
     const ENUM = 4;
