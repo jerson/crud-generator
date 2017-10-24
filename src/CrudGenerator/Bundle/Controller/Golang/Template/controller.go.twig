@@ -1,0 +1,145 @@
+//Package controllers ...
+package controllers
+
+import (
+    "fmt"
+    "github.com/kataras/iris"
+    "{{ config.project.package }}/controllers/middleware"
+    "{{ config.project.package }}/models"
+    "{{ config.project.package }}/modules/log"
+)
+
+{% set tableName = table.name | upperCamelize %}
+{% set tableSingleKey = table.name | slice(0,1) %}
+{% set table_name = table.name | underscored | replace({'_':'-'}) %}
+
+{% set nameField = table.fieldWithName('name') %}
+
+//{{ tableName }}Controller ...
+func {{ tableName }}Controller(app *iris.Application) {
+
+    app.Get("/{{ table_name }}",
+        //middleware.JWT.Serve,
+        //middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
+        //middleware.Log,
+        middleware.Pagination,
+        func(ctx iris.Context) {
+
+        limit, _ := ctx.Params().GetInt("limit")
+        offset, _ := ctx.Params().GetInt("offset")
+        {% if nameField is not empty %}
+        query := ctx.URLParam("query")
+        {% endif %}
+        //sort := ctx.URLParam("sort")
+        //sortType := ctx.URLParam("sort_type")
+        item := models.{{ tableName }}{}
+
+        var err error
+        var result models.{{ tableName }}List
+
+        {% if nameField is not empty %}
+        if query != "" {
+            result, err = item.SearchList(query, offset, limit)
+        } else {
+            result, err = item.List(offset, limit)
+            //result, err = item.List(offset, limit, sort, sortType)
+        }
+        {% else %}
+            result, err = item.List(offset, limit)
+            //result, err = item.List(offset, limit, sort, sortType)
+        {% endif %}
+        if err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusInternalServerError)
+            return
+        }
+
+        ctx.Header("X-Total", fmt.Sprint(result.Total))
+        ctx.Header("X-Offset", fmt.Sprint(result.Offset))
+        ctx.Header("X-Limit", fmt.Sprint(result.Limit))
+        ctx.StatusCode(iris.StatusOK)
+        ctx.JSON(result)
+
+    })
+
+{% set primaryFieldName = golang.primaryName(table.primaryField.name) | camelize  %}
+{% set primaryFieldProperty = primaryFieldName | upperCamelize  %}
+{% set primaryFieldParam = table.primaryField.name | camelize %}
+{% set primaryFieldType = golang.realType(table.primaryField) %}
+
+    app.Get("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+        //middleware.JWT.Serve,
+        //middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
+        //middleware.Log,
+        func(ctx iris.Context) {
+
+        id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+
+        item := models.{{ tableName }}{}
+        err := item.FindOneBy{{ primaryFieldProperty }}(id)
+        if err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusNotFound)
+            return
+        }
+
+        ctx.StatusCode(iris.StatusOK)
+        ctx.JSON(item)
+
+    })
+
+    app.Put("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+        //middleware.JWT.Serve,
+        //middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
+        //middleware.Log,
+        func(ctx iris.Context) {
+
+        item := models.{{ tableName }}{}
+
+        id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        err := item.FindOneBy{{ primaryFieldProperty }}(id)
+        if err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusNotFound)
+            return
+        }
+
+        if err := ctx.ReadForm(&item); err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusBadRequest)
+            return
+        }
+
+        ctx.StatusCode(iris.StatusOK)
+        ctx.JSON(item)
+
+    })
+
+    app.Delete("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+        //middleware.JWT.Serve,
+        //middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
+        //middleware.Log,
+        func(ctx iris.Context) {
+
+        item := models.{{ tableName }}{}
+
+        id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        err := item.FindOneBy{{ primaryFieldProperty }}(id)
+        if err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusNotFound)
+            return
+        }
+
+        err = item.Delete()
+        if err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusInternalServerError)
+            return
+        }
+
+        ctx.StatusCode(iris.StatusOK)
+        ctx.JSON(item)
+
+    })
+}

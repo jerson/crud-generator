@@ -1,0 +1,64 @@
+//Package main ...
+package main
+
+import (
+	stdContext "context"
+	"fmt"
+	"time"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/iris-contrib/middleware/cors"
+	"github.com/kataras/iris"
+	"github.com/kataras/iris/context"
+	"github.com/kataras/iris/middleware/recover"
+	"{{ config.project.package }}/modules/config"
+	"{{ config.project.package }}/controllers"
+)
+
+func init() {
+	err := config.ReadDefault()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func main() {
+
+	app := iris.New()
+	app.Use(customRecovery())
+	app.Use(customCors())
+
+	controllers.BaseController(app)
+	{% for table in tables %}
+        {% set tableName = table.name | upperCamelize %}
+		controllers.{{ tableName }}Controller(app)
+	{% endfor %}
+
+	iris.RegisterOnInterrupt(func() {
+		timeout := 5 * time.Second
+		ctx, cancel := stdContext.WithTimeout(stdContext.Background(), timeout)
+		defer cancel()
+		app.Shutdown(ctx)
+	})
+
+	port := fmt.Sprintf(":%d", config.Vars.Server.Port)
+	app.Run(iris.Addr(port), iris.WithoutInterruptHandler, iris.WithoutVersionChecker)
+
+}
+
+func customRecovery() context.Handler {
+	customRecovery := recover.New()
+	return customRecovery
+}
+
+func customCors() context.Handler {
+	customCors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		ExposedHeaders:   []string{"Content-Length", "Content-Encoding", "Content-Type"},
+		AllowedHeaders:   []string{"Origin", "Authorization", "Content-Type", "Accept", "X-Total", "X-Limit", "X-Offset"},
+		AllowCredentials: true,
+		Debug:            config.Vars.IsDebug,
+		AllowedMethods:   []string{"GET", "PATCH", "PUT", "HEAD", "POST", "DELETE", "OPTIONS"},
+	})
+	return customCors
+}
+

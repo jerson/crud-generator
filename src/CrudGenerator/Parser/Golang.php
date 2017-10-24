@@ -82,10 +82,10 @@ class Golang implements ParserInterface
      */
     public function getPrimaryName($string)
     {
-        if ($string === 'id') {
-            return 'ID';
+        if (strlen($string) < 4) {
+            return strtoupper($string);
         }
-        return str_replace('_id', '_ID', $string);
+        return str_replace(['_id', '_url'], ['_ID', '_URL'], $string);
     }
 
     /**

@@ -6,5 +6,5 @@ parameters:
       view: JSPSimple
     Golang:
       model: Golang
-#      controller: Golang
+      controller: Golang
 #      view: Golang

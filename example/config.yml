@@ -8,6 +8,7 @@ database:
 
 project:
     name: 'Fundo Las Lomas'
+    package: 'github.com/account/project' #required for go
 
 output:
     dir: 'output/project'
