@@ -28,7 +28,7 @@ type {{ tableName }} struct {
     {% set property = golang.primaryName(field.name) | upperCamelize %}
 {% endspaceless %}
     {% set allowUseNull = (type | contains('time') or field.foreign) %}
-    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
 {% endfor %}
 
 {% for field in table.foreignFields  %}{% spaceless %}
