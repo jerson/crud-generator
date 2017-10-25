@@ -60,10 +60,6 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) err
         created := time.Now()
         {{ tableSingleKey }}.{{ createdField.name | upperCamelize }} = {{ createdField.allowNull ? '&' : '' }}created
     {% endif %}
-    {% if updatedField is not empty %}
-        updated := time.Now()
-        {{ tableSingleKey }}.{{ updatedField.name | upperCamelize }} = {{ updatedField.allowNull ? '&' : '' }}updated
-    {% endif %}
     {% if slugField is not empty and nameField is not empty %}
         if {{ tableSingleKey }}.{{ slugField.name | upperCamelize }}==""{
             {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
