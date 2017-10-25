@@ -4,12 +4,8 @@ package repositories
 {% set createdField = table.fieldWithName('date_created') %}
 {% set updatedField = table.fieldWithName('date_updated') %}
 import (
-    "github.com/jinzhu/gorm"
     "github.com/kataras/iris"
     "{{ config.project.package }}/models"
-    "{{ config.project.package }}/modules/db"
-    "{{ config.project.package }}/modules/util"
-    "{{ config.project.package }}/modules/log"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -18,51 +14,19 @@ import (
 
 //{{ tableName }}Repository ...
 type {{ tableName }}Repository struct {
-    ctx iris.Context
-    cn  *gorm.DB
+    baseRepository
 }
 
 
 //New{{ tableName }}Repository ...
 func New{{ tableName }}Repository(ctx iris.Context) {{ tableName }}Repository {
-
-    if ctx != nil {
-        prepared, _ := ctx.Values().GetBool("prepared")
-        if !prepared {
-            log.Warn("no se inicio conexión")
-        }
-    }
-    return {{ tableName }}Repository{
-        ctx: ctx,
-    }
+    return {{ tableName }}Repository{baseRepository: newBaseRepository(ctx)}
 }
 
-func ({{ tableSingleKey }} {{ tableName }}Repository) connect() (*gorm.DB, error) {
-    if {{ tableSingleKey }}.cn != nil {
-        return {{ tableSingleKey }}.cn, nil
-    }
-    cn, err := db.Setup()
-    if err != nil {
-        return nil, err
-    }
-    {{ tableSingleKey }}.cn = cn
-    if {{ tableSingleKey }}.ctx!=nil{
-        {{ tableSingleKey }}.ctx.Values().Set("db", {{ tableSingleKey }}.cn)
-    }
-    return {{ tableSingleKey }}.cn, err
-}
-
-func ({{ tableSingleKey }} {{ tableName }}Repository) close() {
-
-    if {{ tableSingleKey }}.ctx!=nil &&  {{ tableSingleKey }}.cn!=nil{
-        {{ tableSingleKey }}.cn.Close()
-        {{ tableSingleKey }}.cn = nil
-    }
-}
 //List ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int) (list models.{{ tableName }}List, err error) {
 
-    cn, err := {{ tableSingleKey }}.connect()
+    cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }
@@ -93,7 +57,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int) (l
 //SearchList ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) SearchList(query string, offset, limit int) (list models.{{ tableName }}List, err error) {
 
-    cn, err := {{ tableSingleKey }}.connect()
+    cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }
@@ -145,7 +109,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ nameFieldPrope
 //Create ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ tableName }}) (result models.{{ tableName }}, err error) {
 
-    cn, err := {{ tableSingleKey }}.connect()
+    cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }
@@ -164,13 +128,13 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ ta
 //Update ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ tableName }}, data models.{{ tableName }}) (result models.{{ tableName }}, err error) {
 
-    cn, err := {{ tableSingleKey }}.connect()
+    cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }
     defer {{ tableSingleKey }}.close()
 
-    values := util.DiffStruct(&object, &data)
+    values := {{ tableSingleKey }}.diffStruct(&object, &data)
     err = cn.Model(&object).Updates(values).Error
     if err != nil {
         return
@@ -183,7 +147,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ ta
 //Delete ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ tableName }}) (err error) {
 
-    cn, err := {{ tableSingleKey }}.connect()
+    cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }
@@ -199,7 +163,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ ta
 //UpdateSingle ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) UpdateSingle(object models.{{ tableName }}, column string, value interface{}) (err error) {
 
-    cn, err := {{ tableSingleKey }}.connect()
+    cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }
@@ -216,7 +180,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) UpdateSingle(object models
 //FindOne ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) FindOne(query interface{}, args ...interface{}) (result models.{{ tableName }}, err error) {
 
-    cn, err := {{ tableSingleKey }}.connect()
+    cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }

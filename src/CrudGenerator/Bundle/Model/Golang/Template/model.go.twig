@@ -3,12 +3,15 @@ package models
 
 {% set createdField = table.fieldWithName('date_created') %}
 {% set updatedField = table.fieldWithName('date_updated') %}
+{% set slugField = table.fieldWithName('slug') %}
+{% set nameField = table.fieldWithName('name') %}
 import (
 {% if createdField is not empty or updatedField is not empty %}
     "time"
 {% endif %}
     "github.com/jinzhu/gorm"
     "{{ config.project.package }}/modules/validator"
+    "{{ config.project.package }}/modules/util"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -22,7 +25,7 @@ type {{ tableName }} struct {
     {% set column = field.name | underscored %}
     {% set property = golang.primaryName(field.name) | upperCamelize %}
 {% endspaceless %}
-    {% set allowUseNull = type | contains('time') %}
+    {% set allowUseNull = (type | contains('time') or field.foreign) %}
     {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
 {% endfor %}
 
@@ -53,11 +56,14 @@ func ({{ tableName }}) TableName() string {
 func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) error {
     {% if createdField is not empty %}
         created := time.Now()
-        {{ tableSingleKey }}.DateCreated = {{ createdField.allowNull ? '&' : '' }}created
+        {{ tableSingleKey }}.{{ createdField.name | upperCamelize }} = {{ createdField.allowNull ? '&' : '' }}created
     {% endif %}
     {% if updatedField is not empty %}
         updated := time.Now()
-        {{ tableSingleKey }}.DateUpdated = {{ updatedField.allowNull ? '&' : '' }}updated
+        {{ tableSingleKey }}.{{ updatedField.name | upperCamelize }} = {{ updatedField.allowNull ? '&' : '' }}updated
+    {% endif %}
+    {% if slugField is not empty and nameField is not empty %}
+        {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
     {% endif %}
     return validator.Validate({{ tableSingleKey }})
 }
@@ -66,7 +72,7 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) err
 func ({{ tableSingleKey }} *{{ tableName }}) BeforeUpdate(scope *gorm.Scope) error {
     {% if updatedField is not empty %}
         updated := time.Now()
-        {{ tableSingleKey }}.DateUpdated = {{ updatedField.allowNull ? '&' : '' }}updated
+        {{ tableSingleKey }}.{{ updatedField.name | upperCamelize }} = {{ updatedField.allowNull ? '&' : '' }}updated
     {% endif %}
     return validator.Validate({{ tableSingleKey }})
 }
