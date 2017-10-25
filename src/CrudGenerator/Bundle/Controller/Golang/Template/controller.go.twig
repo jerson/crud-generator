@@ -68,8 +68,9 @@ func {{ tableName }}Controller(app *iris.Application) {
 {% set primaryFieldProperty = primaryFieldName | upperCamelize  %}
 {% set primaryFieldParam = table.primaryField.name | camelize %}
 {% set primaryFieldType = golang.realType(table.primaryField) %}
+{% set primaryFieldTypeRoute = primaryFieldType | replace({'64':''}) %}
 
-    app.Get("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldType }} min(1){{ '}' }}",
+    app.Get("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }} min(1){{ '}' }}",
         middleware.Database,
         //middleware.JWT.Serve,
         middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
@@ -118,7 +119,7 @@ func {{ tableName }}Controller(app *iris.Application) {
 
     })
 
-    app.Put("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldType }} min(1){{ '}' }}",
+    app.Put("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }} min(1){{ '}' }}",
         middleware.Database,
         //middleware.JWT.Serve,
         middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
@@ -152,7 +153,7 @@ func {{ tableName }}Controller(app *iris.Application) {
 
     })
 
-    app.Delete("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldType }} min(1){{ '}' }}",
+    app.Delete("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }} min(1){{ '}' }}",
         middleware.Database,
         //middleware.JWT.Serve,
         middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,

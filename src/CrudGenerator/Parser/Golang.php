@@ -37,8 +37,10 @@ class Golang implements ParserInterface
 
         switch ($field->getType()->getName()) {
             case Type::INTEGER:
-            case Type::BIGINT:
                 $type = 'int';
+                break;
+            case Type::BIGINT:
+                $type = 'int64';
                 break;
             case Type::CHAR:
             case Type::VARCHAR:

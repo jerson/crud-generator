@@ -26,9 +26,26 @@ type {{ tableName }} struct {
     {% set type = golang.realType(field) %}
     {% set column = field.name | underscored %}
     {% set property = golang.primaryName(field.name) | upperCamelize %}
-{% endspaceless %}
     {% set allowUseNull = (type | contains('time') or field.foreign) %}
-    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
+    {% set validPrefix = ''  %}
+    {% set validSuffix = ''  %}
+
+    {% if field.name | contains('email') %}
+        {% set validPrefix = 'email'  %}
+    {% endif %}
+    {% if field.allowNull and validPrefix is not empty %}
+        {% set validSuffix = 'optional'  %}
+    {% endif %}
+    {% if validSuffix is empty and not field.allowNull %}
+        {% set validSuffix = 'required'  %}
+    {% elseif validSuffix is empty %}
+        {% set validSuffix = '-'  %}
+    {% endif %}
+    {% if field.primary %}
+        {% set validSuffix = '-' %}
+    {% endif %}
+{% endspaceless %}
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}" valid:"{{ validPrefix }}{{ validPrefix is not empty ? ',' : '' }}{{ validSuffix }}"`
 {% endfor %}
 
 {% for field in table.foreignFields  %}{% spaceless %}
