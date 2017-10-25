@@ -29,5 +29,17 @@ class Model extends Base
 
         }
 
+        $baseDir = 'repositories';
+
+        foreach ($this->tables as $table) {
+
+            $fileName = Stringy::create($table->getName())->underscored();
+            $filePath = sprintf('%s/%s_repository.go', $baseDir, $fileName);
+
+            $fileContent = $this->twig->render('repository.go.twig', ['table' => $table]);
+            $this->fileSystem->write($filePath, $fileContent, true);
+
+        }
+
     }
 }

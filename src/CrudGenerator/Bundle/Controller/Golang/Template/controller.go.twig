@@ -7,6 +7,7 @@ import (
     "{{ config.project.package }}/controllers/middleware"
     "{{ config.project.package }}/models"
     "{{ config.project.package }}/modules/log"
+    "{{ config.project.package }}/repositories"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -33,21 +34,21 @@ func {{ tableName }}Controller(app *iris.Application) {
         {% endif %}
         //sort := ctx.URLParam("sort")
         //sortType := ctx.URLParam("sort_type")
-        item := models.{{ tableName }}{}
+        repo := repositories.New{{ tableName }}Repository(ctx)
 
         var err error
         var result models.{{ tableName }}List
 
         {% if nameField is not empty %}
         if query != "" {
-            result, err = item.SearchList(query, offset, limit)
+            result, err = repo.SearchList(query, offset, limit)
         } else {
-            result, err = item.List(offset, limit)
-            //result, err = item.List(offset, limit, sort, sortType)
+            result, err = repo.List(offset, limit)
+            //result, err = repo.List(offset, limit, sort, sortType)
         }
         {% else %}
-            result, err = item.List(offset, limit)
-            //result, err = item.List(offset, limit, sort, sortType)
+            result, err = repo.List(offset, limit)
+            //result, err = repo.List(offset, limit, sort, sortType)
         {% endif %}
         if err != nil {
             log.Err(err)
@@ -77,8 +78,8 @@ func {{ tableName }}Controller(app *iris.Application) {
 
         id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
 
-        item := models.{{ tableName }}{}
-        err := item.FindOneBy{{ primaryFieldProperty }}(id)
+        repo := repositories.New{{ tableName }}Repository(ctx)
+        item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusNotFound)
@@ -98,6 +99,7 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
+        repo := repositories.New{{ tableName }}Repository(ctx)
         item := models.{{ tableName }}{}
         if err := ctx.ReadForm(&item); err != nil {
             log.Err(err)
@@ -105,14 +107,14 @@ func {{ tableName }}Controller(app *iris.Application) {
             return
         }
 
-        err := item.Create()
+        result, err := repo.Create(item)
         if err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusInternalServerError)
             return
         }
         ctx.StatusCode(iris.StatusOK)
-        ctx.JSON(item)
+        ctx.JSON(result)
 
     })
 
@@ -123,30 +125,30 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
-        item := &models.{{ tableName }}{}
+        repo := repositories.New{{ tableName }}Repository(ctx)
         id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
-        err := item.FindOneBy{{ primaryFieldProperty }}(id)
+        item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusNotFound)
             return
         }
 
-        formData := *item
+        formData := item
         if err := ctx.ReadForm(&formData); err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusBadRequest)
             return
         }
 
-        err = item.Update(formData)
+        result, err := repo.Update(item,formData)
         if err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusInternalServerError)
             return
         }
         ctx.StatusCode(iris.StatusOK)
-        ctx.JSON(item)
+        ctx.JSON(result)
 
     })
 
@@ -157,17 +159,17 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
-        item := models.{{ tableName }}{}
 
+        repo := repositories.New{{ tableName }}Repository(ctx)
         id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
-        err := item.FindOneBy{{ primaryFieldProperty }}(id)
+        item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusNotFound)
             return
         }
 
-        err = item.Delete()
+        err = repo.Delete(item)
         if err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusInternalServerError)

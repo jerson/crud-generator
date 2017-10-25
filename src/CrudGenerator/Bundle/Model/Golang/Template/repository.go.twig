@@ -1,0 +1,230 @@
+//Package repositories ...
+package repositories
+
+{% set createdField = table.fieldWithName('date_created') %}
+{% set updatedField = table.fieldWithName('date_updated') %}
+import (
+    "github.com/jinzhu/gorm"
+    "github.com/kataras/iris"
+    "{{ config.project.package }}/models"
+    "{{ config.project.package }}/modules/db"
+    "{{ config.project.package }}/modules/util"
+    "{{ config.project.package }}/modules/log"
+)
+
+{% set tableName = table.name | upperCamelize %}
+{% set tableSingleKey = table.name | slice(0,1) %}
+{% set table_name = table.name | underscored %}
+
+//{{ tableName }}Repository ...
+type {{ tableName }}Repository struct {
+    ctx iris.Context
+    cn  *gorm.DB
+}
+
+
+//New{{ tableName }}Repository ...
+func New{{ tableName }}Repository(ctx iris.Context) {{ tableName }}Repository {
+
+    if ctx != nil {
+        prepared, _ := ctx.Values().GetBool("prepared")
+        if !prepared {
+            log.Warn("no se inicio conexión")
+        }
+    }
+    return {{ tableName }}Repository{
+        ctx: ctx,
+    }
+}
+
+func ({{ tableSingleKey }} {{ tableName }}Repository) connect() (*gorm.DB, error) {
+    if {{ tableSingleKey }}.cn != nil {
+        return {{ tableSingleKey }}.cn, nil
+    }
+    cn, err := db.Setup()
+    if err != nil {
+        return nil, err
+    }
+    {{ tableSingleKey }}.cn = cn
+    if {{ tableSingleKey }}.ctx!=nil{
+        {{ tableSingleKey }}.ctx.Values().Set("db", {{ tableSingleKey }}.cn)
+    }
+    return {{ tableSingleKey }}.cn, err
+}
+
+func ({{ tableSingleKey }} {{ tableName }}Repository) close() {
+
+    if {{ tableSingleKey }}.ctx!=nil &&  {{ tableSingleKey }}.cn!=nil{
+        {{ tableSingleKey }}.cn.Close()
+        {{ tableSingleKey }}.cn = nil
+    }
+}
+//List ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int) (list models.{{ tableName }}List, err error) {
+
+    cn, err := {{ tableSingleKey }}.connect()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.close()
+
+    list = models.{{ tableName }}List{Limit: limit, Offset: offset}
+    qb := cn.Model(models.{{ tableName }}{})
+    err = qb.
+        Offset(offset).
+        Limit(limit).
+        Find(&list.Items).
+        Error
+
+    if err != nil {
+        return
+    }
+    err = qb.Count(&list.Total).Error
+    if err != nil {
+        list.Total = len(list.Items)
+    }
+
+    return
+}
+
+
+{% set nameField = table.fieldWithName('name') %}
+{% if nameField is not empty %}
+//SearchList ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) SearchList(query string, offset, limit int) (list models.{{ tableName }}List, err error) {
+
+    cn, err := {{ tableSingleKey }}.connect()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.close()
+
+    list = models.{{ tableName }}List{Limit: limit, Offset: offset}
+    qb := cn.Model(models.{{ tableName }}{}).
+        Offset(offset).
+        Limit(limit).
+        Where("{{ nameField.name }} LIKE ?", "%"+query+"%")
+
+    err = qb.Find(&list.Items).
+        Error
+
+    if err != nil {
+        return
+    }
+    err = qb.Count(&list.Total).Error
+    if err != nil {
+        list.Total = len(list.Items)
+    }
+
+    return
+}
+{% endif %}
+
+{% set primaryFieldName = golang.primaryName(table.primaryField.name) | upperCamelize  %}
+{% set primaryFieldProperty = primaryFieldName  %}
+{% set primaryFieldParam = primaryFieldName  %}
+{% set primaryFieldType = golang.realType(table.primaryField) %}
+
+
+//FindOneBy{{ primaryFieldProperty }} ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ primaryFieldProperty }}({{ primaryFieldParam }} {{ primaryFieldType }}) (models.{{ tableName }}, error) {
+    return {{ tableSingleKey }}.FindOne("{{ table.primaryField.name }} = ?",{{ primaryFieldParam }})
+}
+
+
+{% if nameField is not empty %}
+{% set nameFieldName = nameField.name | upperCamelize  %}
+{% set nameFieldProperty = nameFieldName  %}
+{% set nameFieldParam = nameFieldName | camelize  %}
+{% set nameFieldType = golang.type(nameField) %}
+//FindOneBy{{ nameFieldProperty }} ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ nameFieldProperty }}({{ nameFieldParam }} {{ nameFieldType }}) (models.{{ tableName }}, error) {
+    return {{ tableSingleKey }}.FindOne("{{ nameField.name }} = ?",{{ nameFieldParam }})
+}
+{% endif %}
+//Create ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ tableName }}) (result models.{{ tableName }}, err error) {
+
+    cn, err := {{ tableSingleKey }}.connect()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.close()
+
+    err = cn.Create(&object).Error
+    if err != nil {
+        return
+    }
+    result = object
+
+    return
+
+}
+
+//Update ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ tableName }}, data models.{{ tableName }}) (result models.{{ tableName }}, err error) {
+
+    cn, err := {{ tableSingleKey }}.connect()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.close()
+
+    values := util.DiffStruct(&object, &data)
+    err = cn.Model(&object).Updates(values).Error
+    if err != nil {
+        return
+    }
+    result = object
+
+    return
+}
+
+//Delete ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ tableName }}) (err error) {
+
+    cn, err := {{ tableSingleKey }}.connect()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.close()
+
+    err = cn.Where("{{ table.primaryField.name }} = ? ", object.{{ primaryFieldProperty }}).Delete(object).Error
+    if err != nil {
+        return
+    }
+    return
+}
+
+//UpdateSingle ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) UpdateSingle(object models.{{ tableName }}, column string, value interface{}) (err error) {
+
+    cn, err := {{ tableSingleKey }}.connect()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.close()
+
+    err = cn.Model(&object).Update(column, value).Error
+    if err != nil {
+        return
+    }
+
+    return
+}
+
+//FindOne ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) FindOne(query interface{}, args ...interface{}) (result models.{{ tableName }}, err error) {
+
+    cn, err := {{ tableSingleKey }}.connect()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.close()
+
+    err = cn.Where(query, args...).First(&result).Error
+    if err != nil {
+        return
+    }
+    return
+}
