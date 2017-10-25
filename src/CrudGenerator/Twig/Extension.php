@@ -209,6 +209,16 @@ class Extension extends \Twig_Extension
     }
 
     /**
+     * @param $text
+     * @param $contains
+     * @return bool
+     */
+    public function contains($text, $contains)
+    {
+        return strpos(strtolower($text), strtolower($contains)) !== false;
+    }
+
+    /**
      * @param $name
      * @param $arguments
      * @return mixed

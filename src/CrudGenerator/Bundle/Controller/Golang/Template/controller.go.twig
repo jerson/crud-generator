@@ -88,14 +88,38 @@ func {{ tableName }}Controller(app *iris.Application) {
 
     })
 
-    app.Put("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+
+    app.Post("/{{ table_name }}",
         //middleware.JWT.Serve,
         //middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
         //middleware.Log,
         func(ctx iris.Context) {
 
         item := models.{{ tableName }}{}
+        if err := ctx.ReadForm(&item); err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusBadRequest)
+            return
+        }
 
+        err := item.Create()
+        if err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusInternalServerError)
+            return
+        }
+        ctx.StatusCode(iris.StatusOK)
+        ctx.JSON(item)
+
+    })
+
+    app.Put("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+        //middleware.JWT.Serve,
+        //middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
+        //middleware.Log,
+        func(ctx iris.Context) {
+
+        item := &models.{{ tableName }}{}
         id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
         err := item.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
@@ -104,12 +128,19 @@ func {{ tableName }}Controller(app *iris.Application) {
             return
         }
 
-        if err := ctx.ReadForm(&item); err != nil {
+        formData := *item
+        if err := ctx.ReadForm(&formData); err != nil {
             log.Err(err)
             ctx.StatusCode(iris.StatusBadRequest)
             return
         }
 
+        err = item.Update(formData)
+        if err != nil {
+            log.Err(err)
+            ctx.StatusCode(iris.StatusInternalServerError)
+            return
+        }
         ctx.StatusCode(iris.StatusOK)
         ctx.JSON(item)
 

@@ -8,8 +8,8 @@ import (
     "time"
 {% endif %}
     "github.com/jinzhu/gorm"
-    "github.com/juju/errors"
     "{{ config.project.package }}/modules/validator"
+    "{{ config.project.package }}/modules/util"
     "{{ config.project.package }}/modules/db"
 )
 
@@ -24,7 +24,8 @@ type {{ tableName }} struct {
     {% set column = field.name | underscored %}
     {% set property = golang.primaryName(field.name) | upperCamelize %}
 {% endspaceless %}
-    {{ property }} {{ type }} `gorm:"column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
+    {% set allowUseNull = type | contains('time') %}
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
 {% endfor %}
 
 {% for field in table.foreignFields  %}{% spaceless %}
@@ -53,10 +54,12 @@ func ({{ tableName }}) TableName() string {
 //BeforeCreate ...
 func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) error {
     {% if createdField is not empty %}
-        {{ tableSingleKey }}.DateCreated = time.Now()
+        created := time.Now()
+        {{ tableSingleKey }}.DateCreated = {{ createdField.allowNull ? '&' : '' }}created
     {% endif %}
     {% if updatedField is not empty %}
-        {{ tableSingleKey }}.DateUpdated = time.Now()
+        updated := time.Now()
+        {{ tableSingleKey }}.DateUpdated = {{ updatedField.allowNull ? '&' : '' }}updated
     {% endif %}
     return validator.Validate({{ tableSingleKey }})
 }
@@ -64,7 +67,8 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) err
 //BeforeUpdate ...
 func ({{ tableSingleKey }} *{{ tableName }}) BeforeUpdate(scope *gorm.Scope) error {
     {% if updatedField is not empty %}
-        {{ tableSingleKey }}.DateUpdated = time.Now()
+        updated := time.Now()
+        {{ tableSingleKey }}.DateUpdated = {{ updatedField.allowNull ? '&' : '' }}updated
     {% endif %}
     return validator.Validate({{ tableSingleKey }})
 }
@@ -110,10 +114,11 @@ func ({{ tableSingleKey }} {{ tableName }}) SearchList(query string, offset, lim
     defer cn.Close()
 
     list = {{ tableName }}List{Limit: limit, Offset: offset}
-    qb := {{ tableSingleKey }}.preload(cn.Model({{ tableSingleKey }}).
+    qb := {{ tableSingleKey }}.
+        preload(cn.Model({{ tableSingleKey }}).
         Offset(offset).
         Limit(limit).
-        Where("name LIKE ?", "%"+query+"%"))
+        Where("{{ nameField.name }} LIKE ?", "%"+query+"%"))
 
     err = qb.Find(&list.Items).
         Error
@@ -138,12 +143,7 @@ func ({{ tableSingleKey }} {{ tableName }}) SearchList(query string, offset, lim
 
 //FindOneBy{{ primaryFieldProperty }} ...
 func ({{ tableSingleKey }} *{{ tableName }}) FindOneBy{{ primaryFieldProperty }}({{ primaryFieldParam }} {{ primaryFieldType }}) error {
-
-    if {{ primaryFieldParam }} < 1 {
-        return errors.New("invalid")
-    }
-
-    return {{ tableSingleKey }}.findOne({{ tableName }}{{ '{' }}{{ primaryFieldProperty }}: {{ primaryFieldParam }}{{ '}' }})
+    return {{ tableSingleKey }}.FindOne("{{ table.primaryField.name }} = ?",{{ primaryFieldParam }})
 }
 
 
@@ -154,12 +154,7 @@ func ({{ tableSingleKey }} *{{ tableName }}) FindOneBy{{ primaryFieldProperty }}
 {% set nameFieldType = golang.type(nameField) %}
 //FindOneBy{{ nameFieldProperty }} ...
 func ({{ tableSingleKey }} *{{ tableName }}) FindOneBy{{ nameFieldProperty }}({{ nameFieldParam }} {{ nameFieldType }}) error {
-
-    if {{ nameFieldParam }} == "" {
-        return errors.New("invalid")
-    }
-
-    return {{ tableSingleKey }}.findOne({{ tableName }}{{ '{' }}{{ nameFieldProperty }}: {{ nameFieldParam }}{{ '}' }})
+    return {{ tableSingleKey }}.FindOne("{{ nameField.name }} = ?",{{ nameFieldParam }})
 }
 {% endif %}
 //Create ...
@@ -181,7 +176,7 @@ func ({{ tableSingleKey }} *{{ tableName }}) Create() error {
 }
 
 //Update ...
-func ({{ tableSingleKey }} *{{ tableName }}) Update() error {
+func ({{ tableSingleKey }} *{{ tableName }}) Update(data {{ tableName }}) error {
 
     cn, err := db.Setup()
     if err != nil {
@@ -189,7 +184,8 @@ func ({{ tableSingleKey }} *{{ tableName }}) Update() error {
     }
     defer cn.Close()
 
-    err = cn.Save(&{{ tableSingleKey }}).Error
+    values := util.DiffStruct({{ tableSingleKey }}, &data)
+    err = cn.Updates(values).Error
     if err != nil {
         return err
     }
@@ -213,7 +209,8 @@ func ({{ tableSingleKey }} *{{ tableName }}) Delete() error {
     return nil
 }
 
-func ({{ tableSingleKey }} *{{ tableName }}) findOne(query {{ tableName }}) error {
+//UpdateSingle ...
+func ({{ tableSingleKey }} *{{ tableName }}) UpdateSingle(name string, value interface{}) error {
 
     cn, err := db.Setup()
     if err != nil {
@@ -221,7 +218,26 @@ func ({{ tableSingleKey }} *{{ tableName }}) findOne(query {{ tableName }}) erro
     }
     defer cn.Close()
 
-    err = {{ tableSingleKey }}.preload(cn.Where(query)).First(&{{ tableSingleKey }}).Error
+    err = cn.Model(&{{ tableSingleKey }}).Update(name, value).Error
+    if err != nil {
+        return err
+    }
+
+    return nil
+}
+
+//FindOne ...
+func ({{ tableSingleKey }} *{{ tableName }}) FindOne(query interface{}, args ...interface{}) error {
+
+    cn, err := db.Setup()
+    if err != nil {
+        return err
+    }
+    defer cn.Close()
+
+    err = {{ tableSingleKey }}.
+        preload(cn.Where(query, args...)).
+        First(&{{ tableSingleKey }}).Error
     if err != nil {
         return err
     }
