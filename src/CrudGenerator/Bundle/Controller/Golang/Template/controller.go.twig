@@ -19,9 +19,10 @@ import (
 func {{ tableName }}Controller(app *iris.Application) {
 
     app.Get("/{{ table_name }}",
+        middleware.Database,
         //middleware.JWT.Serve,
-        //middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
-        //middleware.Log,
+        middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
+        middleware.Log,
         middleware.Pagination,
         func(ctx iris.Context) {
 
@@ -67,10 +68,11 @@ func {{ tableName }}Controller(app *iris.Application) {
 {% set primaryFieldParam = table.primaryField.name | camelize %}
 {% set primaryFieldType = golang.realType(table.primaryField) %}
 
-    app.Get("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+    app.Get("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldType }} min(1){{ '}' }}",
+        middleware.Database,
         //middleware.JWT.Serve,
-        //middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
-        //middleware.Log,
+        middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
+        middleware.Log,
         func(ctx iris.Context) {
 
         id, _ := ctx.Params().Get{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
@@ -90,9 +92,10 @@ func {{ tableName }}Controller(app *iris.Application) {
 
 
     app.Post("/{{ table_name }}",
+        middleware.Database,
         //middleware.JWT.Serve,
-        //middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
-        //middleware.Log,
+        middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
+        middleware.Log,
         func(ctx iris.Context) {
 
         item := models.{{ tableName }}{}
@@ -113,10 +116,11 @@ func {{ tableName }}Controller(app *iris.Application) {
 
     })
 
-    app.Put("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+    app.Put("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldType }} min(1){{ '}' }}",
+        middleware.Database,
         //middleware.JWT.Serve,
-        //middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
-        //middleware.Log,
+        middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
+        middleware.Log,
         func(ctx iris.Context) {
 
         item := &models.{{ tableName }}{}
@@ -146,10 +150,11 @@ func {{ tableName }}Controller(app *iris.Application) {
 
     })
 
-    app.Delete("/{{ table_name }}/{{ primaryFieldParam }}:{{ primaryFieldType }} min(1)}",
+    app.Delete("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldType }} min(1){{ '}' }}",
+        middleware.Database,
         //middleware.JWT.Serve,
-        //middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
-        //middleware.Log,
+        middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
+        middleware.Log,
         func(ctx iris.Context) {
 
         item := models.{{ tableName }}{}

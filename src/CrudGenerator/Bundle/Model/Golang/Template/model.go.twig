@@ -185,7 +185,7 @@ func ({{ tableSingleKey }} *{{ tableName }}) Update(data {{ tableName }}) error 
     defer cn.Close()
 
     values := util.DiffStruct({{ tableSingleKey }}, &data)
-    err = cn.Updates(values).Error
+    err = cn.Model(&{{ tableSingleKey }}).Updates(values).Error
     if err != nil {
         return err
     }
@@ -202,7 +202,7 @@ func ({{ tableSingleKey }} *{{ tableName }}) Delete() error {
     }
     defer cn.Close()
 
-    err = cn.Delete(&{{ tableSingleKey }}).Error
+    err = cn.Where("{{ table.primaryField.name }} = ? ", {{ tableSingleKey }}.{{ primaryFieldProperty }}).Delete({{ tableSingleKey }}).Error
     if err != nil {
         return err
     }
