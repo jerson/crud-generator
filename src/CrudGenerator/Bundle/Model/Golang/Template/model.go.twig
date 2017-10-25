@@ -11,7 +11,9 @@ import (
 {% endif %}
     "github.com/jinzhu/gorm"
     "{{ config.project.package }}/modules/validator"
+{% if slugField is not empty and nameField is not empty %}
     "{{ config.project.package }}/modules/util"
+{% endif %}
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -26,7 +28,7 @@ type {{ tableName }} struct {
     {% set property = golang.primaryName(field.name) | upperCamelize %}
 {% endspaceless %}
     {% set allowUseNull = (type | contains('time') or field.foreign) %}
-    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}"`
 {% endfor %}
 
 {% for field in table.foreignFields  %}{% spaceless %}
@@ -63,8 +65,11 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) err
         {{ tableSingleKey }}.{{ updatedField.name | upperCamelize }} = {{ updatedField.allowNull ? '&' : '' }}updated
     {% endif %}
     {% if slugField is not empty and nameField is not empty %}
-        {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
+        if {{ tableSingleKey }}.{{ slugField.name | upperCamelize }}==""{
+            {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
+        }
     {% endif %}
+
     return validator.Validate({{ tableSingleKey }})
 }
 
@@ -73,6 +78,11 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeUpdate(scope *gorm.Scope) err
     {% if updatedField is not empty %}
         updated := time.Now()
         {{ tableSingleKey }}.{{ updatedField.name | upperCamelize }} = {{ updatedField.allowNull ? '&' : '' }}updated
+    {% endif %}
+    {% if slugField is not empty and nameField is not empty %}
+        if {{ tableSingleKey }}.{{ slugField.name | upperCamelize }}==""{
+        {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
+        }
     {% endif %}
     return validator.Validate({{ tableSingleKey }})
 }
