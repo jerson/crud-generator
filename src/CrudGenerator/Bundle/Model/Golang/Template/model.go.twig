@@ -45,7 +45,7 @@ type {{ tableName }} struct {
         {% set validSuffix = '-' %}
     {% endif %}
 {% endspaceless %}
-    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}" valid:"{{ validPrefix }}{{ validPrefix is not empty ? ',' : '' }}{{ validSuffix }}"`
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" valid:"{{ validPrefix }}{{ validPrefix is not empty ? ',' : '' }}{{ validSuffix }}"`
 {% endfor %}
 
 {% for field in table.foreignFields  %}{% spaceless %}
@@ -54,7 +54,7 @@ type {{ tableName }} struct {
     {% set column = field.name | replace({'_id':''})  | underscored %}
     {% set allowNull = field.foreign and field.allowNull  %}
 {% endspaceless %}
-    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"-" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}" form:"-" sql:"-"`
+    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"-" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}" form:"-" sql:"-" valid:"-"`
 {% endfor %}
 }
 
@@ -71,6 +71,12 @@ func ({{ tableName }}) TableName() string {
     return "{{ table_name }}"
 }
 
+
+//IsValid ...
+func ({{ tableSingleKey }} *{{ tableName }}) IsValid() error {
+    return validator.Validate({{ tableSingleKey }})
+}
+
 //BeforeCreate ...
 func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) error {
     {% if createdField is not empty %}
@@ -83,7 +89,7 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) err
         }
     {% endif %}
 
-    return validator.Validate({{ tableSingleKey }})
+    return {{ tableSingleKey }}.IsValid()
 }
 
 //BeforeUpdate ...
@@ -97,5 +103,5 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeUpdate(scope *gorm.Scope) err
         {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
         }
     {% endif %}
-    return validator.Validate({{ tableSingleKey }})
+    return {{ tableSingleKey }}.IsValid()
 }

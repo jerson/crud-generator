@@ -6,6 +6,7 @@ package repositories
 import (
     "github.com/kataras/iris"
     "{{ config.project.package }}/models"
+    "{{ config.project.package }}/modules/util"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -18,23 +19,34 @@ type {{ tableName }}Repository struct {
 }
 
 
+{% set primaryFieldName = golang.primaryName(table.primaryField.name) | upperCamelize  %}
+{% set primaryFieldProperty = primaryFieldName  %}
+{% set primaryFieldParam = primaryFieldName  %}
+{% set primaryFieldType = golang.realType(table.primaryField) %}
+
 //New{{ tableName }}Repository ...
 func New{{ tableName }}Repository(ctx iris.Context) {{ tableName }}Repository {
     return {{ tableName }}Repository{baseRepository: newBaseRepository(ctx)}
 }
 
 //List ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int) (list models.{{ tableName }}List, err error) {
+func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int, sort, sortType string) (list models.{{ tableName }}List, err error) {
 
     cn, err := {{ tableSingleKey }}.db()
     if err != nil {
         return
     }
     defer {{ tableSingleKey }}.close()
+    sortAllows := map[string]string{
+{% for field in table.fields  %}
+    "{{ field.name }}":              "{{ field.name }}",
+{% endfor %}
+    }
 
     list = models.{{ tableName }}List{Limit: limit, Offset: offset}
     qb := cn.Model(models.{{ tableName }}{})
     err = qb.
+        Order(util.SortValues(sort, sortType, sortAllows)).
         Offset(offset).
         Limit(limit).
         Find(&list.Items).
@@ -84,11 +96,6 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) SearchList(query string, o
 }
 {% endif %}
 
-{% set primaryFieldName = golang.primaryName(table.primaryField.name) | upperCamelize  %}
-{% set primaryFieldProperty = primaryFieldName  %}
-{% set primaryFieldParam = primaryFieldName  %}
-{% set primaryFieldType = golang.realType(table.primaryField) %}
-
 
 //FindOneBy{{ primaryFieldProperty }} ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ primaryFieldProperty }}({{ primaryFieldParam }} {{ primaryFieldType }}) (models.{{ tableName }}, error) {
@@ -126,7 +133,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ ta
 }
 
 //Update ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ tableName }}, data models.{{ tableName }}) (result models.{{ tableName }}, err error) {
+func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ tableName }}, data interface{}) (result models.{{ tableName }}, err error) {
 
     cn, err := {{ tableSingleKey }}.db()
     if err != nil {
@@ -134,7 +141,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ ta
     }
     defer {{ tableSingleKey }}.close()
 
-    values := {{ tableSingleKey }}.diffStruct(&object, &data)
+    values := {{ tableSingleKey }}.diffStruct(&object, data)
     err = cn.Model(&object).Updates(values).Error
     if err != nil {
         return
