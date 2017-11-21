@@ -12,6 +12,7 @@ import (
 	"github.com/kataras/iris/middleware/recover"
 	"{{ config.project.package }}/modules/config"
 	"{{ config.project.package }}/controllers"
+	"{{ config.project.package }}/controllers/middleware"
 )
 
 func init() {
@@ -27,7 +28,7 @@ func main() {
 	app.Use(customRecovery())
 	app.Use(customCors())
 
-	controllers.BaseController(app)
+	middleware.BaseController(app)
 	{% for table in tables %}
         {% set tableName = table.name | upperCamelize %}
 		controllers.{{ tableName }}Controller(app)

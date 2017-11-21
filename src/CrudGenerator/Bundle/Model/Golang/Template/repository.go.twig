@@ -7,6 +7,7 @@ import (
     "github.com/kataras/iris"
     "{{ config.project.package }}/models"
     "{{ config.project.package }}/modules/util"
+    "{{ config.project.package }}/modules/db"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -15,7 +16,7 @@ import (
 
 //{{ tableName }}Repository ...
 type {{ tableName }}Repository struct {
-    baseRepository
+    db.BaseRepository
 }
 
 
@@ -26,17 +27,17 @@ type {{ tableName }}Repository struct {
 
 //New{{ tableName }}Repository ...
 func New{{ tableName }}Repository(ctx iris.Context) {{ tableName }}Repository {
-    return {{ tableName }}Repository{baseRepository: newBaseRepository(ctx)}
+    return {{ tableName }}Repository{BaseRepository: db.NewBaseRepository(ctx)}
 }
 
 //List ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int, sort, sortType string) (list models.{{ tableName }}List, err error) {
 
-    cn, err := {{ tableSingleKey }}.db()
+    cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
         return
     }
-    defer {{ tableSingleKey }}.close()
+    defer {{ tableSingleKey }}.Close()
     sortAllows := map[string]string{
 {% for field in table.fields  %}
     "{{ field.name }}":              "{{ field.name }}",
@@ -69,11 +70,11 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int, so
 //SearchList ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) SearchList(query string, offset, limit int) (list models.{{ tableName }}List, err error) {
 
-    cn, err := {{ tableSingleKey }}.db()
+    cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
         return
     }
-    defer {{ tableSingleKey }}.close()
+    defer {{ tableSingleKey }}.Close()
 
     list = models.{{ tableName }}List{Limit: limit, Offset: offset}
     qb := cn.Model(models.{{ tableName }}{}).
@@ -116,11 +117,11 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ nameFieldPrope
 //Create ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ tableName }}) (result models.{{ tableName }}, err error) {
 
-    cn, err := {{ tableSingleKey }}.db()
+    cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
         return
     }
-    defer {{ tableSingleKey }}.close()
+    defer {{ tableSingleKey }}.Close()
 
     err = cn.Create(&object).Error
     if err != nil {
@@ -135,13 +136,13 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ ta
 //Update ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ tableName }}, data interface{}) (result models.{{ tableName }}, err error) {
 
-    cn, err := {{ tableSingleKey }}.db()
+    cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
         return
     }
-    defer {{ tableSingleKey }}.close()
+    defer {{ tableSingleKey }}.Close()
 
-    values := {{ tableSingleKey }}.diffStruct(&object, data)
+    values := {{ tableSingleKey }}.DiffStruct(&object, data)
     err = cn.Model(&object).Updates(values).Error
     if err != nil {
         return
@@ -154,11 +155,11 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ ta
 //Delete ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ tableName }}) (err error) {
 
-    cn, err := {{ tableSingleKey }}.db()
+    cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
         return
     }
-    defer {{ tableSingleKey }}.close()
+    defer {{ tableSingleKey }}.Close()
 
     err = cn.Where("{{ table.primaryField.name }} = ? ", object.{{ primaryFieldProperty }}).Delete(object).Error
     if err != nil {
@@ -170,11 +171,11 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ ta
 //UpdateSingle ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) UpdateSingle(object models.{{ tableName }}, column string, value interface{}) (err error) {
 
-    cn, err := {{ tableSingleKey }}.db()
+    cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
         return
     }
-    defer {{ tableSingleKey }}.close()
+    defer {{ tableSingleKey }}.Close()
 
     err = cn.Model(&object).Update(column, value).Error
     if err != nil {
@@ -187,11 +188,11 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) UpdateSingle(object models
 //FindOne ...
 func ({{ tableSingleKey }} {{ tableName }}Repository) FindOne(query interface{}, args ...interface{}) (result models.{{ tableName }}, err error) {
 
-    cn, err := {{ tableSingleKey }}.db()
+    cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
         return
     }
-    defer {{ tableSingleKey }}.close()
+    defer {{ tableSingleKey }}.Close()
 
     err = cn.Where(query, args...).First(&result).Error
     if err != nil {
