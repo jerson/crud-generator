@@ -8,6 +8,7 @@ import (
     "{{ config.project.package }}/controllers/middleware"
     "{{ config.project.package }}/models"
     "{{ config.project.package }}/repositories"
+    "{{ config.project.package }}/modules/request"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -26,14 +27,14 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
-        request := NewRequest(ctx)
-        limit, _ := request.GetURLParamInt("limit")
-        offset, _ := request.GetURLParamInt("offset")
+        req := request.NewParser(ctx)
+        limit, _ := req.GetURLParamInt("limit")
+        offset, _ := req.GetURLParamInt("offset")
         {% if nameField is not empty %}
-        query := request.GetURLParam("query")
+        query := req.GetURLParam("query")
         {% endif %}
-        sort := request.GetURLParam("sort")
-        sortType := request.GetURLParam("sort_type")
+        sort := req.GetURLParam("sort")
+        sortType := req.GetURLParam("sort_type")
         repo := repositories.New{{ tableName }}Repository(ctx)
 
         var err error
@@ -49,14 +50,14 @@ func {{ tableName }}Controller(app *iris.Application) {
             result, err = repo.List(offset, limit, sort, sortType)
         {% endif %}
         if err != nil {
-            request.SendError(http.StatusInternalServerError,err)
+            req.SendError(http.StatusInternalServerError,err)
             return
         }
 
-        request.Header("X-Total", fmt.Sprint(result.Total))
-        request.Header("X-Offset", fmt.Sprint(result.Offset))
-        request.Header("X-Limit", fmt.Sprint(result.Limit))
-        request.SendResponse(http.StatusOK,result)
+        req.Header("X-Total", fmt.Sprint(result.Total))
+        req.Header("X-Offset", fmt.Sprint(result.Offset))
+        req.Header("X-Limit", fmt.Sprint(result.Limit))
+        req.SendResponse(http.StatusOK,result)
 
     })
 
@@ -73,17 +74,17 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
-        request := NewRequest(ctx)
-        id, _ := request.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        req := request.NewParser(ctx)
+        id, _ := req.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
 
         repo := repositories.New{{ tableName }}Repository(ctx)
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            request.SendError(http.StatusNotFound,err)
+            req.SendError(http.StatusNotFound,err)
             return
         }
 
-        request.SendResponse(http.StatusOK,item)
+        req.SendResponse(http.StatusOK,item)
 
     })
 
@@ -95,28 +96,28 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
-        request := NewRequest(ctx)
+        req := request.NewParser(ctx)
         formData := models.{{ tableName }}{}
-        err := request.ReadForm(&formData)
+        err := req.ReadForm(&formData)
         if err != nil {
-            request.SendError(http.StatusBadRequest,err)
+            req.SendError(http.StatusBadRequest,err)
             return
         }
         err = formData.IsValid()
         if err != nil {
-            request.SendError(http.StatusBadRequest, err)
+            req.SendError(http.StatusBadRequest, err)
             return
         }
         item := models.{{ tableName }}{}
-        itemBinded := request.BindRequest(item, formData)
+        itemBinded := req.BindRequest(item, formData)
 
         repo := repositories.New{{ tableName }}Repository(ctx)
         result, err := repo.Create(itemBinded.(models.{{ tableName }}))
         if err != nil {
-            request.SendError(http.StatusInternalServerError,err)
+            req.SendError(http.StatusInternalServerError,err)
             return
         }
-        request.SendResponse(http.StatusOK,result)
+        req.SendResponse(http.StatusOK,result)
 
     })
 
@@ -127,34 +128,34 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
-        request := NewRequest(ctx)
+        req := request.NewParser(ctx)
         repo := repositories.New{{ tableName }}Repository(ctx)
-        id, _ := request.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        id, _ := req.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            request.SendError(http.StatusNotFound,err)
+            req.SendError(http.StatusNotFound,err)
             return
         }
 
         formData := models.{{ tableName }}{}
-        err = request.ReadForm(&formData)
+        err = req.ReadForm(&formData)
         if err != nil {
-            request.SendError(http.StatusBadRequest,err)
+            req.SendError(http.StatusBadRequest,err)
             return
         }
         err = formData.IsValid()
         if err != nil {
-            request.SendError(http.StatusBadRequest, err)
+            req.SendError(http.StatusBadRequest, err)
             return
         }
-        itemBinded := request.BindRequest(item, formData)
+        itemBinded := req.BindRequest(item, formData)
 
         result, err := repo.Update(item,itemBinded)
         if err != nil {
-            request.SendError(http.StatusInternalServerError,err)
+            req.SendError(http.StatusInternalServerError,err)
             return
         }
-        request.SendResponse(http.StatusOK,result)
+        req.SendResponse(http.StatusOK,result)
 
     })
 
@@ -165,22 +166,22 @@ func {{ tableName }}Controller(app *iris.Application) {
         middleware.Log,
         func(ctx iris.Context) {
 
-        request := NewRequest(ctx)
+        req := request.NewParser(ctx)
         repo := repositories.New{{ tableName }}Repository(ctx)
-        id, _ := request.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        id, _ := req.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            request.SendError(http.StatusNotFound,err)
+            req.SendError(http.StatusNotFound,err)
             return
         }
 
         err = repo.Delete(item)
         if err != nil {
-            request.SendError(http.StatusInternalServerError,err)
+            req.SendError(http.StatusInternalServerError,err)
             return
         }
 
-        request.SendResponse(http.StatusOK,item)
+        req.SendResponse(http.StatusOK,item)
 
     })
 }
