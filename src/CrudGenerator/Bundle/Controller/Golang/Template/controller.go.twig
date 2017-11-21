@@ -3,6 +3,7 @@ package controllers
 
 import (
     "fmt"
+    "net/http"
     "github.com/kataras/iris"
     "{{ config.project.package }}/controllers/middleware"
     "{{ config.project.package }}/models"
@@ -48,14 +49,14 @@ func {{ tableName }}Controller(app *iris.Application) {
             result, err = repo.List(offset, limit, sort, sortType)
         {% endif %}
         if err != nil {
-            request.SendError(500,err)
+            request.SendError(http.StatusInternalServerError,err)
             return
         }
 
         request.Header("X-Total", fmt.Sprint(result.Total))
         request.Header("X-Offset", fmt.Sprint(result.Offset))
         request.Header("X-Limit", fmt.Sprint(result.Limit))
-        request.SendResponse(200,result)
+        request.SendResponse(http.StatusOK,result)
 
     })
 
@@ -78,11 +79,11 @@ func {{ tableName }}Controller(app *iris.Application) {
         repo := repositories.New{{ tableName }}Repository(ctx)
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            request.SendError(404,err)
+            request.SendError(http.StatusNotFound,err)
             return
         }
 
-        request.SendResponse(200,item)
+        request.SendResponse(http.StatusOK,item)
 
     })
 
@@ -98,12 +99,12 @@ func {{ tableName }}Controller(app *iris.Application) {
         formData := models.{{ tableName }}{}
         err := request.ReadForm(&formData)
         if err != nil {
-            request.SendError(400,err)
+            request.SendError(http.StatusBadRequest,err)
             return
         }
         err = formData.IsValid()
         if err != nil {
-            request.SendError(400, err)
+            request.SendError(http.StatusBadRequest, err)
             return
         }
         item := models.{{ tableName }}{}
@@ -112,10 +113,10 @@ func {{ tableName }}Controller(app *iris.Application) {
         repo := repositories.New{{ tableName }}Repository(ctx)
         result, err := repo.Create(itemBinded.(models.{{ tableName }}))
         if err != nil {
-            request.SendError(500,err)
+            request.SendError(http.StatusInternalServerError,err)
             return
         }
-        request.SendResponse(200,result)
+        request.SendResponse(http.StatusOK,result)
 
     })
 
@@ -131,29 +132,29 @@ func {{ tableName }}Controller(app *iris.Application) {
         id, _ := request.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            request.SendError(404,err)
+            request.SendError(http.StatusNotFound,err)
             return
         }
 
         formData := models.{{ tableName }}{}
         err = request.ReadForm(&formData)
         if err != nil {
-            request.SendError(400,err)
+            request.SendError(http.StatusBadRequest,err)
             return
         }
         err = formData.IsValid()
         if err != nil {
-            request.SendError(400, err)
+            request.SendError(http.StatusBadRequest, err)
             return
         }
         itemBinded := request.BindRequest(item, formData)
 
         result, err := repo.Update(item,itemBinded)
         if err != nil {
-            request.SendError(500,err)
+            request.SendError(http.StatusInternalServerError,err)
             return
         }
-        request.SendResponse(200,result)
+        request.SendResponse(http.StatusOK,result)
 
     })
 
@@ -169,17 +170,17 @@ func {{ tableName }}Controller(app *iris.Application) {
         id, _ := request.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            request.SendError(404,err)
+            request.SendError(http.StatusNotFound,err)
             return
         }
 
         err = repo.Delete(item)
         if err != nil {
-            request.SendError(500,err)
+            request.SendError(http.StatusInternalServerError,err)
             return
         }
 
-        request.SendResponse(200,item)
+        request.SendResponse(http.StatusOK,item)
 
     })
 }
