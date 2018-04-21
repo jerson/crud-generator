@@ -30,6 +30,11 @@ class Type implements TypeInterface
     private $name;
 
     /**
+     * @var string
+     */
+    private $originalName;
+
+    /**
      * @var int
      */
     private $length;
@@ -85,5 +90,21 @@ class Type implements TypeInterface
     public function setOptions($options)
     {
         $this->options = $options;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalName()
+    {
+        return $this->originalName;
+    }
+
+    /**
+     * @param string $originalName
+     */
+    public function setOriginalName($originalName)
+    {
+        $this->originalName = $originalName;
     }
 }

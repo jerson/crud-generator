@@ -9,7 +9,9 @@ import (
 	"github.com/kataras/iris/middleware/recover"
     "{{ config.project.package }}/modules/context"
 	"{{ config.project.package }}/modules/config"
+	"{{ config.project.package }}/modules/db"
 	"{{ config.project.package }}/controllers"
+	"{{ config.project.package }}/models"
 	"net/http"
 )
 
@@ -24,6 +26,17 @@ func main() {
 
 	ctx := context.NewSingle("api")
 	defer ctx.Close()
+
+    cn, err := db.Setup(ctx)
+	if err != nil {
+		panic(err)
+	}
+	cn.AutoMigrate(
+	{% for table in tables %}
+        {% set tableName = table.name | upperCamelize %}
+		&models.{{ tableName }}{},
+	{% endfor %}
+    )
 
 	app := iris.New()
     app.Use(recover.New())
@@ -41,7 +54,7 @@ func main() {
 	log.Infof("running %s",port)
 
 	app.Build()
-	err := gracehttp.Serve(
+	err = gracehttp.Serve(
 		&http.Server{Addr: port, Handler: app},
 	)
 	if err != nil {

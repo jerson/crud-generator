@@ -45,7 +45,18 @@ type {{ tableName }} struct {
         {% set validSuffix = '-' %}
     {% endif %}
 {% endspaceless %}
-    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}"`
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}type:{{ field.type.originalName }};{{ field.unique ? 'unique;' : '' }}{{ not field.allowNull ? 'not null;' : '' }}{% spaceless %}
+    {% spaceless %}{% if field.default is not empty %}
+    default:{{ field.default }};
+    {% endif %}
+    {% endspaceless %}{% for index in field.indexes  %}{% spaceless %}
+    {% if index.unique %}
+    unique_index:{{ index.name }};
+    {% else %}
+    index:{{ index.name }};
+    {% endif %}
+    {% endspaceless %}{% endfor %}
+    {% endspaceless %}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}"`
 {% endfor %}
 
 {% for field in table.foreignFields  %}{% spaceless %}

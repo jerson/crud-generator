@@ -29,6 +29,7 @@ class BaseConnector
 
             $matches['type'] = strtolower($matches['type']);
 
+            $tableType->setOriginalName($string);
             switch ($matches['type']) {
                 case 'tinyint':
                     $name = Type::TINYINT;
