@@ -30,7 +30,7 @@ func (b *BaseRepository) DB() (*gorm.DB, error) {
 		return b.cn, nil
 	}
 
-	cn, err := SetupContext(b.ctx)
+	cn, err := Setup(b.ctx)
 	if err != nil {
 		return nil, err
 	}

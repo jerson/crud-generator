@@ -10,14 +10,14 @@ import (
 	"time"
 )
 
-// SetupContext ...
-func SetupContext(ctx context.Base) (*gorm.DB, error) {
-	log := ctx.GetLogger("DB.gorm.SetupContext")
+// Setup ...
+func Setup(ctx context.Base) (*gorm.DB, error) {
+	log := ctx.GetLogger("DB.gorm.Setup")
 	i := 0
 	limit := 20
 	for {
 		i++
-		cn, err := SingleSetupContext(ctx)
+		cn, err := singleSetup(ctx)
 		if err == nil || i > limit {
 			if i <= limit && i > 1 {
 				log.Info("mysql gorm recuperado")
@@ -30,8 +30,7 @@ func SetupContext(ctx context.Base) (*gorm.DB, error) {
 	}
 }
 
-// SingleSetupContext ...
-func SingleSetupContext(ctx context.Base) (*gorm.DB, error) {
+func singleSetup(ctx context.Base) (*gorm.DB, error) {
 
 	name := config.Vars.Database.Name
 	user := config.Vars.Database.User
