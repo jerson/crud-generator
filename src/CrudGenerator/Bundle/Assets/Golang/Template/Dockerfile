@@ -21,7 +21,6 @@ ENV BUILDER_PATH /srv/go/src/{{ config.project.package }}
 ENV WORKDIR /app
 WORKDIR ${WORKDIR}
 
-COPY --from=builder ${BUILDER_PATH}/conf ./conf
 COPY --from=builder ${BUILDER_PATH}/config.toml .
 COPY --from=builder ${BUILDER_PATH}/api-server .
 

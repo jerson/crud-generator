@@ -2,6 +2,10 @@ version: '3.3'
 services:
     api:
         image: registry.gitlab.com/username/app
+        ports:
+          - 8000:8000
+        depends_on:
+          - mysql
         volumes:
           - logs:/app/logs
         configs:
@@ -10,17 +14,28 @@ services:
         networks:
           - public
           - private
-        deploy:
-          labels:
-            - "traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Credentials:true||Access-Control-Allow-Origin:*"
-            - "traefik.frontend.rule=Host:api.server.com"
-            - "traefik.port=8000"
-            - "traefik.weight=1"
+
+    mysql:
+        image: mysql:5.7
+        command: --sql_mode=""
+        volumes:
+          - mysql:/var/lib/mysql
+        environment:
+          - MYSQL_USER=app
+          - MYSQL_PASSWORD=app
+          - MYSQL_DATABASE=app
+          - MYSQL_ALLOW_EMPTY_PASSWORD=false
+        networks:
+          - private
 
 networks:
   public:
-    external: true
   private:
+
+
+volumes:
+  logs:
+  mysql:
 
 configs:
   api:
