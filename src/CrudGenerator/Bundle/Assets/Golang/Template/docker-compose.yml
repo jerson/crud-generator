@@ -1,0 +1,34 @@
+version: '3'
+services:
+    dev:
+        image: jerson/go:1.10
+        ports:
+          - 8000:8000
+        working_dir: /srv/go/src/{{ config.project.package }}
+        stdin_open: true
+        tty: true
+        depends_on:
+          - mysql
+        volumes:
+          - ./:/srv/go/src/{{ config.project.package }}
+        entrypoint: ./docker/dev/entrypoint-dev.sh
+
+    mysql:
+        image: mysql:5.7
+        command: --sql_mode=""
+        environment:
+          - MYSQL_USER=app
+          - MYSQL_PASSWORD=app
+          - MYSQL_DATABASE=app
+          - MYSQL_ALLOW_EMPTY_PASSWORD=true
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.7
+        ports:
+          - 8090:80
+        depends_on:
+          - mysql
+        environment:
+          PMA_HOST: mysql
+          PMA_PORT: 3306
+

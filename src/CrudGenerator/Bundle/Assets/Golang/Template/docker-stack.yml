@@ -1,0 +1,28 @@
+version: '3.3'
+services:
+    api:
+        image: registry.gitlab.com/username/app
+        volumes:
+          - logs:/app/logs
+        configs:
+          - source: api
+            target: /app/config.toml
+        networks:
+          - public
+          - private
+        deploy:
+          labels:
+            - "traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Credentials:true||Access-Control-Allow-Origin:*"
+            - "traefik.frontend.rule=Host:api.server.com"
+            - "traefik.port=8000"
+            - "traefik.weight=1"
+
+networks:
+  public:
+    external: true
+  private:
+
+configs:
+  api:
+    external:
+      name: app_api
