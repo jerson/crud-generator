@@ -3,33 +3,7 @@ package util
 
 import (
 	"fmt"
-	"github.com/emirpasic/gods/sets/hashset"
-	"strings"
 )
-
-// SliceUniqueString ...
-func SliceUniqueString(items string) string {
-	list := strings.Split(items, ",")
-	return strings.Join(SliceUnique(list), ",")
-}
-
-// SliceUnique ...
-func SliceUnique(list []string) []string {
-
-	var newItems []string
-	itemsSet := hashset.New()
-
-	for _, id := range list {
-		if id != "" {
-			itemsSet.Add(id)
-		}
-	}
-	values := itemsSet.Values()
-	for _, item := range values {
-		newItems = append(newItems, item.(string))
-	}
-	return newItems
-}
 
 // SliceContains ...
 func SliceContains(text string, list []string) bool {

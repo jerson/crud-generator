@@ -8,8 +8,5 @@ import (
 // Validate ...
 func Validate(data interface{}) error {
 	_, err := govalidator.ValidateStruct(data)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
