@@ -45,15 +45,17 @@ type {{ tableName }} struct {
         {% set validSuffix = '-' %}
     {% endif %}
 {% endspaceless %}
-    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}type:{{ field.type.originalName }};{{ field.unique ? 'unique;' : '' }}{{ not field.allowNull ? 'not null;' : '' }}{% spaceless %}
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.autoIncrement ? 'auto_increment;' : '' }}type:{{ field.type.originalName }};{{ field.unique ? 'unique;' : '' }}{{ not field.allowNull ? 'not null;' : '' }}{% spaceless %}
     {% spaceless %}{% if field.default is not empty %}
     default:{{ field.default }};
     {% endif %}
     {% endspaceless %}{% for index in field.indexes  %}{% spaceless %}
-    {% if index.unique %}
-    unique_index:{{ index.name }};
-    {% else %}
-    index:{{ index.name }};
+    {% if index.name != "PRIMARY" %}
+        {% if index.unique %}
+        unique_index:{{ index.name }};
+        {% else %}
+        index:{{ index.name }};
+        {% endif %}
     {% endif %}
     {% endspaceless %}{% endfor %}
     {% endspaceless %}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}"`
@@ -65,7 +67,7 @@ type {{ tableName }} struct {
     {% set column = field.name | replace({'_id':'','id_':''})  | underscored %}
     {% set allowNull = field.foreign and field.allowNull  %}
 {% endspaceless %}
-    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"-" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}" sql:"-"`
+    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"foreignkey:{{ golang.primaryName(field.reference.column) | upperCamelize }}" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}" sql:"-"`
 {% endfor %}
 }
 
