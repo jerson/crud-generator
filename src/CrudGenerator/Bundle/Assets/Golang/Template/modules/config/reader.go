@@ -8,7 +8,7 @@ import (
 
 // Server ...
 type Server struct {
-	Port string `toml:"port" default:"8000"`
+	Port int `toml:"port" default:"8000"`
 }
 
 // Cache ...
