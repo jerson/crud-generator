@@ -17,6 +17,18 @@ class Model extends Base
     public function generate()
     {
 
+        $baseDir = 'forms';
+
+        foreach ($this->tables as $table) {
+
+            $fileName = Stringy::create($table->getName())->underscored();
+            $filePath = sprintf('%s/%s_form.go', $baseDir, $fileName);
+
+            $fileContent = $this->twig->render('form.go.twig', ['table' => $table]);
+            $this->fileSystem->write($filePath, $fileContent, true);
+
+        }
+
         $baseDir = 'models';
 
         foreach ($this->tables as $table) {

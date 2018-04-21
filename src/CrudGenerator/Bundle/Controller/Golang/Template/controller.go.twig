@@ -1,14 +1,13 @@
-//Package controllers ...
 package controllers
 
 import (
     "fmt"
     "net/http"
     "github.com/kataras/iris"
-    "{{ config.project.package }}/controllers/middleware"
     "{{ config.project.package }}/models"
+    "{{ config.project.package }}/forms"
     "{{ config.project.package }}/repositories"
-    "{{ config.project.package }}/modules/request"
+    "{{ config.project.package }}/modules/context"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -20,21 +19,18 @@ import (
 //{{ tableName }}Controller ...
 func {{ tableName }}Controller(app *iris.Application) {
 
-    app.Get("/{{ table_name }}",
-        middleware.Database,
-        //middleware.JWT.Serve,
-        middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
-        middleware.Log,
-        func(ctx iris.Context) {
+    app.Get("/{{ table_name }}", func(c iris.Context) {
 
-        req := request.NewParser(ctx)
-        limit, _ := req.GetURLParamInt("limit")
-        offset, _ := req.GetURLParamInt("offset")
+        ctx := context.NewIris(c, "{{ tableName }}.List")
+        defer ctx.Close()
+
+        limit, _ := ctx.GetURLParamInt("limit")
+        offset, _ := ctx.GetURLParamInt("offset")
         {% if nameField is not empty %}
-        query := req.GetURLParam("query")
+        query := ctx.GetURLParam("query")
         {% endif %}
-        sort := req.GetURLParam("sort")
-        sortType := req.GetURLParam("sort_type")
+        sort := ctx.GetURLParam("sort")
+        sortType := ctx.GetURLParam("sort_type")
         repo := repositories.New{{ tableName }}Repository(ctx)
 
         var err error
@@ -50,14 +46,14 @@ func {{ tableName }}Controller(app *iris.Application) {
             result, err = repo.List(offset, limit, sort, sortType)
         {% endif %}
         if err != nil {
-            req.SendError(http.StatusInternalServerError,err)
+            ctx.SendError(http.StatusInternalServerError,err)
             return
         }
 
-        req.Header("X-Total", fmt.Sprint(result.Total))
-        req.Header("X-Offset", fmt.Sprint(result.Offset))
-        req.Header("X-Limit", fmt.Sprint(result.Limit))
-        req.SendResponse(http.StatusOK,result)
+        ctx.Header("X-Total", fmt.Sprint(result.Total))
+        ctx.Header("X-Offset", fmt.Sprint(result.Offset))
+        ctx.Header("X-Limit", fmt.Sprint(result.Limit))
+        ctx.SendResponse(http.StatusOK,result)
 
     })
 
@@ -67,121 +63,122 @@ func {{ tableName }}Controller(app *iris.Application) {
 {% set primaryFieldType = golang.realType(table.primaryField) %}
 {% set primaryFieldTypeRoute = primaryFieldType | replace({'64':''}) %}
 
-    app.Get("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }} min(1){{ '}' }}",
-        middleware.Database,
-        //middleware.JWT.Serve,
-        middleware.Permissions{Permissions: []string{"{{ table_name }}_read"}}.Serve,
-        middleware.Log,
-        func(ctx iris.Context) {
+    app.Get("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }}{{ '}' }}",
+        func(c iris.Context) {
 
-        req := request.NewParser(ctx)
-        id, _ := req.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
-
+        ctx := context.NewIris(c, "{{ tableName }}.Get")
+        defer ctx.Close()
+        {% if primaryFieldType == "string" %}
+        id := ctx.GetParam("{{ primaryFieldParam }}")
+        {% else %}
+        id, _ := ctx.GetParam{{ primaryFieldType | upperCamelize  }}("{{ primaryFieldParam }}")
+        {% endif %}
         repo := repositories.New{{ tableName }}Repository(ctx)
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            req.SendError(http.StatusNotFound,err)
+            ctx.SendError(http.StatusNotFound,err)
             return
         }
 
-        req.SendResponse(http.StatusOK,item)
+        ctx.SendResponse(http.StatusOK,item)
 
     })
 
 
-    app.Post("/{{ table_name }}",
-        middleware.Database,
-        //middleware.JWT.Serve,
-        middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
-        middleware.Log,
-        func(ctx iris.Context) {
+    app.Post("/{{ table_name }}", func(c iris.Context) {
 
-        req := request.NewParser(ctx)
-        formData := models.{{ tableName }}{}
-        err := req.ReadForm(&formData)
+        ctx := context.NewIris(c, "{{ tableName }}.Post")
+        defer ctx.Close()
+
+        formData := forms.{{ tableName }}Form{}
+        err := ctx.ReadForm(&formData)
         if err != nil {
-            req.SendError(http.StatusBadRequest,err)
+            ctx.SendError(http.StatusBadRequest,err)
             return
         }
         err = formData.IsValid()
         if err != nil {
-            req.SendError(http.StatusBadRequest, err)
+            ctx.SendError(http.StatusBadRequest, err)
             return
         }
         item := models.{{ tableName }}{}
-        itemBinded := req.BindRequest(item, formData)
+        itemBinded := ctx.BindRequest(item, formData)
 
         repo := repositories.New{{ tableName }}Repository(ctx)
         result, err := repo.Create(itemBinded.(models.{{ tableName }}))
         if err != nil {
-            req.SendError(http.StatusInternalServerError,err)
+            ctx.SendError(http.StatusInternalServerError,err)
             return
         }
-        req.SendResponse(http.StatusOK,result)
+        ctx.SendResponse(http.StatusOK,result)
 
     })
 
-    app.Put("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }} min(1){{ '}' }}",
-        middleware.Database,
-        //middleware.JWT.Serve,
-        middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
-        middleware.Log,
-        func(ctx iris.Context) {
+    app.Put("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }}{{ '}' }}",
+        func(c iris.Context) {
 
-        req := request.NewParser(ctx)
+        ctx := context.NewIris(c, "{{ tableName }}.Put")
+        defer ctx.Close()
+
         repo := repositories.New{{ tableName }}Repository(ctx)
-        id, _ := req.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        {% if primaryFieldType == "string" %}
+        id := ctx.GetParam("{{ primaryFieldParam }}")
+        {% else %}
+        id, _ := ctx.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        {% endif %}
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            req.SendError(http.StatusNotFound,err)
+            ctx.SendError(http.StatusNotFound,err)
             return
         }
 
-        formData := models.{{ tableName }}{}
-        err = req.ReadForm(&formData)
+        formData := forms.{{ tableName }}Form{}
+        err = ctx.ReadForm(&formData)
         if err != nil {
-            req.SendError(http.StatusBadRequest,err)
+            ctx.SendError(http.StatusBadRequest,err)
             return
         }
         err = formData.IsValid()
         if err != nil {
-            req.SendError(http.StatusBadRequest, err)
+            ctx.SendError(http.StatusBadRequest, err)
             return
         }
-        itemBinded := req.BindRequest(item, formData)
+        itemBinded := ctx.BindRequest(item, formData)
 
-        result, err := repo.Update(item,itemBinded)
+        err = repo.Update(item,itemBinded)
         if err != nil {
-            req.SendError(http.StatusInternalServerError,err)
+            ctx.SendError(http.StatusInternalServerError,err)
             return
         }
-        req.SendResponse(http.StatusOK,result)
+        ctx.SendResponse(http.StatusOK,item)
 
     })
 
-    app.Delete("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }} min(1){{ '}' }}",
-        middleware.Database,
-        //middleware.JWT.Serve,
-        middleware.Permissions{Permissions: []string{"{{ table_name }}_write"}}.Serve,
-        middleware.Log,
-        func(ctx iris.Context) {
+    app.Delete("/{{ table_name }}/{{ '{' }}{{ primaryFieldParam }}:{{ primaryFieldTypeRoute }}{{ '}' }}",
+        func(c iris.Context) {
 
-        req := request.NewParser(ctx)
+        ctx := context.NewIris(c, "{{ tableName }}.Delete")
+        defer ctx.Close()
+
         repo := repositories.New{{ tableName }}Repository(ctx)
-        id, _ := req.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        {% if primaryFieldType == "string" %}
+        id := ctx.GetParam("{{ primaryFieldParam }}")
+        {% else %}
+        id, _ := ctx.GetParam{{ primaryFieldType | upperCamelize }}("{{ primaryFieldParam }}")
+        {% endif %}
         item, err := repo.FindOneBy{{ primaryFieldProperty }}(id)
         if err != nil {
-            req.SendError(http.StatusNotFound,err)
+            ctx.SendError(http.StatusNotFound,err)
             return
         }
 
         err = repo.Delete(item)
         if err != nil {
-            req.SendError(http.StatusInternalServerError,err)
+            ctx.SendError(http.StatusInternalServerError,err)
             return
         }
 
-        req.SendResponse(http.StatusOK,item)
+        ctx.SendResponse(http.StatusOK,item)
 
     })
 }

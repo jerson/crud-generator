@@ -5,6 +5,7 @@ parameters:
       controller: JSPSimple
       view: JSPSimple
     Golang:
+      assets: Golang
       model: Golang
       controller: Golang
 #      view: Golang

@@ -1,12 +1,12 @@
-//Package models ...
 package models
 
 {% set createdField = table.fieldWithName('date_created') %}
 {% set updatedField = table.fieldWithName('date_updated') %}
+{% set dateField = table.fieldWithName('date') or table.fieldWithName('fecha') or table.fieldWithName('_at') %}
 {% set slugField = table.fieldWithName('slug') %}
 {% set nameField = table.fieldWithName('name') %}
 import (
-{% if createdField is not empty or updatedField is not empty %}
+{% if dateField is not empty %}
     "time"
 {% endif %}
     "github.com/jinzhu/gorm"
@@ -45,25 +45,25 @@ type {{ tableName }} struct {
         {% set validSuffix = '-' %}
     {% endif %}
 {% endspaceless %}
-    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" form:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" valid:"{{ validPrefix }}{{ validPrefix is not empty ? ',' : '' }}{{ validSuffix }}"`
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} `gorm:"{{ field.primary ? 'primary_key;' : '' }}{{ field.unique ? 'unique;' : '' }}column:{{ column}}" json:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}"`
 {% endfor %}
 
 {% for field in table.foreignFields  %}{% spaceless %}
     {% set type = golang.type(field) %}
-    {% set property = field.name | replace({'_id':''}) | upperCamelize %}
-    {% set column = field.name | replace({'_id':''})  | underscored %}
+    {% set property = field.name | replace({'_id':'','id_':''}) | upperCamelize %}
+    {% set column = field.name | replace({'_id':'','id_':''})  | underscored %}
     {% set allowNull = field.foreign and field.allowNull  %}
 {% endspaceless %}
-    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"-" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}" form:"-" sql:"-" valid:"-"`
+    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"-" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}" sql:"-"`
 {% endfor %}
 }
 
 //{{ tableName }}List ...
 type {{ tableName }}List struct {
-    Total  int      `json:"total" form:"total"`
-    Limit  int      `json:"limit" form:"limit"`
-    Offset int      `json:"offset" form:"offset"`
-    Items  []{{ tableName }} `json:"items" form:"items"`
+    Total  int      `json:"total"`
+    Limit  int      `json:"limit"`
+    Offset int      `json:"offset"`
+    Items  []{{ tableName }} `json:"items"`
 }
 
 //TableName ...
@@ -96,11 +96,11 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) err
 func ({{ tableSingleKey }} *{{ tableName }}) BeforeUpdate(scope *gorm.Scope) error {
     {% if updatedField is not empty %}
         updated := time.Now()
-        {{ tableSingleKey }}.{{ updatedField.name | upperCamelize }} = {{ updatedField.allowNull ? '&' : '' }}updated
+        scope.SetColumn("{{ updatedField.name }}", {{ updatedField.allowNull ? '&' : '' }}updated)
     {% endif %}
     {% if slugField is not empty and nameField is not empty %}
         if {{ tableSingleKey }}.{{ slugField.name | upperCamelize }}==""{
-        {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
+        scope.SetColumn("{{ slugField.name }}",  util.Slug({{ nameField | upperCamelize }}))
         }
     {% endif %}
     return {{ tableSingleKey }}.IsValid()

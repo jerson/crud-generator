@@ -1,11 +1,10 @@
-//Package repositories ...
 package repositories
 
 {% set createdField = table.fieldWithName('date_created') %}
 {% set updatedField = table.fieldWithName('date_updated') %}
 import (
-    "github.com/kataras/iris"
     "{{ config.project.package }}/models"
+    "{{ config.project.package }}/modules/context"
     "{{ config.project.package }}/modules/util"
     "{{ config.project.package }}/modules/db"
 )
@@ -26,7 +25,7 @@ type {{ tableName }}Repository struct {
 {% set primaryFieldType = golang.realType(table.primaryField) %}
 
 //New{{ tableName }}Repository ...
-func New{{ tableName }}Repository(ctx iris.Context) {{ tableName }}Repository {
+func New{{ tableName }}Repository(ctx context.Base) {{ tableName }}Repository {
     return {{ tableName }}Repository{BaseRepository: db.NewBaseRepository(ctx)}
 }
 
@@ -39,9 +38,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int, so
     }
     defer {{ tableSingleKey }}.Close()
     sortAllows := map[string]string{
-{% for field in table.fields  %}
-    "{{ field.name }}":              "{{ field.name }}",
-{% endfor %}
+    "{{ table.primaryField.name }}":              "{{ table.primaryField.name }}",
     }
 
     list = models.{{ tableName }}List{Limit: limit, Offset: offset}
@@ -134,7 +131,13 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ ta
 }
 
 //Update ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ tableName }}, data interface{}) (result models.{{ tableName }}, err error) {
+func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ tableName }}, data interface{}) (err error) {
+    values := {{ tableSingleKey }}.DiffStruct(&object, data)
+    return {{ tableSingleKey }}.UpdateColumns(object, values)
+}
+
+//UpdateColumns ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) UpdateColumns(object models.{{ tableName }}, values interface{}) (err error) {
 
     cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
@@ -142,29 +145,11 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Update(object models.{{ ta
     }
     defer {{ tableSingleKey }}.Close()
 
-    values := {{ tableSingleKey }}.DiffStruct(&object, data)
     err = cn.Model(&object).Updates(values).Error
     if err != nil {
         return
     }
-    result = object
 
-    return
-}
-
-//Delete ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ tableName }}) (err error) {
-
-    cn, err := {{ tableSingleKey }}.DB()
-    if err != nil {
-        return
-    }
-    defer {{ tableSingleKey }}.Close()
-
-    err = cn.Where("{{ table.primaryField.name }} = ? ", object.{{ primaryFieldProperty }}).Delete(object).Error
-    if err != nil {
-        return
-    }
     return
 }
 
@@ -182,6 +167,22 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) UpdateSingle(object models
         return
     }
 
+    return
+}
+
+//Delete ...
+func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ tableName }}) (err error) {
+
+    cn, err := {{ tableSingleKey }}.DB()
+    if err != nil {
+        return
+    }
+    defer {{ tableSingleKey }}.Close()
+
+    err = cn.Where("{{ table.primaryField.name }} = ? ", object.{{ primaryFieldProperty }}).Delete(object).Error
+    if err != nil {
+        return
+    }
     return
 }
 

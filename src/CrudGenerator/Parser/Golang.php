@@ -64,11 +64,12 @@ class Golang implements ParserInterface
             case Type::DATE:
             case Type::DATETIME:
             case Type::TIME:
+            case Type::TIMESTAMP:
                 $type = 'time.Time';
                 break;
-            case Type::TIMESTAMP:
-                $type = 'int64';
-                break;
+//            case Type::TIMESTAMP:
+//                $type = 'int64';
+//                break;
             default:
                 $type = 'string';
                 break;
@@ -87,7 +88,7 @@ class Golang implements ParserInterface
         if (strlen($string) < 4) {
             return strtoupper($string);
         }
-        return str_replace(['_id', '_url'], ['_ID', '_URL'], $string);
+        return str_replace(['_id', 'id_','ip_','_uid', '_url'], ['_ID','ID_','IP_','_UID', '_URL'], $string);
     }
 
     /**

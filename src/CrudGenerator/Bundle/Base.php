@@ -89,6 +89,32 @@ class Base implements BundleInterface
      */
     public function generate()
     {
-        throw new \Exception('falta implementar método generate');
+        throw new \Exception('must implement');
+    }
+
+    /**
+     * @param $source
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function copyAssets($source)
+    {
+        $target = $this->config['output']['dir'];
+        $fileSystem = new \Symfony\Component\Filesystem\Filesystem();
+
+        $directoryIterator = new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS);
+        $iterator = new \RecursiveIteratorIterator($directoryIterator, \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $item) {
+            if ($item->isDir()) {
+                $fileSystem->mkdir($target . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+            } else {
+
+                $template = str_replace($source . DIRECTORY_SEPARATOR, '', $item);
+                $fileContent = $this->twig->render($template, []);
+                $this->fileSystem->write($iterator->getSubPathName(), $fileContent, true);
+
+            }
+        }
     }
 }

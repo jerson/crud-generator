@@ -1,0 +1,55 @@
+package forms
+
+{% set createdField = table.fieldWithName('date_created') %}
+{% set updatedField = table.fieldWithName('date_updated') %}
+{% set dateField = table.fieldWithName('date') or table.fieldWithName('fecha') or table.fieldWithName('_at') %}
+{% set slugField = table.fieldWithName('slug') %}
+{% set nameField = table.fieldWithName('name') %}
+import (
+{% if dateField is not empty %}
+    "time"
+{% endif %}
+    "{{ config.project.package }}/modules/validator"
+{% if slugField is not empty and nameField is not empty %}
+    "{{ config.project.package }}/modules/util"
+{% endif %}
+)
+
+{% set tableName = table.name | upperCamelize %}
+{% set tableSingleKey = table.name | slice(0,1) %}
+{% set table_name = table.name | underscored %}
+
+//{{ tableName }}Form ...
+type {{ tableName }}Form struct {
+{% for field in table.fields  %}{% spaceless %}
+    {% set type = golang.realType(field) %}
+    {% set column = field.name | underscored %}
+    {% set property = golang.primaryName(field.name) | upperCamelize %}
+    {% set allowUseNull = (type | contains('time') or field.foreign) %}
+    {% set validPrefix = ''  %}
+    {% set validSuffix = ''  %}
+
+    {% if field.name | contains('email') %}
+        {% set validPrefix = 'email'  %}
+    {% endif %}
+    {% if field.allowNull and validPrefix is not empty %}
+        {% set validSuffix = 'optional'  %}
+    {% endif %}
+    {% if validSuffix is empty and not field.allowNull %}
+        {% set validSuffix = 'required'  %}
+    {% elseif validSuffix is empty %}
+        {% set validSuffix = '-'  %}
+    {% endif %}
+    {% if field.primary %}
+        {% set validSuffix = '-' %}
+    {% endif %}
+{% endspaceless %}
+    {{ property }} {{ field.allowNull and allowUseNull  ? '*' : '' }}{{ type }} ` form:"{{ column}}{{ field.allowNull ? ',omitempty' : '' }}" valid:"{{ validPrefix }}{{ validPrefix is not empty ? ',' : '' }}{{ validSuffix }}"`
+{% endfor %}
+
+}
+
+//IsValid ...
+func ({{ tableSingleKey }} *{{ tableName }}Form) IsValid() error {
+    return validator.Validate({{ tableSingleKey }})
+}
