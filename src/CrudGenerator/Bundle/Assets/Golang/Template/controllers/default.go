@@ -2,10 +2,10 @@
 package controllers
 
 import (
+	"{{ config.project.package }}/modules/context"
 	"github.com/juju/errors"
 	"github.com/kataras/iris"
 	"net/http"
-	"{{ config.project.package }}/modules/context"
 )
 
 // BaseController ...
@@ -22,21 +22,21 @@ func BaseController(app *iris.Application) {
 		func(c iris.Context) {
 			ctx := context.NewIris(c, "OnErrorCode.StatusNotFound")
 			defer ctx.Close()
-			ctx.SendError(http.StatusInternalServerError, errors.NotFoundf(ctx.Request().URL.String()))
+			ctx.SendError(http.StatusNotFound, errors.NotFoundf(ctx.Request().URL.String()))
 		})
 
 	app.OnErrorCode(http.StatusBadRequest,
 		func(c iris.Context) {
 			ctx := context.NewIris(c, "OnErrorCode.StatusBadRequest")
 			defer ctx.Close()
-			ctx.SendError(http.StatusInternalServerError, errors.BadRequestf("bad request"))
+			ctx.SendError(http.StatusBadRequest, errors.BadRequestf(""))
 		})
 
 	app.OnErrorCode(http.StatusUnauthorized,
 		func(c iris.Context) {
 			ctx := context.NewIris(c, "OnErrorCode.StatusUnauthorized")
 			defer ctx.Close()
-			ctx.SendError(http.StatusInternalServerError, errors.UserNotFoundf("not valid user"))
+			ctx.SendError(http.StatusUnauthorized, errors.UserNotFoundf(""))
 		})
 
 }

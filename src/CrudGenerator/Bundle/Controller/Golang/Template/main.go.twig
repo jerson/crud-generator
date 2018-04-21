@@ -29,12 +29,12 @@ func main() {
     app.Use(recover.New())
 	app.Use(cors.Default())
 
+	controllers.MetricsController(app)
 	controllers.BaseController(app)
 	{% for table in tables %}
         {% set tableName = table.name | upperCamelize %}
 		controllers.{{ tableName }}Controller(app)
 	{% endfor %}
-	controllers.MetricsController(app)
 
 	log := ctx.GetLogger("main")
 	port := fmt.Sprintf(":%d", config.Vars.Server.Port)
