@@ -50,9 +50,6 @@ func {{ tableName }}Controller(app *iris.Application) {
             return
         }
 
-        ctx.Header("X-Total", fmt.Sprint(result.Total))
-        ctx.Header("X-Offset", fmt.Sprint(result.Offset))
-        ctx.Header("X-Limit", fmt.Sprint(result.Limit))
         ctx.SendResponse(http.StatusOK,result)
 
     })
