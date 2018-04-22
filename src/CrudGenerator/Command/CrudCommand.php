@@ -113,19 +113,19 @@ class CrudCommand extends Command
 
             if ($type === 'database') {
                 $output->writeln('<info>Generando Scripts de Base de Datos</info>');
-                $this->generator->generateDatabase($layout);
+                $this->generator->generate('Database', $layout);
             }
             if ($type === 'model') {
                 $output->writeln('<info>Generando Modelos</info>');
-                $this->generator->generateModel($layout);
+                $this->generator->generate('Model', $layout);
             }
             if ($type === 'controller') {
                 $output->writeln('<info>Generando Controladores</info>');
-                $this->generator->generateController($layout);
+                $this->generator->generate('Controller', $layout);
             }
             if ($type === 'view') {
                 $output->writeln('<info>Generando Interfaces</info>');
-                $this->generator->generateView($layout);
+                $this->generator->generate('View', $layout);
             }
 
         }

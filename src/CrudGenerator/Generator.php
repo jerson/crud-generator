@@ -119,15 +119,6 @@ class Generator
     }
 
     /**
-     * @param $layout
-     * @throws \Exception
-     */
-    public function generateModel($layout)
-    {
-        $this->generate('Model', $layout);
-    }
-
-    /**
      * @param $type
      * @param $layout
      * @throws \Exception
@@ -159,30 +150,5 @@ class Generator
         return Stringy::create($string)->upperCamelize()->__toString();
     }
 
-    /**
-     * @param $layout
-     * @throws \Exception
-     */
-    public function generateDatabase($layout)
-    {
-        $this->generate('Database', $layout);
-    }
 
-    /**
-     * @param $layout
-     * @throws \Exception
-     */
-    public function generateView($layout)
-    {
-        $this->generate('View', $layout);
-    }
-
-    /**
-     * @param $layout
-     * @throws \Exception
-     */
-    public function generateController($layout)
-    {
-        $this->generate('Controller', $layout);
-    }
 }

@@ -15,6 +15,6 @@ class Assets extends Base
      */
     public function generate()
     {
-        $this->copyAssets(__DIR__.'/Template');
+        $this->copyAssets(__DIR__ . '/Template');
     }
 }

@@ -5,7 +5,6 @@ namespace CrudGenerator\Parser;
 
 
 use CrudGenerator\Table\Field;
-use CrudGenerator\Table\Table;
 use CrudGenerator\Table\Type\Type;
 use Stringy\Stringy;
 
@@ -88,7 +87,7 @@ class Golang implements ParserInterface
         if (strlen($string) < 4) {
             return strtoupper($string);
         }
-        return str_replace(['_id', 'id_','ip_','_uid', '_url'], ['_ID','ID_','IP_','_UID', '_URL'], $string);
+        return str_replace(['_id', 'id_', 'ip_', '_uid', '_url'], ['_ID', 'ID_', 'IP_', '_UID', '_URL'], $string);
     }
 
     /**
