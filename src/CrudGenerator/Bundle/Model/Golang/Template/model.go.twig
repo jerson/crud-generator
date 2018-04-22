@@ -67,7 +67,7 @@ type {{ tableName }} struct {
     {% set column = field.name | replace({'_id':'','id_':''})  | underscored %}
     {% set allowNull = field.foreign and field.allowNull  %}
 {% endspaceless %}
-    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"foreignkey:{{ golang.primaryName(field.reference.column) | upperCamelize }}" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}" sql:"-"`
+    {{ property }} {{ allowNull ? '*' : '' }}{{ type }} `gorm:"foreignkey:{{ golang.primaryName(field.reference.column) | upperCamelize }}" json:"{{ column}}{{ allowNull ? ',omitempty' : '' }}"`
 {% endfor %}
 }
 
