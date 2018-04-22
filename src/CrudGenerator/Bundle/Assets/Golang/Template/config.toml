@@ -7,7 +7,7 @@ port=8000
 enable=false
 
 [database]
-name="{{ config.database.name }}2"
+name="{{ config.database.name }}"
 user="{{ config.database.user }}"
 password="{{ config.database.password }}"
 port={{ config.database.port }}
