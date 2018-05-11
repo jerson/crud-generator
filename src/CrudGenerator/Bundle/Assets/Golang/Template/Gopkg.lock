@@ -8,10 +8,10 @@
   version = "v0.3.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/Joker/jade"
   packages = ["."]
-  revision = "b62ceaaacd5208e130ed3b43872750533febfc7a"
-  version = "v1.0-pre"
+  revision = "8828253bfc54f2f91aaef5f32b44a244b0a98e4f"
 
 [[projects]]
   name = "github.com/allegro/bigcache"
@@ -53,17 +53,6 @@
     "parser"
   ]
   revision = "cdade1c073850f4ffc70a829e31235ea6892853b"
-
-[[projects]]
-  name = "github.com/emirpasic/gods"
-  packages = [
-    "containers",
-    "sets",
-    "sets/hashset",
-    "utils"
-  ]
-  revision = "f6c17b524822278a87e3b3bd809fec33b51f5b46"
-  version = "v1.9.0"
 
 [[projects]]
   branch = "master"
@@ -111,16 +100,22 @@
   version = "v3.1.3"
 
 [[projects]]
-  branch = "master"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "3287d94d4c6a48a63e16fffaabf27ab20203af2a"
+  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
+  version = "v1.3"
 
 [[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "925541529c1fa6821df4e44ce2723319eb2be768"
-  version = "v1.0.0"
+  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/gosimple/slug"
+  packages = ["."]
+  revision = "e9f42fa127660e552d0ad2b589868d403a9be7c6"
+  version = "v1.1.1"
 
 [[projects]]
   branch = "master"
@@ -162,7 +157,7 @@
   branch = "master"
   name = "github.com/json-iterator/go"
   packages = ["."]
-  revision = "6c702ce12a197b8382f7b5a1c43e88ac065e7a66"
+  revision = "2ddf6d758266fcb080a4f9e054b9f292c85e6798"
 
 [[projects]]
   branch = "master"
@@ -207,8 +202,8 @@
     "middleware/recover",
     "view"
   ]
-  revision = "41b17aca9ec493f6eedf17c0e5545cf134f2d445"
-  version = "v10.5.0"
+  revision = "88fa66786e29e7874fe2e0669c478e019511b69b"
+  version = "v10.6.3"
 
 [[projects]]
   branch = "master"
@@ -217,7 +212,7 @@
     ".",
     "terminal"
   ]
-  revision = "825e39f34365e7db2c9fbc3692c16220e3bd7418"
+  revision = "a9733b5b6b83d32b479aacd51d26ef6018261963"
 
 [[projects]]
   name = "github.com/kataras/survey"
@@ -311,7 +306,7 @@
     "internal/bitbucket.org/ww/goautoneg",
     "model"
   ]
-  revision = "d0f7cd64bda49e08b22ae8a730aa57aa0db125d6"
+  revision = "d811d2e9bf898806ecfb6ef6296774b13ffc314c"
 
 [[projects]]
   branch = "master"
@@ -323,6 +318,12 @@
     "xfs"
   ]
   revision = "8b1c2da0d56deffdbb9e48d4414b4e674bd8083e"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/rainycape/unidecode"
+  packages = ["."]
+  revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
 
 [[projects]]
   name = "github.com/rs/cors"
@@ -343,10 +344,10 @@
   revision = "abc90934186a77966e2beeac62ed966aac0561d5"
 
 [[projects]]
+  branch = "master"
   name = "github.com/satori/go.uuid"
   packages = ["."]
-  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
-  version = "v1.2.0"
+  revision = "36e9d2ebbde5e3f13ab2e25625fd453271d6522e"
 
 [[projects]]
   branch = "master"
@@ -368,7 +369,7 @@
     "acme/autocert",
     "ssh/terminal"
   ]
-  revision = "e73bf333ef8920dbb52ad18d4bd38ad9d9bc76d7"
+  revision = "2d027ae1dddd4694d54f7a8b6cbe78dca8720226"
 
 [[projects]]
   branch = "master"
@@ -377,7 +378,7 @@
     "html",
     "html/atom"
   ]
-  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
+  revision = "2491c5de3490fced2f6cff376127c667efeed857"
 
 [[projects]]
   branch = "master"
@@ -386,13 +387,7 @@
     "unix",
     "windows"
   ]
-  revision = "79b0c6888797020a994db17c8510466c72fe75d9"
-
-[[projects]]
-  name = "google.golang.org/appengine"
-  packages = ["cloudsql"]
-  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
-  version = "v1.0.0"
+  revision = "d0faeb539838e250bd0a9db4182d48d4a1915181"
 
 [[projects]]
   name = "gopkg.in/AlecAivazis/survey.v1"
@@ -407,7 +402,7 @@
   branch = "v2"
   name = "gopkg.in/russross/blackfriday.v2"
   packages = ["."]
-  revision = "c455fd41c6baf2f78fd7ff0aadc4e4b4d52698b0"
+  revision = "3420fef03359a232d74c2ac1d237ac357cfca298"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -418,6 +413,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "89ce8d4ee2f8b370aba31cf120ccae8e72a2df2bd0db54ebfe2b6db9b5b9599e"
+  inputs-digest = "f63394b0e1f753cd88355fddb090ed9a055f5d4d6ebb523fb7b0b44387b9ab98"
   solver-name = "gps-cdcl"
   solver-version = 1

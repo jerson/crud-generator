@@ -94,11 +94,11 @@ func ({{ tableSingleKey }} *{{ tableName }}) IsValid() error {
 func ({{ tableSingleKey }} *{{ tableName }}) BeforeCreate(scope *gorm.Scope) error {
     {% if createdField is not empty %}
         created := time.Now()
-        {{ tableSingleKey }}.{{ createdField.name | upperCamelize }} = {{ createdField.allowNull ? '&' : '' }}created
+        scope.SetColumn("{{ createdField.name }}", {{ createdField.allowNull ? '&' : '' }}created)
     {% endif %}
     {% if slugField is not empty and nameField is not empty %}
         if {{ tableSingleKey }}.{{ slugField.name | upperCamelize }}==""{
-            {{ tableSingleKey }}.{{ slugField.name | upperCamelize }} = util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }})
+            scope.SetColumn("{{ slugField.name }}",  util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }}))
         }
     {% endif %}
 
@@ -113,7 +113,7 @@ func ({{ tableSingleKey }} *{{ tableName }}) BeforeUpdate(scope *gorm.Scope) err
     {% endif %}
     {% if slugField is not empty and nameField is not empty %}
         if {{ tableSingleKey }}.{{ slugField.name | upperCamelize }}==""{
-        scope.SetColumn("{{ slugField.name }}",  util.Slug({{ nameField | upperCamelize }}))
+        scope.SetColumn("{{ slugField.name }}",  util.Slug({{ tableSingleKey }}.{{ nameField | upperCamelize }}))
         }
     {% endif %}
     return {{ tableSingleKey }}.IsValid()

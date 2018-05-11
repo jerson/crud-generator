@@ -141,7 +141,7 @@ func {{ tableName }}Controller(app *iris.Application) {
         }
         itemBinded := ctx.BindRequest(item, formData)
 
-        err = repo.Update(item,itemBinded)
+        err = repo.Update(*item,itemBinded)
         if err != nil {
             ctx.SendError(http.StatusInternalServerError,err)
             return
@@ -168,7 +168,7 @@ func {{ tableName }}Controller(app *iris.Application) {
             return
         }
 
-        err = repo.Delete(item)
+        err = repo.Delete(*item)
         if err != nil {
             ctx.SendError(http.StatusInternalServerError,err)
             return

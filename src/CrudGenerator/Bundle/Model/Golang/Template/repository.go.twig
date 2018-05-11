@@ -96,7 +96,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) SearchList(query string, o
 
 
 //FindOneBy{{ primaryFieldProperty }} ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ primaryFieldProperty }}({{ primaryFieldParam }} {{ primaryFieldType }}) (models.{{ tableName }}, error) {
+func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ primaryFieldProperty }}({{ primaryFieldParam }} {{ primaryFieldType }}) (*models.{{ tableName }}, error) {
     return {{ tableSingleKey }}.FindOne("{{ table.primaryField.name }} = ?",{{ primaryFieldParam }})
 }
 
@@ -107,16 +107,16 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ primaryFieldPr
 {% set nameFieldParam = nameFieldName | camelize  %}
 {% set nameFieldType = golang.type(nameField) %}
 //FindOneBy{{ nameFieldProperty }} ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ nameFieldProperty }}({{ nameFieldParam }} {{ nameFieldType }}) (models.{{ tableName }}, error) {
+func ({{ tableSingleKey }} {{ tableName }}Repository) FindOneBy{{ nameFieldProperty }}({{ nameFieldParam }} {{ nameFieldType }}) (*models.{{ tableName }}, error) {
     return {{ tableSingleKey }}.FindOne("{{ nameField.name }} = ?",{{ nameFieldParam }})
 }
 {% endif %}
 //Create ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ tableName }}) (result models.{{ tableName }}, err error) {
+func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ tableName }}) (*models.{{ tableName }}, error) {
 
     cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
-        return
+        return nil,err
     }
     defer {{ tableSingleKey }}.Close()
 
@@ -124,9 +124,8 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Create(object models.{{ ta
     if err != nil {
         return
     }
-    result = object
 
-    return
+    return &object,nil
 
 }
 
@@ -187,17 +186,18 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) Delete(object models.{{ ta
 }
 
 //FindOne ...
-func ({{ tableSingleKey }} {{ tableName }}Repository) FindOne(query interface{}, args ...interface{}) (result models.{{ tableName }}, err error) {
+func ({{ tableSingleKey }} {{ tableName }}Repository) FindOne(query interface{}, args ...interface{}) (*models.{{ tableName }}, error) {
 
     cn, err := {{ tableSingleKey }}.DB()
     if err != nil {
-        return
+        return nil, err
     }
     defer {{ tableSingleKey }}.Close()
 
+    var result models.{{ tableName }}
     err = cn.Where(query, args...).First(&result).Error
     if err != nil {
         return
     }
-    return
+    return &result, nil
 }
