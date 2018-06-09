@@ -11,7 +11,7 @@ services:
           - mysql
         volumes:
           - ./:/srv/go/src/{{ config.project.package }}
-        entrypoint: ./entrypoint-dev.sh
+        entrypoint: sh -c "./entrypoint-dev.sh"
 
     mysql:
         image: mysql:5.7
