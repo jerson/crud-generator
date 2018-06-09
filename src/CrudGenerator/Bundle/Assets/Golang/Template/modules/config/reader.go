@@ -27,7 +27,7 @@ type Prometheus struct {
 type Database struct {
 	Name     string `toml:"name" default:"app"`
 	User     string `toml:"user" default:"app"`
-	Password string `toml:"password" default:""`
+	Password string `toml:"password" default:"app"`
 	Host     string `toml:"host" default:"mysql"`
 	Port     int    `toml:"port" default:"3306"`
 }
