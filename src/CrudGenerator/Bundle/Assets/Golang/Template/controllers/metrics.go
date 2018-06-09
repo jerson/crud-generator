@@ -40,7 +40,7 @@ func customLogger() context.Handler {
 		Status: true,
 		IP:     true,
 		Method: true,
-		LogFunc: func(now time.Time, latency time.Duration, status, ip, method, path string, message interface{}) {
+		LogFunc: func(now time.Time, latency time.Duration, status, ip, method, path string, message interface{}, headerMessage interface{}) {
 
 			if path == "/metrics" {
 				return
