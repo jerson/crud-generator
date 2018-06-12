@@ -7,6 +7,7 @@ import (
     "{{ config.project.package }}/modules/context"
     "{{ config.project.package }}/modules/util"
     "{{ config.project.package }}/modules/db"
+    "github.com/jinzhu/gorm"
 )
 
 {% set tableName = table.name | upperCamelize %}
@@ -42,7 +43,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) List(offset, limit int, so
     }
 
     list = models.{{ tableName }}List{Limit: limit, Offset: offset}
-    qb := cn.Model(models.{{ tableName }}{})
+    qb := {{ tableSingleKey }}.preload(cn.Model(models.{{ tableName }}{}))
     err = qb.
         Order(util.SortValues(sort, sortType, sortAllows)).
         Offset(offset).
@@ -74,7 +75,7 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) SearchList(query string, o
     defer {{ tableSingleKey }}.Close()
 
     list = models.{{ tableName }}List{Limit: limit, Offset: offset}
-    qb := cn.Model(models.{{ tableName }}{}).
+    qb := {{ tableSingleKey }}.preload(cn.Model(models.{{ tableName }}{})).
         Offset(offset).
         Limit(limit).
         Where("{{ nameField.name }} LIKE ?", "%"+query+"%")
@@ -195,9 +196,16 @@ func ({{ tableSingleKey }} {{ tableName }}Repository) FindOne(query interface{},
     defer {{ tableSingleKey }}.Close()
 
     var result models.{{ tableName }}
-    err = cn.Where(query, args...).First(&result).Error
+    err = {{ tableSingleKey }}.preload(cn.Where(query, args...)).First(&result).Error
     if err != nil {
         return nil, err
     }
     return &result, nil
+}
+
+
+func ({{ tableSingleKey }} {{ tableName }}Repository) preload(query *gorm.DB) *gorm.DB {
+    return query{% for field in table.foreignFields  %}{% spaceless %}
+    {% set property = field.name | replace({'_id':'','id_':''}) | upperCamelize %}
+{% endspaceless %}.Preload("{{ property }}"){% endfor %}
 }
